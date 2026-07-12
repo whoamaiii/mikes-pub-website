@@ -40,6 +40,17 @@ npm ci
 | `npm run test:e2e`     | Build and run infrastructure checks in five browser profiles. |
 | `npm run verify`       | Run the local non-browser quality gate.                       |
 
+## Validation policy
+
+Hosted GitHub Actions remains configured and is the preferred validation path when it is available.
+If Actions cannot run for account, billing or platform reasons, the complete local gate in
+[`docs/quality-gates.md`](docs/quality-gates.md) is authoritative when Q has approved that fallback.
+
+An unavailable hosted runner is not a passed check, but it is also not a code or test failure. Any
+actual local formatting, lint, type, test, browser, accessibility, security or build failure remains
+blocking. Rerun the complete required gate after every subsequent change before recording final
+evidence.
+
 ## Repository structure
 
 ```text

@@ -105,7 +105,7 @@ An issue is ready only when blockers are Done, scope is unambiguous, relevant so
 
 ## Definition of Done
 
-Done requires all acceptance criteria, relevant formatting/lint/type/test/build checks, appropriate accessibility/browser evidence, desktop/mobile evidence for UI work, no unverified claims or assets, documented dependency/licence changes, updated docs/ADR when behaviour changed, CI evidence, known limitations, and explicit Q approval.
+Done requires all acceptance criteria, relevant formatting/lint/type/test/build checks, appropriate accessibility/browser evidence, desktop/mobile evidence for UI work, no unverified claims or assets, documented dependency/licence changes, updated docs/ADR when behaviour changed, required validation evidence (hosted CI when available; otherwise the complete documented local gate approved by Q), known limitations, and explicit Q approval.
 
 ## Git and public-repository safety
 
@@ -156,9 +156,11 @@ Discover commands from repository files; do not invent them or claim checks pass
 
 Automated accessibility tests are not proof of conformance; include relevant manual keyboard, focus, zoom/reflow and visual review.
 
+Hosted GitHub Actions remains configured and is preferred when available. If it is unavailable for account, billing or platform reasons and Q approves the fallback, the complete local gate documented in `docs/quality-gates.md` is authoritative. An actual formatting, lint, type, test, browser, accessibility, security or build failure remains blocking in either mode. Rerun the complete required gate after every subsequent change before recording final evidence.
+
 ## Linear evidence
 
-Before requesting approval, record outcome/scope, files changed, acceptance checklist, exact checks/results, CI/preview/screenshots, facts/assets and their status, known limitations/follow-ups, and an incomplete Q-approval checkbox.
+Before requesting approval, record outcome/scope, files changed, acceptance checklist, exact checks/results, required validation/preview/screenshots, facts/assets and their status, known limitations/follow-ups, and an incomplete Q-approval checkbox.
 
 ## Stop conditions
 
