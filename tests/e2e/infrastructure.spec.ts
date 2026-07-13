@@ -18,9 +18,7 @@ async function listFiles(directory: string): Promise<string[]> {
   return files.flat();
 }
 
-test('serves the static preview without product routes or third-party requests', async ({
-  page,
-}) => {
+test('serves unknown production routes without third-party requests', async ({ page }) => {
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
 
@@ -46,6 +44,6 @@ test('keeps the isolated design-system preview out of production output', async 
     '\n',
   );
   expect(textOutput).not.toMatch(
-    /__design-system__|design-system-preview-main|WHO15_CAPTURE|WHO17_CAPTURE|Datonøytral testtekst/i,
+    /__design-system__|design-system-preview-main|WHO15_CAPTURE|WHO17_CAPTURE|WHO18_CAPTURE|Datonøytral testtekst/i,
   );
 });

@@ -55,6 +55,13 @@ forced-colors, no-JavaScript fallback and 200% layout-equivalent evidence under 
 same review evidence. Rerun both the complete local gate and the WHO-17 evidence command after any
 subsequent WHO-17 code or documentation change.
 
+WHO-18 Home evidence is generated with `npm run evidence:home`. It captures the real production Home
+route at 320px, 375px, 768px, 1024px and 1440px, plus focused skip-link, forced-colors and 200%-layout
+equivalent evidence under ignored `output/playwright/who-18/`. Record a written visual comparison at
+375px and 1440px, manually inspect the approved exterior crop and confirm every browser request is
+same-origin. Rerun both the complete local gate and the WHO-18 evidence command after any subsequent
+WHO-18 code, asset or documentation change.
+
 `@axe-core/playwright` is installed for accessibility checks once an approved UI exists. Automated
 checks never replace manual keyboard, focus, reading-order, zoom/reflow, reduced-motion, contrast and
 real-device review.
