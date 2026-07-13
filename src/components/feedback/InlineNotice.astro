@@ -1,0 +1,35 @@
+---
+import type { IconName, LinkTarget, NoticeVariant } from '../../types/design-system';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  variant: NoticeVariant;
+  title: string;
+  text: string;
+  action?: LinkTarget;
+  live?: boolean;
+}
+
+const { id, variant, title, text, action, live = false } = Astro.props;
+const icons: Record<NoticeVariant, IconName> = {
+  info: 'info',
+  warning: 'warning',
+  error: 'error',
+  success: 'success',
+};
+---
+
+<aside
+  class:list={['inline-notice', `inline-notice-${variant}`]}
+  aria-labelledby={`${id}-title`}
+  role={live ? (variant === 'error' ? 'alert' : 'status') : undefined}
+>
+  <Icon name={icons[variant]} />
+  <div>
+    <h3 id={`${id}-title`}>{title}</h3>
+    <p>{text}</p>
+    {action && <ActionLink {...action} />}
+  </div>
+</aside>

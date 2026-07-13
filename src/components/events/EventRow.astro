@@ -1,0 +1,89 @@
+---
+import type { EventRowData, IconName } from '../../types/design-system';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  event: EventRowData;
+}
+
+const { event } = Astro.props;
+const categoryIcons: Record<EventRowData['category'], IconName> = {
+  music: 'music',
+  sport: 'sport',
+  quiz: 'quiz',
+  standup: 'standup',
+  special: 'calendar',
+};
+const statusLabels: Record<EventRowData['status'], string> = {
+  concept: 'Konsept',
+  scheduled: 'Planlagt',
+  postponed: 'Utsatt',
+  cancelled: 'Avlyst',
+  expired: 'Utløpt',
+};
+---
+
+<li
+  class:list={['event-row', `event-row-${event.status}`]}
+  data-event-status={event.status}
+  data-has-description={event.description ? 'true' : 'false'}
+  data-has-action={event.action ? 'true' : 'false'}
+  data-has-image={event.image ? 'true' : 'false'}
+>
+  <article aria-labelledby={`${event.id}-title`}>
+    {
+      event.image && (
+        <img
+          class="event-row-image"
+          src={event.image.src}
+          width={event.image.width}
+          height={event.image.height}
+          alt={event.image.decorative ? '' : event.image.alt}
+        />
+      )
+    }
+
+    <div class="event-row-category" aria-label={`Kategori: ${event.categoryLabel}`}>
+      <span class="event-row-icon"><Icon name={categoryIcons[event.category]} /></span>
+      <span>{event.categoryLabel}</span>
+    </div>
+
+    <div class="event-row-content">
+      <p class="event-row-status">{statusLabels[event.status]}</p>
+      <h3 id={`${event.id}-title`}>{event.title}</h3>
+
+      {
+        event.status === 'concept' ? (
+          <p class="event-row-temporal">Datonøytral konseptoppføring</p>
+        ) : event.status === 'postponed' ? (
+          <div class="event-row-temporal">
+            <p>
+              Tidligere: <time datetime={event.previousDateTime}>{event.previousDateLabel}</time>
+            </p>
+            {event.replacementDateTime && event.replacementDateLabel && (
+              <p>
+                Ny tid:{' '}
+                <time datetime={event.replacementDateTime}>{event.replacementDateLabel}</time>
+              </p>
+            )}
+          </div>
+        ) : (
+          <p class="event-row-temporal">
+            <time datetime={event.dateTime}>{event.dateLabel}</time>
+          </p>
+        )
+      }
+
+      {event.description && <p class="event-row-description">{event.description}</p>}
+    </div>
+
+    {
+      event.action && (
+        <div class="event-row-action">
+          <ActionLink {...event.action} />
+        </div>
+      )
+    }
+  </article>
+</li>

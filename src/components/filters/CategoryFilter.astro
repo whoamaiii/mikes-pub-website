@@ -1,0 +1,25 @@
+---
+import type { CategoryFilterItem } from '../../types/design-system';
+
+interface Props {
+  categories: CategoryFilterItem[];
+  active: CategoryFilterItem['value'];
+  label?: string;
+}
+
+const { categories, active, label = 'Filtrer arrangementer' } = Astro.props;
+---
+
+<nav class="category-filter" aria-label={label}>
+  <ul>
+    {
+      categories.map((category) => (
+        <li>
+          <a href={category.href} aria-current={category.value === active ? 'page' : undefined}>
+            {category.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

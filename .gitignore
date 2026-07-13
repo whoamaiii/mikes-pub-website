@@ -5,6 +5,8 @@ dist/
 coverage/
 playwright-report/
 test-results/
+.design-system-preview/
+output/playwright/
 
 # Local environment files
 .env

@@ -1,7 +1,11 @@
 .astro/
+.design-system-preview/
 AGENTS.md
+design-reference/
 dist/
+LICENSES/
 node_modules/
+output/
 package-lock.json
 playwright-report/
 test-results/

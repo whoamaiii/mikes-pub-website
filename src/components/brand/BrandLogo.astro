@@ -1,0 +1,35 @@
+---
+import type { ClearedImageAsset } from '../../types/design-system';
+
+interface Props {
+  context: 'header' | 'footer';
+  href?: string;
+  label?: string;
+  asset?: ClearedImageAsset;
+}
+
+const { context, href = '/', label = 'Mike’s Pub', asset } = Astro.props;
+---
+
+<a
+  class:list={['brand-logo', `brand-logo-${context}`]}
+  href={href}
+  aria-label={`${label} – forside`}
+>
+  {
+    asset ? (
+      <img
+        class="brand-logo-image"
+        src={asset.src}
+        width={asset.width}
+        height={asset.height}
+        alt=""
+        aria-hidden="true"
+      />
+    ) : (
+      <span class="brand-logo-placeholder" data-logo-placeholder>
+        {label}
+      </span>
+    )
+  }
+</a>

@@ -1,0 +1,27 @@
+---
+import type { LinkTarget, VenueLocation } from '../../types/design-system';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  location: VenueLocation;
+  heading?: string;
+  directions?: LinkTarget;
+}
+
+const { id, location, heading = 'Finn oss i Sætre', directions } = Astro.props;
+---
+
+<section class="location-panel" aria-labelledby={`${id}-heading`}>
+  <Icon name="location" size={32} />
+  <div class="location-panel-content">
+    <h2 id={`${id}-heading`}>{heading}</h2>
+    <address>
+      <span>{location.name}</span>
+      <span>{location.street}</span>
+      <span>{location.postalCode} {location.city}</span>
+    </address>
+  </div>
+  {directions && <ActionLink {...directions} />}
+</section>

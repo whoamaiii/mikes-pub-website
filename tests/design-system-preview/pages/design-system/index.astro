@@ -1,0 +1,209 @@
+---
+import '../../../../src/styles/global.css';
+import '../../styles/preview.css';
+
+import EventEmptyState from '../../../../src/components/events/EventEmptyState.astro';
+import EventErrorState from '../../../../src/components/events/EventErrorState.astro';
+import EventRow from '../../../../src/components/events/EventRow.astro';
+import CategoryFilter from '../../../../src/components/filters/CategoryFilter.astro';
+import InlineNotice from '../../../../src/components/feedback/InlineNotice.astro';
+import LocationPanel from '../../../../src/components/location/LocationPanel.astro';
+import SiteHeader from '../../../../src/components/navigation/SiteHeader.astro';
+import ConceptBanner from '../../../../src/components/site/ConceptBanner.astro';
+import SiteFooter from '../../../../src/components/site/SiteFooter.astro';
+import ActionLink from '../../../../src/components/ui/ActionLink.astro';
+import Button from '../../../../src/components/ui/Button.astro';
+import {
+  previewCategories,
+  previewEvents,
+  previewNavigation,
+  verifiedPreviewLocation,
+} from '../../../fixtures/design-system';
+
+const mainId = 'design-system-preview-main';
+const mobileMenuId = 'design-system-preview-mobile-menu';
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>WHO-15 – lokal komponentvisning</title>
+  </head>
+  <body>
+    <SiteHeader
+      mainId={mainId}
+      navigation={previewNavigation}
+      currentId="program"
+      mobileMenuId={mobileMenuId}
+    >
+      <div id={mobileMenuId} slot="mobile-menu-target" hidden></div>
+    </SiteHeader>
+    <ConceptBanner />
+
+    <main id={mainId} class="preview-main ds-container" tabindex="-1">
+      <section class="preview-intro" aria-labelledby="preview-title">
+        <p class="preview-intro__eyebrow">WHO-15 · lokal testharness</p>
+        <h1 id="preview-title">Kodet designsystem</h1>
+        <p>
+          Denne isolerte visningen demonstrerer komponenter og tilstander. Eksempeloppføringer er
+          testdata, ikke arrangementer eller publiserbare fakta.
+        </p>
+      </section>
+
+      <section class="preview-section" aria-labelledby="foundations-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">01 · fundament</p>
+          <h2 id="foundations-title">Farge og typografi</h2>
+          <p>WHO-10-tokenene brukes semantisk; genererte piksler er ikke måleenheter.</p>
+        </header>
+
+        <div class="preview-stack">
+          <div class="preview-swatches" aria-label="Godkjent kjernepalett">
+            <div class="preview-swatch preview-swatch--facade">Fasade</div>
+            <div class="preview-swatch preview-swatch--green">Flaskegrønn</div>
+            <div class="preview-swatch preview-swatch--gold">Skiltgull</div>
+            <div class="preview-swatch preview-swatch--cream">Krem</div>
+          </div>
+          <p class="preview-type-display">Display og navigasjon</p>
+          <p class="preview-type-body">
+            Brødtekst og grensesnitt bruker en egen, lesbar familie med normal linjehøyde og
+            begrenset linjelengde.
+          </p>
+        </div>
+      </section>
+
+      <section id="preview-navigation" class="preview-section" aria-labelledby="navigation-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">02 · navigasjon</p>
+          <h2 id="navigation-title">Strukturelle skall</h2>
+          <p>Menyutløseren er presentasjon uten dialog-, fokus- eller låseatferd.</p>
+        </header>
+        <p class="preview-note">
+          Sidehodet over denne visningen viser gjeldende side, typografisk logoerstatning og den
+          responsive menyutløseren.
+        </p>
+      </section>
+
+      <section class="preview-section" aria-labelledby="controls-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">03 · handlinger</p>
+          <h2 id="controls-title">Knapper og lenker</h2>
+          <p>Deaktivering og lasting er eksplisitte; navigasjon bruker lenker.</p>
+        </header>
+
+        <div class="preview-control-group">
+          <div class="preview-control">
+            <span class="preview-label">Primær</span>
+            <Button label="Utfør handling" />
+          </div>
+          <div class="preview-control">
+            <span class="preview-label">Sekundær</span>
+            <Button label="Sekundær handling" variant="secondary" />
+          </div>
+          <div class="preview-control">
+            <span class="preview-label">Fare</span>
+            <Button label="Kritisk handling" variant="danger" />
+          </div>
+          <div class="preview-control">
+            <span class="preview-label">Deaktivert</span>
+            <Button label="Ikke tilgjengelig" disabled />
+          </div>
+          <div class="preview-control">
+            <span class="preview-label">Laster</span>
+            <Button label="Utfør handling" loading loadingLabel="Laster komponent" />
+          </div>
+        </div>
+
+        <div class="preview-control-group">
+          <ActionLink href="#preview-action-target" label="Primær lenke" variant="primary" />
+          <ActionLink href="#preview-action-target" label="Tekstlenke" />
+        </div>
+      </section>
+
+      <section id="preview-filters" class="preview-section" aria-labelledby="filters-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">04 · filterpresentasjon</p>
+          <h2 id="filters-title">Supplied URL-tilstand</h2>
+          <p>Lenkene viser valgt kategori, men utfører ingen ferdig Program-filtrering.</p>
+        </header>
+        <CategoryFilter categories={previewCategories} active="music" />
+      </section>
+
+      <section id="preview-events" class="preview-section" aria-labelledby="events-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">05 · arrangementspresentasjon</p>
+          <h2 id="events-title">Rader og statusvarianter</h2>
+          <p>Oppføringene under er tydelig ikke-faktiske komponent-fixtures.</p>
+        </header>
+        <ul class="event-row-list preview-events">
+          {previewEvents.map((event) => <EventRow event={event} />)}
+        </ul>
+      </section>
+
+      <section id="preview-states" class="preview-section" aria-labelledby="states-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">06 · regiontilstander</p>
+          <h2 id="states-title">Tomt, feil og meldinger</h2>
+          <p>Ingen falske arrangementer fyller en tom eller mislykket region.</p>
+        </header>
+
+        <div class="preview-grid preview-grid--two">
+          <EventEmptyState
+            id="preview-empty"
+            action={{ href: '#preview-filters', label: 'Vis alle' }}
+          />
+          <EventErrorState id="preview-error" />
+        </div>
+
+        <div class="preview-stack">
+          <InlineNotice
+            id="preview-info"
+            variant="info"
+            title="Informasjon"
+            text="Dette er en statisk komponentmelding."
+          />
+          <InlineNotice
+            id="preview-warning"
+            variant="warning"
+            title="Advarsel"
+            text="Tilstanden bruker mer enn farge alene."
+          />
+          <InlineNotice
+            id="preview-notice-error"
+            variant="error"
+            title="Feil"
+            text="Tekniske detaljer eksponeres ikke i grensesnittet."
+          />
+          <InlineNotice
+            id="preview-success"
+            variant="success"
+            title="Bekreftet"
+            text="Ikon, tekst og struktur kommuniserer resultatet."
+          />
+        </div>
+      </section>
+
+      <section id="preview-location" class="preview-section" aria-labelledby="location-title">
+        <header class="preview-section__header">
+          <p class="preview-section__eyebrow">07 · sted og bunnområde</p>
+          <h2 id="location-title">Verifisert adresse uten kart</h2>
+          <p>Ingen åpningstider, kontaktopplysninger eller transportpåstander legges til.</p>
+        </header>
+        <LocationPanel id="preview-location-panel" location={verifiedPreviewLocation} />
+      </section>
+
+      <div id="preview-action-target" class="preview-note" tabindex="-1">
+        Lokalt mål for kontroll av eksempelhandlinger.
+      </div>
+    </main>
+
+    <SiteFooter
+      navigation={previewNavigation}
+      location={verifiedPreviewLocation}
+      brandDescription="Komponentgrense for godkjent merkevare."
+    />
+  </body>
+</html>

@@ -1,0 +1,32 @@
+---
+import type { LinkTarget } from '../../types/design-system';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  heading?: string;
+  message?: string;
+  action?: LinkTarget;
+  live?: boolean;
+}
+
+const {
+  id,
+  heading = 'Programmet kunne ikke lastes.',
+  message = 'Prøv igjen senere eller se siste nytt på Mike’s offisielle kanal.',
+  action,
+  live = false,
+} = Astro.props;
+---
+
+<section
+  class="event-state event-state-error"
+  aria-labelledby={`${id}-heading`}
+  role={live ? 'alert' : undefined}
+>
+  <Icon name="warning" size={32} />
+  <h3 id={`${id}-heading`}>{heading}</h3>
+  <p>{message}</p>
+  {action && <ActionLink {...action} variant="primary" />}
+</section>

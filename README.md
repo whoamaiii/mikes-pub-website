@@ -1,11 +1,12 @@
 # Mike's Pub website
 
-Infrastructure baseline for the Mike's Pub website project in Sætre, Norway. WHO-14 deliberately
-contains no product pages, components, visual design, content or assets.
+Static-first Astro baseline and reusable coded design system for the Mike's Pub website project in
+Sætre, Norway. The repository still contains no Home, Program or other product page.
 
 ## Current boundary
 
-- Static-first Astro project with strict TypeScript and plain CSS when UI work is later approved.
+- Static-first Astro project with strict TypeScript, native components and plain external CSS.
+- WHO-15 components and tokens are available through an isolated local-only preview build.
 - No server runtime, CMS, database, authentication, analytics, forms, maps or embeds.
 - The repository is currently public by Q's explicit decision. Do not add secrets, private sales
   material, client credentials, protected deployment configuration or unapproved assets.
@@ -27,18 +28,21 @@ npm ci
 
 ## Commands
 
-| Command                | Purpose                                                       |
-| ---------------------- | ------------------------------------------------------------- |
-| `npm run dev`          | Start Astro's local development server.                       |
-| `npm run build`        | Produce the portable static `dist/` output.                   |
-| `npm run preview`      | Preview an existing production build locally.                 |
-| `npm run format`       | Format supported repository files.                            |
-| `npm run format:check` | Check formatting without changing files.                      |
-| `npm run lint`         | Run ESLint and Stylelint.                                     |
-| `npm run check`        | Run Astro and TypeScript checks.                              |
-| `npm run test:unit`    | Run infrastructure policy tests.                              |
-| `npm run test:e2e`     | Build and run infrastructure checks in five browser profiles. |
-| `npm run verify`       | Run the local non-browser quality gate.                       |
+| Command                               | Purpose                                                       |
+| ------------------------------------- | ------------------------------------------------------------- |
+| `npm run dev`                         | Start Astro's local development server.                       |
+| `npm run build`                       | Produce the portable static `dist/` output.                   |
+| `npm run build:design-system-preview` | Build the isolated component preview.                         |
+| `npm run preview`                     | Preview an existing production build locally.                 |
+| `npm run preview:design-system`       | Serve the isolated component preview locally.                 |
+| `npm run format`                      | Format supported repository files.                            |
+| `npm run format:check`                | Check formatting without changing files.                      |
+| `npm run lint`                        | Run ESLint and Stylelint.                                     |
+| `npm run check`                       | Run Astro and TypeScript checks.                              |
+| `npm run test:unit`                   | Run infrastructure policy tests.                              |
+| `npm run test:e2e`                    | Run production and component-preview checks in five profiles. |
+| `npm run evidence:design-system`      | Capture ignored WHO-15 visual evidence.                       |
+| `npm run verify`                      | Run the local non-browser quality gate.                       |
 
 ## Validation policy
 
@@ -57,17 +61,23 @@ evidence.
 .github/                 GitHub Actions and dependency update policy
 docs/                    Architecture, dependency, environment and quality documentation
 src/env.d.ts             Astro type references
-src/pages/.gitkeep       Required empty Astro pages directory; no UI exists in WHO-14
-tests/unit/              Repository-policy tests
-tests/e2e/               Infrastructure-only browser tests
+src/pages/.gitkeep       Required empty product-pages directory
+src/components/          Reusable WHO-15 native Astro components
+src/styles/              Frozen tokens and external CSS foundations
+public/fonts/            Approved self-hosted OFL font binaries
+LICENSES/                Upstream font copyright and licence text
+tests/design-system-preview/  Isolated, non-production component preview
+tests/unit/              Repository and design-system policy tests
+tests/e2e/               Production and isolated-preview browser tests
 ```
 
-Product directories and files will be created only by their approved Linear issues after WHO-32.
+Product routes remain deferred to their dedicated Linear issues.
 
 ## Documentation
 
 - [Architecture decision](docs/adr/0001-static-first-architecture.md)
 - [Dependencies and licences](docs/dependencies.md)
+- [Coded design system and font provenance](docs/design-system.md)
 - [Environment safety](docs/environment.md)
 - [Quality gates](docs/quality-gates.md)
 - [Security reporting](SECURITY.md)
