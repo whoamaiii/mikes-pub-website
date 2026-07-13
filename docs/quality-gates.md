@@ -48,6 +48,13 @@ Fresh visual evidence is generated with `npm run evidence:design-system`. It cap
 375px and 320px views plus focused and forced-colors evidence under ignored `output/playwright/`.
 Evidence images and reports are attached to Linear, not committed.
 
+WHO-17 navigation evidence is generated with `npm run evidence:mobile-navigation`. It captures
+closed/focused and open/focused states at 320px, 375px, 768px and 1023px, plus navigation focus,
+forced-colors, no-JavaScript fallback and 200% layout-equivalent evidence under ignored
+`output/playwright/who-17/`. Actual Chrome 200% zoom is verified separately and recorded with the
+same review evidence. Rerun both the complete local gate and the WHO-17 evidence command after any
+subsequent WHO-17 code or documentation change.
+
 `@axe-core/playwright` is installed for accessibility checks once an approved UI exists. Automated
 checks never replace manual keyboard, focus, reading-order, zoom/reflow, reduced-motion, contrast and
 real-device review.

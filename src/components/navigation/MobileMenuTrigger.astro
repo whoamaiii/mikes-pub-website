@@ -3,20 +3,18 @@ import Icon from '../ui/Icon.astro';
 
 interface Props {
   controls: string;
-  expanded?: boolean;
-  disabled?: boolean;
 }
 
-const { controls, expanded = false, disabled = false } = Astro.props;
+const { controls } = Astro.props;
 ---
 
 <button
   class="mobile-menu-trigger"
   type="button"
   aria-controls={controls}
-  aria-expanded={expanded ? 'true' : 'false'}
-  aria-label={expanded ? 'Lukk meny' : 'Åpne meny'}
-  disabled={disabled}
+  aria-expanded="false"
+  aria-label="Åpne meny"
+  hidden
 >
-  <Icon name={expanded ? 'error' : 'menu'} />
+  <Icon name="menu" />
 </button>

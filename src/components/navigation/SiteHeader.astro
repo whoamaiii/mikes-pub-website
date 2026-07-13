@@ -3,7 +3,7 @@ import type { ClearedImageAsset, NavigationItem } from '../../types/design-syste
 import SkipLink from '../accessibility/SkipLink.astro';
 import BrandLogo from '../brand/BrandLogo.astro';
 import DesktopNav from './DesktopNav.astro';
-import MobileMenuTrigger from './MobileMenuTrigger.astro';
+import MobileMenu from './MobileMenu.astro';
 
 interface Props {
   mainId: string;
@@ -21,7 +21,6 @@ const { mainId, navigation, currentId, mobileMenuId, logoAsset } = Astro.props;
   <div class="site-header-inner ds-container">
     <BrandLogo context="header" asset={logoAsset} />
     <DesktopNav items={navigation} currentId={currentId} />
-    <MobileMenuTrigger controls={mobileMenuId} />
+    <MobileMenu id={mobileMenuId} items={navigation} currentId={currentId} logoAsset={logoAsset} />
   </div>
-  <slot name="mobile-menu-target" />
 </header>
