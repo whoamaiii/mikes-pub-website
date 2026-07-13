@@ -1,0 +1,27 @@
+---
+import type { ClearedImageAsset, NavigationItem } from '../../types/design-system';
+import SkipLink from '../accessibility/SkipLink.astro';
+import BrandLogo from '../brand/BrandLogo.astro';
+import DesktopNav from './DesktopNav.astro';
+import MobileMenuTrigger from './MobileMenuTrigger.astro';
+
+interface Props {
+  mainId: string;
+  navigation: NavigationItem[];
+  currentId?: string;
+  mobileMenuId: string;
+  logoAsset?: ClearedImageAsset;
+}
+
+const { mainId, navigation, currentId, mobileMenuId, logoAsset } = Astro.props;
+---
+
+<header class="site-header">
+  <SkipLink targetId={mainId} />
+  <div class="site-header-inner ds-container">
+    <BrandLogo context="header" asset={logoAsset} />
+    <DesktopNav items={navigation} currentId={currentId} />
+    <MobileMenuTrigger controls={mobileMenuId} />
+  </div>
+  <slot name="mobile-menu-target" />
+</header>

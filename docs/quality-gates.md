@@ -36,16 +36,24 @@ their published checksums before execution, and record the versions and results 
 Do not bypass dependency resolution, disable checks or suppress compatibility warnings.
 
 The Playwright configuration contains Chromium, Firefox, WebKit, Mobile Chrome and Mobile Safari.
-WHO-14 exercises only the static preview infrastructure and an intentionally missing probe route; it
-does not create or test product UI.
+The normal configuration exercises the static production output and intentionally missing routes.
+The separate design-system configuration exercises the isolated WHO-15 component preview in the
+same five profiles. `npm run test:e2e` runs both configurations.
+
+The production-isolation assertion rejects a built `/design-system/` route, preview fixture marker or
+preview-only script in `dist/`. The preview has explicit `srcDir`, `outDir` and `cacheDir` values and
+never changes the normal Astro configuration.
+
+Fresh visual evidence is generated with `npm run evidence:design-system`. It captures 1440px, 768px,
+375px and 320px views plus focused and forced-colors evidence under ignored `output/playwright/`.
+Evidence images and reports are attached to Linear, not committed.
 
 `@axe-core/playwright` is installed for accessibility checks once an approved UI exists. Automated
 checks never replace manual keyboard, focus, reading-order, zoom/reflow, reduced-motion, contrast and
 real-device review.
 
-Stylelint currently covers external `src/**/*.css` files. Component-scoped Astro `<style>` blocks
-must not be introduced until a later approved dependency decision adds compatible Astro style
-parsing or the approved UI architecture requires external styles only.
+Stylelint covers external `src/**/*.css` files. WHO-15 keeps all production component styling in that
+external CSS boundary; it introduces no component-scoped `<style>` blocks.
 
 WHO-14 builds zero pages, so a numeric product performance budget would be untestable and invented.
 The accepted ADR requirement remains an explicit open decision for WHO-32/WHO-19, when approved UI

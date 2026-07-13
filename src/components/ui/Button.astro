@@ -1,0 +1,37 @@
+---
+interface Props {
+  label: string;
+  variant?: 'primary' | 'secondary' | 'danger';
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  loading?: boolean;
+  loadingLabel?: string;
+  name?: string;
+  value?: string;
+}
+
+const {
+  label,
+  variant = 'primary',
+  type = 'button',
+  disabled = false,
+  loading = false,
+  loadingLabel = 'Laster',
+  name,
+  value,
+} = Astro.props;
+---
+
+<button
+  class:list={['button', `button-${variant}`]}
+  type={type}
+  disabled={disabled || loading}
+  aria-busy={loading ? 'true' : undefined}
+  aria-label={loading ? loadingLabel : undefined}
+  name={name}
+  value={value}
+  data-loading={loading ? 'true' : undefined}
+>
+  <span class="button-label" aria-hidden={loading ? 'true' : undefined}>{label}</span>
+  {loading && <span class="button-loading-label">{loadingLabel}</span>}
+</button>

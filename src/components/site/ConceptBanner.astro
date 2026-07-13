@@ -1,0 +1,11 @@
+---
+interface Props {
+  text?: string;
+}
+
+const { text = 'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.' } = Astro.props;
+---
+
+<aside class="concept-banner" aria-label="Konseptstatus">
+  <p>{text}</p>
+</aside>

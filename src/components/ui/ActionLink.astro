@@ -1,0 +1,22 @@
+---
+import type { LinkTarget } from '../../types/design-system';
+import Icon from './Icon.astro';
+
+interface Props extends LinkTarget {
+  variant?: 'primary' | 'text';
+}
+
+const { href, label, accessibleLabel, external = false, variant = 'text' } = Astro.props;
+---
+
+<a
+  class:list={['action-link', `action-link-${variant}`]}
+  href={href}
+  aria-label={accessibleLabel}
+  rel={external ? 'noopener noreferrer' : undefined}
+  data-external={external ? 'true' : undefined}
+>
+  <span>{label}</span>
+  {external && <span class="visually-hidden">(ekstern lenke)</span>}
+  <Icon name="arrow-right" />
+</a>

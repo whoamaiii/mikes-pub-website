@@ -35,6 +35,21 @@ not broaden script permission to other versions or packages.
 No package is admitted to justify a product feature in WHO-14. Remove a tool by deleting its config,
 scripts and direct package entry, then regenerate the lockfile and rerun all remaining gates.
 
+## Self-hosted font assets
+
+WHO-15 adds no package dependency. It self-hosts six WOFF2 files from approved immutable upstream
+commits so typography works without a third-party request. The fonts remain under SIL Open Font
+License 1.1; the application remains proprietary and `UNLICENSED`.
+
+| Family           | Version and commit                                   | Files                               | Licence                                 | Runtime/security impact                                                        | Removal path                                                                          |
+| ---------------- | ---------------------------------------------------- | ----------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| Barlow Condensed | `1.422`, `697600fcece1685b0ba409eb82868546def9a84e`  | Medium 500, SemiBold 600, Bold 700  | `LICENSES/barlow-condensed-OFL-1.1.txt` | Static local WOFF2 only; no script or network request; SHA-256 policy enforced | Delete three files, licence and matching `@font-face` rules; display fallback remains |
+| Source Sans 3    | `3.052R`, `ed1808970eb3c7301c9a523bee26473ba0bb62fa` | Regular 400, Semibold 600, Bold 700 | `LICENSES/source-sans-3-OFL-1.1.md`     | Static local WOFF2 only; no script or network request; SHA-256 policy enforced | Delete three files, licence and matching `@font-face` rules; body fallback remains    |
+
+Exact upstream paths, copyrights and SHA-256 hashes are recorded in
+[`docs/design-system.md`](design-system.md). The small SVG icon subset is original repository code,
+not a dependency or third-party asset.
+
 ## Admission review
 
 Reviewed on 12 July 2026 against the npm registry, the accepted ADR and the locked dependency graph.

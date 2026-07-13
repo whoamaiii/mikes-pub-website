@@ -1,0 +1,26 @@
+---
+import type { LinkTarget } from '../../types/design-system';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  heading?: string;
+  message?: string;
+  action?: LinkTarget;
+}
+
+const {
+  id,
+  heading = 'Ingen arrangementer i denne kategorien akkurat nå.',
+  message = 'Se alle arrangementer eller sjekk igjen senere.',
+  action,
+} = Astro.props;
+---
+
+<section class="event-state event-state-empty" aria-labelledby={`${id}-heading`}>
+  <Icon name="calendar" size={32} />
+  <h3 id={`${id}-heading`}>{heading}</h3>
+  <p>{message}</p>
+  {action && <ActionLink {...action} variant="primary" />}
+</section>

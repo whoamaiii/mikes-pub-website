@@ -1,0 +1,100 @@
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+
+const previewPath = '/design-system/';
+
+test('has no detectable accessibility violations', async ({ page }) => {
+  await page.goto(previewPath);
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
+});
+
+test('starts with a visible skip-link focus and follows responsive navigation order', async ({
+  page,
+  browserName,
+}) => {
+  await page.goto(previewPath);
+  const tabKey = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+  await page.keyboard.press(tabKey);
+
+  const skipLink = page.getByRole('link', { name: 'Hopp til hovedinnhold' });
+  await expect(skipLink).toBeFocused();
+  const outline = await skipLink.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { style: style.outlineStyle, width: style.outlineWidth };
+  });
+  expect(outline.style).not.toBe('none');
+  expect(Number.parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+
+  await page.keyboard.press(tabKey);
+  await expect(page.getByRole('link', { name: 'Mike’s Pub – forside' }).first()).toBeFocused();
+
+  await page.keyboard.press(tabKey);
+  const viewportWidth = page.viewportSize()?.width ?? 0;
+  if (viewportWidth >= 1024) {
+    await expect(page.getByRole('link', { name: 'Program' }).first()).toBeFocused();
+  } else {
+    await expect(page.getByRole('button', { name: 'Åpne meny' })).toBeFocused();
+  }
+});
+
+test('moves focus to the main landmark when the skip link is activated', async ({
+  page,
+  browserName,
+}) => {
+  await page.goto(previewPath);
+  await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+});
+
+test('reflows without document overflow at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto(previewPath);
+
+  const dimensions = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
+});
+
+test('preserves reflow at the 200 percent layout equivalent', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 900 });
+  await page.goto(previewPath);
+
+  const dimensions = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
+});
+
+test('removes non-essential motion when reduced motion is requested', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(previewPath);
+
+  const transitionDurations = await page
+    .locator('.action-link')
+    .first()
+    .evaluate((element) =>
+      getComputedStyle(element)
+        .transitionDuration.split(',')
+        .map((duration) => Number.parseFloat(duration)),
+    );
+  expect(transitionDurations.every((duration) => duration <= 0.00001)).toBe(true);
+});
+
+test('retains controls and focus treatment in forced colors', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Forced-colors emulation is validated in Chromium.');
+  await page.emulateMedia({ forcedColors: 'active' });
+  await page.goto(previewPath);
+
+  expect(await page.evaluate(() => matchMedia('(forced-colors: active)').matches)).toBe(true);
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Hopp til hovedinnhold' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Utfør handling' })).toHaveCSS(
+    'border-top-style',
+    'solid',
+  );
+});

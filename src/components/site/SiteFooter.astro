@@ -1,0 +1,49 @@
+---
+import type { NavigationItem, VenueLocation } from '../../types/design-system';
+import BrandLogo from '../brand/BrandLogo.astro';
+
+interface Props {
+  navigation: NavigationItem[];
+  location: VenueLocation;
+  brandDescription?: string;
+  conceptText?: string;
+}
+
+const {
+  navigation,
+  location,
+  brandDescription,
+  conceptText = 'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.',
+} = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="site-footer-inner ds-container">
+    <div class="site-footer-brand">
+      <BrandLogo context="footer" />
+      {brandDescription && <p>{brandDescription}</p>}
+    </div>
+
+    <nav aria-label="Bunnmeny">
+      <ul>
+        {
+          navigation.map((item) => (
+            <li>
+              <a class="site-footer-link" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <address>
+      <span>{location.name}</span>
+      <span>{location.street}</span>
+      <span>{location.postalCode} {location.city}</span>
+    </address>
+
+    <p class="site-footer-concept">{conceptText}</p>
+  </div>
+</footer>

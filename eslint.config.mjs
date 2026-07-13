@@ -6,9 +6,11 @@ export default [
   {
     ignores: [
       '.astro/**',
+      '.design-system-preview/**',
       'coverage/**',
       'dist/**',
       'node_modules/**',
+      'output/**',
       'playwright-report/**',
       'test-results/**',
     ],

@@ -1,0 +1,98 @@
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  background: var(--surface-page);
+}
+
+body {
+  overflow-wrap: anywhere;
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--text-primary);
+  background: var(--surface-page);
+  text-rendering: optimizelegibility;
+}
+
+main {
+  display: block;
+  min-inline-size: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  max-inline-size: var(--measure-body);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--leading-heading);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-2xl);
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+}
+
+p {
+  max-inline-size: var(--measure-wide);
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--text-accent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--text-accent);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: var(--focus-size) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+::selection {
+  color: var(--text-on-accent);
+  background: var(--surface-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (forced-colors: active) {
+  html {
+    color-scheme: light dark;
+  }
+
+  :where(a, button, [tabindex]):focus-visible {
+    outline-color: Highlight;
+  }
+
+  a {
+    color: LinkText;
+    text-decoration-color: currentcolor;
+  }
+}

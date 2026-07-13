@@ -62,7 +62,7 @@ describe('repository policy', () => {
     expect(actionReferences.every((reference) => /@[0-9a-f]{40}$/.test(reference))).toBe(true);
   });
 
-  test('keeps Astro pages empty during the WHO-14 infrastructure issue', async () => {
+  test('keeps product pages empty until their dedicated implementation issues', async () => {
     const pageFiles = await readdir(path.join(root, 'src/pages'));
     expect(pageFiles).toEqual(['.gitkeep']);
   });
