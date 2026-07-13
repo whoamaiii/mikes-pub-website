@@ -38,6 +38,24 @@ test('captures deterministic WHO-15 viewport evidence', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(previewPath);
   await page.keyboard.press('Tab');
+  const skipLink = page.getByRole('link', { name: 'Hopp til hovedinnhold' });
+  await expect(skipLink).toBeFocused();
+  await skipLink.evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+  });
+  await expect(skipLink).toBeVisible();
+
+  const skipLinkBox = await skipLink.boundingBox();
+  const focusViewport = page.viewportSize();
+  expect(skipLinkBox).not.toBeNull();
+  expect(focusViewport).not.toBeNull();
+  expect(skipLinkBox!.x).toBeGreaterThanOrEqual(0);
+  expect(skipLinkBox!.y).toBeGreaterThanOrEqual(0);
+  expect(skipLinkBox!.x + skipLinkBox!.width).toBeLessThanOrEqual(focusViewport!.width);
+  expect(skipLinkBox!.y + skipLinkBox!.height).toBeLessThanOrEqual(focusViewport!.height);
   await page.screenshot({
     path: path.join(evidenceDirectory, 'who-15-focus-1440.png'),
     fullPage: false,

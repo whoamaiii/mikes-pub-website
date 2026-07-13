@@ -19,12 +19,37 @@ test('starts with a visible skip-link focus and follows responsive navigation or
 
   const skipLink = page.getByRole('link', { name: 'Hopp til hovedinnhold' });
   await expect(skipLink).toBeFocused();
+  await skipLink.evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+  });
+  await expect(skipLink).toBeVisible();
+
+  const boundingBox = await skipLink.boundingBox();
+  const viewport = page.viewportSize();
+  expect(boundingBox).not.toBeNull();
+  expect(viewport).not.toBeNull();
+
   const outline = await skipLink.evaluate((element) => {
     const style = getComputedStyle(element);
-    return { style: style.outlineStyle, width: style.outlineWidth };
+    return {
+      offset: Number.parseFloat(style.outlineOffset),
+      style: style.outlineStyle,
+      width: Number.parseFloat(style.outlineWidth),
+    };
   });
   expect(outline.style).not.toBe('none');
-  expect(Number.parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+  expect(outline.width).toBeGreaterThanOrEqual(2);
+
+  const outlineExtent = outline.width + Math.max(outline.offset, 0);
+  expect(boundingBox!.x - outlineExtent).toBeGreaterThanOrEqual(0);
+  expect(boundingBox!.y - outlineExtent).toBeGreaterThanOrEqual(0);
+  expect(boundingBox!.x + boundingBox!.width + outlineExtent).toBeLessThanOrEqual(viewport!.width);
+  expect(boundingBox!.y + boundingBox!.height + outlineExtent).toBeLessThanOrEqual(
+    viewport!.height,
+  );
 
   await page.keyboard.press(tabKey);
   await expect(page.getByRole('link', { name: 'Mike’s Pub – forside' }).first()).toBeFocused();

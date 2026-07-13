@@ -33,5 +33,7 @@ const {
   data-loading={loading ? 'true' : undefined}
 >
   <span class="button-label" aria-hidden={loading ? 'true' : undefined}>{label}</span>
-  {loading && <span class="button-loading-label">{loadingLabel}</span>}
+  <span class="button-loading-label" aria-hidden={loading ? undefined : 'true'}>
+    {loadingLabel}
+  </span>
 </button>

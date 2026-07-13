@@ -9,6 +9,11 @@ test('renders semantic components and explicit states', async ({ page }) => {
     'href',
     '#design-system-preview-main',
   );
+  const conceptBanner = page.getByRole('complementary', { name: 'Konseptstatus' });
+  await expect(conceptBanner).toHaveText(
+    'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.',
+  );
+  await expect(conceptBanner.locator('button, [role="button"]')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Mike’s Pub – forside' }).first()).toBeAttached();
   const desktopNavigation = page.locator('.desktop-nav');
   await expect(desktopNavigation).toBeAttached();
@@ -31,6 +36,8 @@ test('renders semantic components and explicit states', async ({ page }) => {
   const loadingButton = page.getByRole('button', { name: 'Laster komponent' });
   await expect(loadingButton).toBeDisabled();
   await expect(loadingButton).toHaveAttribute('aria-busy', 'true');
+  await expect(loadingButton.locator('.button-label')).toBeHidden();
+  await expect(loadingButton.locator('.button-loading-label')).toBeVisible();
 
   await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toBeAttached();
   await expect(page.getByRole('link', { name: 'Musikk' }).last()).toHaveAttribute(
@@ -66,4 +73,57 @@ test('makes no third-party requests and ships no client-side behavior', async ({
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === previewOrigin)).toBe(true);
   await expect(page.locator('script[src]')).toHaveCount(0);
+});
+
+test('paints only the loading label at every required review width', async ({ page }) => {
+  for (const width of [320, 375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(previewPath);
+
+    const loadingButton = page.getByRole('button', { name: 'Laster komponent' });
+    const normalLabel = loadingButton.locator('.button-label');
+    const loadingLabel = loadingButton.locator('.button-loading-label');
+
+    await expect(loadingButton).toBeDisabled();
+    await expect(loadingButton).toHaveAttribute('aria-busy', 'true');
+    await expect(normalLabel).toBeHidden();
+    await expect(loadingLabel).toBeVisible();
+
+    const geometry = await loadingButton.evaluate((button) => {
+      const normal = button.querySelector<HTMLElement>('.button-label')!;
+      const loading = button.querySelector<HTMLElement>('.button-loading-label')!;
+      const toBox = (element: Element) => {
+        const box = element.getBoundingClientRect();
+        return {
+          bottom: box.bottom,
+          height: box.height,
+          left: box.left,
+          right: box.right,
+          top: box.top,
+          width: box.width,
+        };
+      };
+
+      return {
+        buttonDisplay: getComputedStyle(button).display,
+        buttonBox: toBox(button),
+        loadingBox: toBox(loading),
+        loadingVisibility: getComputedStyle(loading).visibility,
+        normalBox: toBox(normal),
+        normalVisibility: getComputedStyle(normal).visibility,
+        pageClientWidth: document.documentElement.clientWidth,
+        pageScrollWidth: document.documentElement.scrollWidth,
+      };
+    });
+
+    expect(geometry.buttonDisplay).toBe('grid');
+    expect(geometry.normalVisibility).toBe('hidden');
+    expect(geometry.loadingVisibility).toBe('visible');
+    expect(geometry.normalBox).toEqual(geometry.loadingBox);
+    expect(geometry.loadingBox.left).toBeGreaterThanOrEqual(geometry.buttonBox.left);
+    expect(geometry.loadingBox.right).toBeLessThanOrEqual(geometry.buttonBox.right);
+    expect(geometry.loadingBox.top).toBeGreaterThanOrEqual(geometry.buttonBox.top);
+    expect(geometry.loadingBox.bottom).toBeLessThanOrEqual(geometry.buttonBox.bottom);
+    expect(geometry.pageScrollWidth).toBeLessThanOrEqual(geometry.pageClientWidth);
+  }
 });

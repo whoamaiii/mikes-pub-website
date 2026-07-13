@@ -201,6 +201,8 @@
 
 .button {
   position: relative;
+  display: inline-grid;
+  max-inline-size: 100%;
   min-inline-size: 9rem;
   padding: var(--space-3) var(--space-4);
   color: var(--text-accent);
@@ -214,6 +216,23 @@
     background-color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard),
     transform var(--duration-fast) var(--ease-standard);
+}
+
+.button-label,
+.button-loading-label {
+  grid-area: 1 / 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.button-loading-label,
+.button[data-loading='true'] .button-label {
+  visibility: hidden;
+}
+
+.button[data-loading='true'] .button-loading-label {
+  visibility: visible;
 }
 
 .button:hover {
@@ -248,13 +267,6 @@
   border-color: var(--border-muted);
   cursor: not-allowed;
   transform: none;
-}
-
-.button-loading-label {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
 }
 
 .category-filter {
