@@ -1,0 +1,65 @@
+---
+import type { ClearedImageAsset, NavigationItem } from '../../types/design-system';
+import BrandLogo from '../brand/BrandLogo.astro';
+import Icon from '../ui/Icon.astro';
+import MobileMenuTrigger from './MobileMenuTrigger.astro';
+import NavigationItems from './NavigationItems.astro';
+
+interface Props {
+  id: string;
+  items: NavigationItem[];
+  currentId?: string;
+  logoAsset?: ClearedImageAsset;
+}
+
+const { id, items, currentId, logoAsset } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<div class="mobile-menu" data-mobile-menu>
+  <details class="mobile-menu-fallback" data-mobile-menu-fallback>
+    <summary aria-label="Meny">
+      <Icon name="menu" />
+    </summary>
+    <nav aria-label="Hovedmeny">
+      <NavigationItems items={items} currentId={currentId} />
+    </nav>
+  </details>
+
+  <MobileMenuTrigger controls={id} />
+
+  <dialog id={id} class="mobile-menu-dialog" aria-labelledby={titleId} data-mobile-menu-dialog>
+    <div class="mobile-menu-surface">
+      <div class="mobile-menu-header">
+        <BrandLogo context="header" asset={logoAsset} />
+        <h2 id={titleId} class="visually-hidden">Hovedmeny</h2>
+        <button
+          class="mobile-menu-close"
+          type="button"
+          aria-label="Lukk meny"
+          data-mobile-menu-close
+          autofocus
+        >
+          <Icon name="error" />
+        </button>
+      </div>
+      <nav class="mobile-menu-navigation" aria-labelledby={titleId}>
+        <NavigationItems items={items} currentId={currentId} />
+      </nav>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  import { initializeMobileMenus } from '../../scripts/mobile-menu';
+
+  const initialize = () => initializeMobileMenus();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else {
+    initialize();
+  }
+
+  window.addEventListener('pageshow', initialize);
+</script>

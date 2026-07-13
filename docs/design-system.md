@@ -8,8 +8,8 @@ responsive decisions. Generated references remain local-only guidance and are ne
 
 The coded system contains global foundations and reusable primitives for navigation, controls,
 filters, event presentation, feedback, location and footer composition. It deliberately does not
-create Home, Program or another product route. Mobile-menu behavior and finished Program filtering
-remain separate issues.
+create Home, Program or another product route. WHO-17 adds the approved mobile-navigation behavior;
+finished Program filtering remains a separate issue.
 
 ## Token policy
 
@@ -36,7 +36,15 @@ motion reduces non-essential transitions to effectively immediate changes.
 
 ## Component boundaries
 
-- `SiteHeader` and `MobileMenuTrigger` are structural/presentational only.
+- `SiteHeader` composes desktop navigation and the WHO-17 mobile-menu boundary.
+- `MobileMenuTrigger` renders only the controller-owned closed state. Callers cannot set runtime
+  expanded or disabled state.
+- `MobileMenu` progressively enhances a complete server-rendered `details` disclosure to a native
+  modal `dialog` only after capability and element validation. Unsupported or disabled JavaScript
+  therefore never exposes a dead button.
+- The dependency-free controller owns accessible naming, focus entry/containment/return, Escape and
+  close actions, native modal inertness, scroll restoration and 1024px breakpoint cleanup. It adds
+  no backdrop-click dismissal or motion.
 - `CategoryFilter` renders supplied URLs and current state but performs no filtering.
 - `EventRow` accepts a status-aware presentation union. Concept rows may omit time; scheduled,
   cancelled and expired rows require time; postponed rows require the prior time and show a
@@ -69,6 +77,10 @@ npm run preview:design-system
 The production `astro.config.mjs` remains unchanged. Production isolation tests require the normal
 build to contain no design-system route, preview fixture marker or preview-only script. Preview
 fixtures are explicitly non-factual and are never loaded by product components.
+
+WHO-17 behavior remains inside this isolated preview until an approved product route composes the
+header. Navigation evidence is generated under ignored `output/playwright/who-17/`; it is never part
+of the production build.
 
 ## Font provenance and integrity
 

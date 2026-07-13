@@ -38,9 +38,7 @@ const mobileMenuId = 'design-system-preview-mobile-menu';
       navigation={previewNavigation}
       currentId="program"
       mobileMenuId={mobileMenuId}
-    >
-      <div id={mobileMenuId} slot="mobile-menu-target" hidden></div>
-    </SiteHeader>
+    />
     <ConceptBanner />
 
     <main id={mainId} class="preview-main ds-container" tabindex="-1">
@@ -78,8 +76,11 @@ const mobileMenuId = 'design-system-preview-mobile-menu';
       <section id="preview-navigation" class="preview-section" aria-labelledby="navigation-title">
         <header class="preview-section__header">
           <p class="preview-section__eyebrow">02 · navigasjon</p>
-          <h2 id="navigation-title">Strukturelle skall</h2>
-          <p>Menyutløseren er presentasjon uten dialog-, fokus- eller låseatferd.</p>
+          <h2 id="navigation-title">Responsiv navigasjon</h2>
+          <p>
+            Mobilmenyen bruker et forbedret dialogmønster med en komplett serverrendret
+            reservevisning.
+          </p>
         </header>
         <p class="preview-note">
           Sidehodet over denne visningen viser gjeldende side, typografisk logoerstatning og den

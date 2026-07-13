@@ -1,5 +1,6 @@
 ---
 import type { NavigationItem } from '../../types/design-system';
+import NavigationItems from './NavigationItems.astro';
 
 interface Props {
   items: NavigationItem[];
@@ -10,21 +11,5 @@ const { items, currentId } = Astro.props;
 ---
 
 <nav class="desktop-nav" aria-label="Hovedmeny">
-  <ul>
-    {
-      items.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            aria-label={item.accessibleLabel}
-            aria-current={item.id === currentId ? 'page' : undefined}
-            rel={item.external ? 'noopener noreferrer' : undefined}
-          >
-            {item.label}
-            {item.external && <span class="visually-hidden">(ekstern lenke)</span>}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <NavigationItems items={items} currentId={currentId} />
 </nav>

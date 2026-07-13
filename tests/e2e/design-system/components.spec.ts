@@ -22,6 +22,12 @@ test('renders semantic components and explicit states', async ({ page }) => {
   const trigger = page.locator('.mobile-menu-trigger');
   await expect(trigger).toHaveAttribute('aria-controls', 'design-system-preview-mobile-menu');
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('[data-mobile-menu]')).toHaveAttribute(
+    'data-mobile-menu-enhanced',
+    'true',
+  );
+  await expect(page.locator('[data-mobile-menu-fallback]')).toBeHidden();
+  await expect(page.locator('#design-system-preview-mobile-menu')).toBeAttached();
 
   const viewportWidth = page.viewportSize()?.width ?? 0;
   if (viewportWidth >= 1024) {
@@ -63,7 +69,9 @@ test('renders semantic components and explicit states', async ({ page }) => {
   await expect(page.getByText('Nordre Sætrevei 2').first()).toBeVisible();
 });
 
-test('makes no third-party requests and ships no client-side behavior', async ({ page }) => {
+test('makes no third-party requests and ships only the approved navigation enhancement', async ({
+  page,
+}) => {
   const requests: string[] = [];
   page.on('request', (request) => requests.push(request.url()));
 
@@ -72,7 +80,7 @@ test('makes no third-party requests and ships no client-side behavior', async ({
 
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === previewOrigin)).toBe(true);
-  await expect(page.locator('script[src]')).toHaveCount(0);
+  await expect(page.locator('[data-mobile-menu-enhanced="true"]')).toHaveCount(1);
 });
 
 test('paints only the loading label at every required review width', async ({ page }) => {
