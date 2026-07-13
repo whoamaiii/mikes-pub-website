@@ -1,0 +1,47 @@
+---
+import type { HomeHeroContent } from '../../types/home';
+import ActionLink from '../ui/ActionLink.astro';
+
+interface Props extends HomeHeroContent {
+  id: string;
+}
+
+const { id, title, intro, action, image } = Astro.props;
+---
+
+<section class="home-hero" aria-labelledby={`${id}-heading`}>
+  <div class="home-hero-inner ds-container">
+    <div class="home-hero-content">
+      <h1 id={`${id}-heading`}>{title}</h1>
+      <p class="home-hero-intro">{intro}</p>
+      <div class="home-hero-action">
+        <ActionLink {...action} variant="primary" />
+      </div>
+    </div>
+
+    <figure
+      class="home-hero-media"
+      style={`--home-hero-focal-point: ${image.focalPoint}`}
+      data-rights-status={image.rightsStatus}
+    >
+      <picture>
+        <source
+          media="(min-width: 64rem)"
+          srcset={image.desktop.src}
+          width={image.desktop.width}
+          height={image.desktop.height}
+          type="image/webp"
+        />
+        <img
+          src={image.mobile.src}
+          width={image.mobile.width}
+          height={image.mobile.height}
+          alt={image.alt}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+    </figure>
+  </div>
+</section>

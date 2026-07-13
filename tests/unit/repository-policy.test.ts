@@ -62,8 +62,8 @@ describe('repository policy', () => {
     expect(actionReferences.every((reference) => /@[0-9a-f]{40}$/.test(reference))).toBe(true);
   });
 
-  test('keeps product pages empty until their dedicated implementation issues', async () => {
+  test('permits only the Home page approved by WHO-18', async () => {
     const pageFiles = await readdir(path.join(root, 'src/pages'));
-    expect(pageFiles).toEqual(['.gitkeep']);
+    expect(pageFiles).toEqual(['index.astro']);
   });
 });

@@ -1,0 +1,53 @@
+---
+import GamesPromo from '../components/home/GamesPromo.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import ProgramRail from '../components/home/ProgramRail.astro';
+import SportPromo from '../components/home/SportPromo.astro';
+import LocationPanel from '../components/location/LocationPanel.astro';
+import SiteHeader from '../components/navigation/SiteHeader.astro';
+import ConceptBanner from '../components/site/ConceptBanner.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import {
+  gamesPromo,
+  homeHero,
+  homeNavigation,
+  homeProgramItems,
+  sportPromo,
+  verifiedHomeLocation,
+} from '../data/home';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const mainId = 'main-content';
+---
+
+<SiteLayout
+  title="Mike’s Pub i Sætre – privat konseptdemo"
+  description="Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub."
+>
+  <SiteHeader mainId={mainId} navigation={homeNavigation} mobileMenuId="home-mobile-menu" />
+  <ConceptBanner />
+
+  <main id={mainId} class="home-main" tabindex="-1">
+    <HomeHero id="home-hero" {...homeHero} />
+
+    <div class="home-content ds-container">
+      <ProgramRail
+        id="program"
+        heading="Dette skjer på Mike’s"
+        intro="Eksempelkategorier uten publiserte arrangementer."
+        items={homeProgramItems}
+      />
+
+      <div class="home-promos">
+        <SportPromo id="sport" {...sportPromo} />
+        <GamesPromo id="games" {...gamesPromo} />
+      </div>
+
+      <div class="home-location" id="location">
+        <LocationPanel id="home-location" location={verifiedHomeLocation} />
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter navigation={homeNavigation} location={verifiedHomeLocation} />
+</SiteLayout>

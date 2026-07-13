@@ -1,0 +1,20 @@
+---
+import type { HomePromoContent } from '../../types/home';
+import ActionLink from '../ui/ActionLink.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props extends HomePromoContent {
+  id: string;
+}
+
+const { id, heading, text, action } = Astro.props;
+---
+
+<section class="home-promo home-promo-sport" id={id} aria-labelledby={`${id}-heading`}>
+  <Icon name="sport" size={32} />
+  <div class="home-promo-content">
+    <h2 id={`${id}-heading`}>{heading}</h2>
+    <p>{text}</p>
+    {action && <ActionLink {...action} />}
+  </div>
+</section>

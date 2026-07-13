@@ -7,9 +7,9 @@ responsive decisions. Generated references remain local-only guidance and are ne
 ## Scope
 
 The coded system contains global foundations and reusable primitives for navigation, controls,
-filters, event presentation, feedback, location and footer composition. It deliberately does not
-create Home, Program or another product route. WHO-17 adds the approved mobile-navigation behavior;
-finished Program filtering remains a separate issue.
+filters, event presentation, feedback, location and footer composition. WHO-15 deliberately created
+no product route; WHO-18 now composes the accepted system on Home. WHO-17 provides the approved
+mobile-navigation behavior, while finished Program filtering remains a separate issue.
 
 ## Token policy
 
@@ -78,9 +78,9 @@ The production `astro.config.mjs` remains unchanged. Production isolation tests 
 build to contain no design-system route, preview fixture marker or preview-only script. Preview
 fixtures are explicitly non-factual and are never loaded by product components.
 
-WHO-17 behavior remains inside this isolated preview until an approved product route composes the
-header. Navigation evidence is generated under ignored `output/playwright/who-17/`; it is never part
-of the production build.
+WHO-17 behavior remains covered by this isolated preview and is also composed by the approved WHO-18
+Home route. Navigation evidence is generated under ignored `output/playwright/who-17/`; it is never
+part of the production build.
 
 ## Font provenance and integrity
 

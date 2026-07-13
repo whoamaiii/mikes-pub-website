@@ -1,0 +1,38 @@
+---
+import type { HomeProgramItems } from '../../types/home';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  heading: string;
+  intro: string;
+  items: HomeProgramItems;
+}
+
+const { id, heading, intro, items } = Astro.props;
+---
+
+<section
+  class="home-program"
+  id={id}
+  aria-labelledby={`${id}-heading`}
+  aria-describedby={`${id}-intro`}
+>
+  <header class="home-section-header">
+    <h2 id={`${id}-heading`}>{heading}</h2>
+    <p id={`${id}-intro`}>{intro}</p>
+  </header>
+
+  <ul class="home-program-list">
+    {
+      items.map((item) => (
+        <li class="home-program-item" data-category={item.id}>
+          <span class="home-program-icon" aria-hidden="true">
+            <Icon name={item.icon} size={32} />
+          </span>
+          <span>{item.label}</span>
+        </li>
+      ))
+    }
+  </ul>
+</section>
