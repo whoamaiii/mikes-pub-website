@@ -27,6 +27,8 @@ const statusLabels: Record<EventRowData['status'], string> = {
 <li
   class:list={['event-row', `event-row-${event.status}`]}
   data-event-status={event.status}
+  data-event-category={event.category}
+  data-event-row
   data-has-description={event.description ? 'true' : 'false'}
   data-has-action={event.action ? 'true' : 'false'}
   data-has-image={event.image ? 'true' : 'false'}

@@ -1,0 +1,16 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  intro: string;
+}
+
+const { id, title, intro } = Astro.props;
+---
+
+<header class="page-intro" aria-labelledby={`${id}-title`}>
+  <div class="page-intro-inner ds-container">
+    <h1 id={`${id}-title`}>{title}</h1>
+    <p>{intro}</p>
+  </div>
+</header>

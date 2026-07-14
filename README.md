@@ -1,12 +1,13 @@
 # Mike's Pub website
 
-Static-first Astro website with a responsive Home route and reusable coded design system for the
-Mike's Pub website project in Sætre, Norway. Program and other product routes remain deferred.
+Static-first Astro website with responsive Home and Program routes and a reusable coded design
+system for the Mike's Pub website project in Sætre, Norway. Other product routes remain deferred.
 
 ## Current boundary
 
 - Static-first Astro project with strict TypeScript, native components and plain external CSS.
 - WHO-18 provides the first approved responsive product route at `/` with verified concept content.
+- WHO-20 provides the date-neutral private-demo Program route at `/program` with shareable filters.
 - WHO-15 components and tokens are available through an isolated local-only preview build.
 - No server runtime, CMS, database, authentication, analytics, forms, maps or embeds.
 - The repository is currently public by Q's explicit decision. Do not add secrets, private sales
@@ -45,6 +46,8 @@ npm ci
 | `npm run evidence:design-system`      | Capture ignored WHO-15 visual evidence.                       |
 | `npm run evidence:mobile-navigation`  | Capture ignored WHO-17 navigation evidence.                   |
 | `npm run evidence:home`               | Capture ignored WHO-18 Home evidence.                         |
+| `npm run test:e2e:program`            | Run the targeted WHO-20 Chromium browser checks.              |
+| `npm run evidence:program`            | Capture ignored WHO-20 Program evidence.                      |
 | `npm run verify`                      | Run the local non-browser quality gate.                       |
 
 ## Validation policy
@@ -64,7 +67,7 @@ evidence.
 .github/                 GitHub Actions and dependency update policy
 docs/                    Architecture, dependency, environment and quality documentation
 src/env.d.ts             Astro type references
-src/pages/index.astro    Approved responsive Home route
+src/pages/               Approved responsive Home and Program routes
 src/assets/images/       Rights-recorded, optimized Home derivatives
 src/components/          Reusable WHO-15 native Astro components
 src/data/                Typed, source-classified page content
@@ -76,7 +79,7 @@ tests/unit/              Repository and design-system policy tests
 tests/e2e/               Production and isolated-preview browser tests
 ```
 
-Program and all other product routes remain deferred to their dedicated Linear issues.
+All product routes beyond Home and Program remain deferred to their dedicated Linear issues.
 
 ## Documentation
 

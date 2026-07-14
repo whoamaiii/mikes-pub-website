@@ -7,14 +7,8 @@ import LocationPanel from '../components/location/LocationPanel.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
-import {
-  gamesPromo,
-  homeHero,
-  homeNavigation,
-  homeProgramItems,
-  sportPromo,
-  verifiedHomeLocation,
-} from '../data/home';
+import { homeHero, homeProgramItems, sportPromo } from '../data/home';
+import { gamesPromo, siteNavigation, verifiedSiteLocation } from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
@@ -24,7 +18,7 @@ const mainId = 'main-content';
   title="Mike’s Pub i Sætre – privat konseptdemo"
   description="Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub."
 >
-  <SiteHeader mainId={mainId} navigation={homeNavigation} mobileMenuId="home-mobile-menu" />
+  <SiteHeader mainId={mainId} navigation={siteNavigation} mobileMenuId="home-mobile-menu" />
   <ConceptBanner />
 
   <main id={mainId} class="home-main" tabindex="-1">
@@ -44,10 +38,10 @@ const mainId = 'main-content';
       </div>
 
       <div class="home-location" id="location">
-        <LocationPanel id="home-location" location={verifiedHomeLocation} />
+        <LocationPanel id="home-location" location={verifiedSiteLocation} />
       </div>
     </div>
   </main>
 
-  <SiteFooter navigation={homeNavigation} location={verifiedHomeLocation} />
+  <SiteFooter navigation={siteNavigation} location={verifiedSiteLocation} />
 </SiteLayout>

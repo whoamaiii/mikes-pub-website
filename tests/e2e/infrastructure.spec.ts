@@ -44,6 +44,6 @@ test('keeps the isolated design-system preview out of production output', async 
     '\n',
   );
   expect(textOutput).not.toMatch(
-    /__design-system__|design-system-preview-main|WHO15_CAPTURE|WHO17_CAPTURE|WHO18_CAPTURE|Datonøytral testtekst/i,
+    /__design-system__|design-system-preview-main|WHO15_CAPTURE|WHO17_CAPTURE|WHO18_CAPTURE|WHO20_CAPTURE|Datonøytral testtekst/i,
   );
 });
