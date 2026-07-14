@@ -2,8 +2,8 @@
 import type { CategoryFilterItem } from '../../types/design-system';
 
 interface Props {
-  categories: CategoryFilterItem[];
-  active: CategoryFilterItem['value'];
+  categories: readonly CategoryFilterItem[];
+  active?: CategoryFilterItem['value'];
   label?: string;
 }
 
@@ -15,7 +15,12 @@ const { categories, active, label = 'Filtrer arrangementer' } = Astro.props;
     {
       categories.map((category) => (
         <li>
-          <a href={category.href} aria-current={category.value === active ? 'page' : undefined}>
+          <a
+            href={category.href}
+            aria-current={active && category.value === active ? 'page' : undefined}
+            data-filter-value={category.value}
+            data-program-filter-link
+          >
             {category.label}
           </a>
         </li>

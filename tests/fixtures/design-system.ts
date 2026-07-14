@@ -4,6 +4,7 @@ import type {
   NavigationItem,
   VenueLocation,
 } from '../../src/types/design-system';
+import type { ProgramEventListState } from '../../src/types/program';
 
 export const previewNavigation: NavigationItem[] = [
   { id: 'program', href: '#preview-events', label: 'Program' },
@@ -80,6 +81,24 @@ export const previewEvents: EventRowData[] = [
     dateLabel: 'Eksempeltid – ikke fakta',
   },
 ];
+
+export const previewEmptyEventListState: ProgramEventListState = {
+  kind: 'empty',
+  empty: {
+    heading: 'Tom programliste – testtilstand',
+    message: 'Ingen oppføringer finnes i denne isolerte komponent-fixturen.',
+    action: { href: '#preview-filters', label: 'Vis filtereksempel' },
+  },
+};
+
+export const previewErrorEventListState: ProgramEventListState = {
+  kind: 'error',
+  error: {
+    heading: 'Programfeil – testtilstand',
+    message: 'Dette er en isolert feilmelding, ikke en virkelig driftsstatus.',
+    action: { href: '#preview-action-target', label: 'Prøv eksempelhandling' },
+  },
+};
 
 export const verifiedPreviewLocation: VenueLocation = {
   name: 'Mike’s Pub',

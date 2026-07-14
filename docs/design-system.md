@@ -9,7 +9,7 @@ responsive decisions. Generated references remain local-only guidance and are ne
 The coded system contains global foundations and reusable primitives for navigation, controls,
 filters, event presentation, feedback, location and footer composition. WHO-15 deliberately created
 no product route; WHO-18 now composes the accepted system on Home. WHO-17 provides the approved
-mobile-navigation behavior, while finished Program filtering remains a separate issue.
+mobile-navigation behavior, and WHO-20 composes the same system on the private-demo Program route.
 
 ## Token policy
 
@@ -45,12 +45,14 @@ motion reduces non-essential transitions to effectively immediate changes.
 - The dependency-free controller owns accessible naming, focus entry/containment/return, Escape and
   close actions, native modal inertness, scroll restoration and 1024px breakpoint cleanup. It adds
   no backdrop-click dismissal or motion.
-- `CategoryFilter` renders supplied URLs and current state but performs no filtering.
+- `CategoryFilter` renders supplied URLs and optional current state. WHO-20 adds a separate,
+  dependency-free Program controller so the component remains presentation-only.
 - `EventRow` accepts a status-aware presentation union. Concept rows may omit time; scheduled,
   cancelled and expired rows require time; postponed rows require the prior time and show a
   replacement only when both replacement values exist.
 - Draft records have no renderable row variant because WHO-32 forbids publishing them.
-- Full event schema/publication validation remains WHO-20.
+- WHO-20 validates its local date-neutral concept boundary. Production publication validation
+  remains outside the private-demo component contract.
 - Missing optional descriptions, actions and images collapse without broken placeholders.
 - `BrandLogo` renders a plain typographic placeholder until an authorized logo master is supplied.
 

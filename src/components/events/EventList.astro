@@ -1,0 +1,53 @@
+---
+import type { ProgramEventListState } from '../../types/program';
+import EventEmptyState from './EventEmptyState.astro';
+import EventErrorState from './EventErrorState.astro';
+import EventRow from './EventRow.astro';
+
+interface Props {
+  id: string;
+  heading: string;
+  state: ProgramEventListState;
+}
+
+const { id, heading, state } = Astro.props;
+const events = state.kind === 'ready' ? state.events : [];
+const feedback =
+  state.kind === 'ready' ? state.filteredEmpty : state.kind === 'empty' ? state.empty : state.error;
+const feedbackKind = state.kind === 'ready' ? 'filtered-empty' : state.kind;
+---
+
+<section class="event-list" aria-labelledby={`${id}-heading`} data-event-list-region>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+
+  <ul class="event-row-list" data-event-list>
+    {events.map((event) => <EventRow event={event} />)}
+  </ul>
+
+  <div
+    class="event-list-feedback"
+    data-event-feedback
+    data-state={feedbackKind}
+    aria-live={feedbackKind === 'error' ? undefined : 'polite'}
+    aria-atomic="true"
+  >
+    {
+      feedbackKind === 'error' ? (
+        <EventErrorState
+          id={`${id}-error`}
+          heading={feedback.heading}
+          message={feedback.message}
+          action={feedback.action}
+          live
+        />
+      ) : (
+        <EventEmptyState
+          id={`${id}-${feedbackKind}`}
+          heading={feedback.heading}
+          message={feedback.message}
+          action={feedback.action}
+        />
+      )
+    }
+  </div>
+</section>

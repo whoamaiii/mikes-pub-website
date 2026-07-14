@@ -4,6 +4,7 @@ import '../../styles/preview.css';
 
 import EventEmptyState from '../../../../src/components/events/EventEmptyState.astro';
 import EventErrorState from '../../../../src/components/events/EventErrorState.astro';
+import EventList from '../../../../src/components/events/EventList.astro';
 import EventRow from '../../../../src/components/events/EventRow.astro';
 import CategoryFilter from '../../../../src/components/filters/CategoryFilter.astro';
 import InlineNotice from '../../../../src/components/feedback/InlineNotice.astro';
@@ -15,6 +16,8 @@ import ActionLink from '../../../../src/components/ui/ActionLink.astro';
 import Button from '../../../../src/components/ui/Button.astro';
 import {
   previewCategories,
+  previewEmptyEventListState,
+  previewErrorEventListState,
   previewEvents,
   previewNavigation,
   verifiedPreviewLocation,
@@ -157,6 +160,23 @@ const mobileMenuId = 'design-system-preview-mobile-menu';
             action={{ href: '#preview-filters', label: 'Vis alle' }}
           />
           <EventErrorState id="preview-error" />
+        </div>
+
+        <div class="preview-stack" data-preview-event-list-states>
+          <div data-preview-event-list-state="empty">
+            <EventList
+              id="preview-event-list-empty"
+              heading="Tom programliste"
+              state={previewEmptyEventListState}
+            />
+          </div>
+          <div data-preview-event-list-state="error">
+            <EventList
+              id="preview-event-list-error"
+              heading="Programliste med feil"
+              state={previewErrorEventListState}
+            />
+          </div>
         </div>
 
         <div class="preview-stack">

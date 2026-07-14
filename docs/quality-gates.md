@@ -1,8 +1,10 @@
 # Quality gates
 
-Every proposed change must pass the required validation gate. Hosted GitHub Actions remains
+Every proposed change must pass its approved validation gate. Hosted GitHub Actions remains
 configured and is preferred when available. If Actions cannot run for account, billing or platform
-reasons, the complete local gate below is authoritative when Q has approved that fallback.
+reasons, the complete local gate below is authoritative when Q has approved that fallback. An
+explicit issue-specific Lean Delivery Roadmap may instead authorize a narrower gate when full
+integrated validation is assigned to a later issue.
 
 An unavailable hosted runner is neither a pass nor a code failure. Any actual formatting, lint, type,
 test, browser, accessibility, security or build failure remains blocking in either validation mode.
@@ -61,6 +63,27 @@ equivalent evidence under ignored `output/playwright/who-18/`. Record a written 
 375px and 1440px, manually inspect the approved exterior crop and confirm every browser request is
 same-origin. Rerun both the complete local gate and the WHO-18 evidence command after any subsequent
 WHO-18 code, asset or documentation change.
+
+## WHO-20 Lean targeted gate
+
+Q's approved Lean Delivery Roadmap assigns the next complete clean-install, five-browser,
+supply-chain and full screenshot gate to WHO-19. WHO-20 therefore uses this targeted gate:
+
+1. Format and check only the touched files.
+2. Run ESLint on touched Astro and TypeScript files.
+3. Run Stylelint on `src/styles/program.css`.
+4. Run `npm run check`.
+5. Run the Program content and affected repository-policy unit tests.
+6. Run `npm run build`.
+7. Run `npm run test:e2e:program` for targeted Chromium Program, production-isolation,
+   Home-to-Program and isolated full-empty/error component behavior.
+8. Run `npm run evidence:program`.
+9. Run `git diff --check` and inspect the complete changed-file list and diff.
+
+The Program evidence command captures 375px, 768px and 1440px views plus a focused 375px
+Stand-up filtered-empty state under ignored `output/playwright/who-20/`. Any failure in
+this targeted gate remains blocking. The narrower gate does not claim that the complete gate or
+hosted GitHub Actions passed.
 
 `@axe-core/playwright` is installed for accessibility checks once an approved UI exists. Automated
 checks never replace manual keyboard, focus, reading-order, zoom/reflow, reduced-motion, contrast and

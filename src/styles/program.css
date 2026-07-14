@@ -1,0 +1,290 @@
+.program-main {
+  min-inline-size: 0;
+}
+
+.page-intro {
+  background: var(--surface-brand);
+  border-block-end: var(--border-thin) solid var(--border-default);
+}
+
+.page-intro-inner {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-7);
+}
+
+.page-intro h1 {
+  text-transform: uppercase;
+}
+
+.page-intro p {
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+}
+
+.program-content {
+  padding-block: var(--space-8);
+}
+
+.program-directory {
+  position: relative;
+  min-inline-size: 0;
+}
+
+.program-filter-target {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.program-filter-shell {
+  min-inline-size: 0;
+}
+
+.program-filter-controls {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+}
+
+.program-main .category-filter ul {
+  padding-inline: calc(var(--focus-size) + var(--focus-offset) + 1px);
+}
+
+.program-filter-summary {
+  min-block-size: 1.5em;
+  color: var(--text-secondary);
+}
+
+.program-filter-summary [data-filter-summary-value] {
+  display: none;
+}
+
+.program-filter-shell:not([data-program-filter-enhanced])
+  .program-filter-summary
+  [data-filter-summary-value='all'],
+.program-filter-shell[data-program-filter-enhanced]
+  .program-filter-summary
+  [data-filter-summary-value]:not([hidden]) {
+  display: inline;
+}
+
+.program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='all'] {
+  color: var(--text-accent);
+  background: var(--surface-brand);
+  border-width: var(--border-strong);
+}
+
+.event-list > h2 {
+  margin-block-end: var(--space-4);
+  text-transform: uppercase;
+}
+
+.event-list-feedback[data-state='filtered-empty'] {
+  display: none;
+}
+
+.program-filter-shell[data-program-filter-enhanced]
+  .event-list-feedback[data-state='filtered-empty']:not([hidden]) {
+  display: block;
+}
+
+.program-notice,
+.program-games,
+.program-location {
+  margin-block-start: var(--space-8);
+}
+
+#filter-musikk:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='all'],
+#filter-sport:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='all'],
+#filter-quiz:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='all'],
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='all'] {
+  color: inherit;
+  background: transparent;
+  border-width: var(--border-thin);
+}
+
+#filter-musikk:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='music'],
+#filter-sport:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='sport'],
+#filter-quiz:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='quiz'],
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  a[data-filter-value='standup'] {
+  color: var(--text-accent);
+  background: var(--surface-brand);
+  border-width: var(--border-strong);
+}
+
+#filter-musikk:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='all'],
+#filter-sport:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='all'],
+#filter-quiz:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='all'],
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='all'] {
+  display: none;
+}
+
+#filter-musikk:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='music'],
+#filter-sport:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='sport'],
+#filter-quiz:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='quiz'],
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-filter-summary-value='standup'] {
+  display: inline;
+}
+
+#filter-musikk:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-row]:not([data-event-category='music']),
+#filter-sport:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-row]:not([data-event-category='sport']),
+#filter-quiz:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-row]:not([data-event-category='quiz']),
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-row]:not([data-event-category='standup']) {
+  display: none;
+}
+
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-list] {
+  display: none;
+}
+
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  [data-event-feedback][data-state='filtered-empty'] {
+  display: block;
+}
+
+/*
+ * Keep the trailing no-JavaScript choices in view on narrow screens. The
+ * filter list itself remains left-to-right, so visual and keyboard order do
+ * not change; only the scroll container starts at its inline end.
+ */
+#filter-quiz:target ~ .program-filter-shell:not([data-program-filter-enhanced]) .category-filter,
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter {
+  direction: rtl;
+}
+
+#filter-quiz:target ~ .program-filter-shell:not([data-program-filter-enhanced]) .category-filter ul,
+#filter-standup:target
+  ~ .program-filter-shell:not([data-program-filter-enhanced])
+  .category-filter
+  ul {
+  direction: ltr;
+}
+
+@media (width >= 48rem) {
+  .program-main .category-filter {
+    overflow-x: visible;
+  }
+
+  .program-main .category-filter ul {
+    inline-size: auto;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+  }
+
+  .program-filter-controls {
+    margin-block-end: var(--space-7);
+  }
+}
+
+@media (width >= 64rem) {
+  .page-intro-inner {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    padding-block: var(--space-8);
+  }
+
+  .page-intro h1 {
+    grid-column: 1 / 5;
+  }
+
+  .page-intro p {
+    grid-column: 6 / 12;
+  }
+
+  .program-filter-controls,
+  .event-list {
+    inline-size: min(100%, var(--content-max));
+    margin-inline: auto;
+  }
+}
+
+@media (width >= 80rem) {
+  .program-content {
+    padding-block: var(--space-9);
+  }
+}
+
+@media (forced-colors: active) {
+  .page-intro,
+  .program-filter-shell:not([data-program-filter-enhanced])
+    .category-filter
+    a[data-filter-value='all'],
+  #filter-musikk:target
+    ~ .program-filter-shell:not([data-program-filter-enhanced])
+    .category-filter
+    a[data-filter-value='music'],
+  #filter-sport:target
+    ~ .program-filter-shell:not([data-program-filter-enhanced])
+    .category-filter
+    a[data-filter-value='sport'],
+  #filter-quiz:target
+    ~ .program-filter-shell:not([data-program-filter-enhanced])
+    .category-filter
+    a[data-filter-value='quiz'],
+  #filter-standup:target
+    ~ .program-filter-shell:not([data-program-filter-enhanced])
+    .category-filter
+    a[data-filter-value='standup'] {
+    color: CanvasText;
+    background: Canvas;
+    border-color: Highlight;
+  }
+}
