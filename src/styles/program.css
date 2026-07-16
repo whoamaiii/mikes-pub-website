@@ -333,13 +333,13 @@
   display: none;
 }
 
-#filter-standup:target
+.program-filter-target[data-filter-empty='true']:target
   ~ .program-filter-shell:not([data-program-filter-enhanced])
   [data-event-list] {
   display: none;
 }
 
-#filter-standup:target
+.program-filter-target[data-filter-empty='true']:target
   ~ .program-filter-shell:not([data-program-filter-enhanced])
   [data-event-feedback][data-state='filtered-empty'] {
   display: block;

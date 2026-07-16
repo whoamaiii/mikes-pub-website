@@ -26,7 +26,7 @@
     "test:e2e": "npm run test:e2e:infrastructure && npm run test:e2e:design-system",
     "test:e2e:infrastructure": "npm run build && playwright test",
     "test:e2e:design-system": "npm run build:design-system-preview && playwright test --config playwright.design-system.config.ts",
-    "test:e2e:program": "npm run build && playwright test program.spec.ts infrastructure.spec.ts --project=Chromium && npm run build:design-system-preview && playwright test --config playwright.design-system.config.ts accessibility.spec.ts --project=Chromium --grep \"full-empty and error EventList\"",
+    "test:e2e:program": "npm run build && playwright test program.spec.ts infrastructure.spec.ts --project=Chromium && npm run build:design-system-preview && playwright test --config playwright.design-system.config.ts accessibility.spec.ts --project=Chromium --grep \"full-empty and error EventList\" && playwright test --config playwright.design-system.config.ts program-filter.spec.ts --project=Chromium",
     "evidence:design-system": "npm run build:design-system-preview && WHO15_CAPTURE=1 playwright test --config playwright.design-system.config.ts evidence.spec.ts --project=Chromium",
     "evidence:mobile-navigation": "npm run build:design-system-preview && WHO17_CAPTURE=1 playwright test --config playwright.design-system.config.ts mobile-navigation.evidence.spec.ts --project=Chromium",
     "evidence:home": "npm run build && WHO18_CAPTURE=1 playwright test home.evidence.spec.ts --project=Chromium",

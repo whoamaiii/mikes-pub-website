@@ -1,4 +1,6 @@
 ---
+import { getImage } from 'astro:assets';
+
 import GamesPromo from '../components/home/GamesPromo.astro';
 import HomeHero from '../components/home/HomeHero.astro';
 import ProgramRail from '../components/home/ProgramRail.astro';
@@ -15,21 +17,74 @@ import {
   siteFooterNavigation,
   siteNavigation,
   venueLinks,
+  venueLocationLabels,
+  venueMapLabels,
   venueVisitInfo,
   verifiedSiteLocation,
 } from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
-const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.postalCode} ${verifiedSiteLocation.city}`;
+const heroSizes = '100vw';
+const [mobileHeroImage, desktopHeroImage] = await Promise.all([
+  getImage({
+    src: homeHero.image.mobile,
+    widths: [360, 540, 720, 900, 1080],
+    format: 'webp',
+    quality: 82,
+  }),
+  getImage({
+    src: homeHero.image.desktop,
+    widths: [1024, 1280, 1440, 1600, 1920],
+    format: 'webp',
+    quality: 82,
+  }),
+]);
+const responsiveHeroSources = {
+  mobile: {
+    src: mobileHeroImage.src,
+    srcset: mobileHeroImage.srcSet.attribute,
+    sizes: heroSizes,
+  },
+  desktop: {
+    src: desktopHeroImage.src,
+    srcset: desktopHeroImage.srcSet.attribute,
+    sizes: heroSizes,
+  },
+};
+const heroImagePresentation = {
+  alt: homeHero.image.alt,
+  focalPoint: homeHero.image.focalPoint,
+  rightsStatus: homeHero.image.rightsStatus,
+  mobile: {
+    width: Number(mobileHeroImage.attributes.width),
+    height: Number(mobileHeroImage.attributes.height),
+  },
+  desktop: {
+    width: Number(desktopHeroImage.attributes.width),
+    height: Number(desktopHeroImage.attributes.height),
+  },
+};
 ---
 
 <SiteLayout
-  title="Mike’s Pub i Sætre – privat designforslag"
+  title="Mike’s Pub i Sætre | privat designforslag"
   description="Privat designforslag for Mike’s Pub i Sætre, med besøksinformasjon og et program som bare viser bekreftede arrangementer."
   criticalImages={[
-    { href: homeHero.image.mobile.src, media: '(max-width: 63.999rem)' },
-    { href: homeHero.image.desktop.src, media: '(min-width: 64rem)' },
+    {
+      href: mobileHeroImage.src,
+      srcset: mobileHeroImage.srcSet.attribute,
+      sizes: heroSizes,
+      media: '(max-width: 63.999rem)',
+      type: 'image/webp',
+    },
+    {
+      href: desktopHeroImage.src,
+      srcset: desktopHeroImage.srcSet.attribute,
+      sizes: heroSizes,
+      media: '(min-width: 64rem)',
+      type: 'image/webp',
+    },
   ]}
 >
   <div class="home-site">
@@ -38,11 +93,20 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
       mainId={mainId}
       navigation={siteNavigation}
       mobileMenuId="home-mobile-menu"
-      menuAddress={menuAddress}
+      menuAddress={venueLocationLabels.inlineAddress}
     />
 
     <main id={mainId} class="home-main" tabindex="-1">
-      <HomeHero id="home-hero" {...homeHero} />
+      <HomeHero
+        id="home-hero"
+        title={homeHero.title}
+        eyebrow={homeHero.eyebrow}
+        intro={homeHero.intro}
+        location={homeHero.location}
+        action={homeHero.action}
+        image={heroImagePresentation}
+        responsiveSources={responsiveHeroSources}
+      />
 
       <VisitActions id="home-visit-actions" content={venueVisitInfo} />
 
@@ -54,7 +118,7 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
       >
         <p class="home-manifesto-kicker">På Mike’s</p>
         <p class="home-manifesto-statement">
-          Musikk på scenen. Fotball på skjermen. <em>Dart og shuffleboard</em> i lokalet.
+          Musikk og kultur. <em>Fotball, dart og shuffleboard</em> omtalt i offentlige kilder.
         </p>
         <p class="home-manifesto-note">
           Programmet publiseres først når datoer og detaljer er bekreftet.
@@ -65,9 +129,9 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
         <ProgramRail
           id="program"
           heading="Dette finner du på Mike’s"
-          intro="Musikk og fotball på Mike’s – med datoer når detaljene er bekreftet."
+          intro="Musikk og fotball på Mike’s. Datoer vises først når detaljene er bekreftet."
           items={homeProgramItems}
-          action={{ ...venueLinks.facebook, label: 'Se siste nytt på Facebook' }}
+          action={{ ...venueLinks.facebook, label: 'Åpne Facebook-oppføringen' }}
         />
 
         <div class="home-promos" id="venue" data-reveal>
@@ -76,7 +140,11 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
         </div>
 
         <div class="home-location" id="location" data-reveal>
-          <VenueMap id="home-location-map" location={verifiedSiteLocation} />
+          <VenueMap
+            id="home-location-map"
+            location={verifiedSiteLocation}
+            labels={venueMapLabels}
+          />
           <LocationPanel
             id="home-location"
             location={verifiedSiteLocation}

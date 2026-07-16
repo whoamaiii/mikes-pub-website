@@ -36,9 +36,10 @@ test('captures deterministic WHO-20 Program evidence', async ({ page }) => {
 
   await page.setViewportSize({ width: 375, height: 900 });
   await page.goto('/program');
-  const updateAction = page
-    .locator('.program-empty-shell')
-    .getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' });
+  const updateAction = page.locator('.program-empty-shell').getByRole('link', {
+    name: 'Åpne en offentlig Facebook-oppføring for Mike’s Pub. Siden er ikke bekreftet av eier',
+    exact: true,
+  });
   await updateAction.focus();
   await expect(updateAction).toBeFocused();
   await updateAction.evaluate((element) => {

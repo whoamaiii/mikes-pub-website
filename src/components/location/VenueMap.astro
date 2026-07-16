@@ -4,9 +4,15 @@ import type { VenueLocation } from '../../types/design-system';
 interface Props {
   id: string;
   location: VenueLocation;
+  labels: {
+    primaryRoad: string;
+    secondaryRoad: string;
+    hillsideRoad: string;
+    water: string;
+  };
 }
 
-const { id, location } = Astro.props;
+const { id, location, labels } = Astro.props;
 const mapLabel = location.name.toLocaleUpperCase('nb-NO');
 ---
 
@@ -74,19 +80,19 @@ const mapLabel = location.name.toLocaleUpperCase('nb-NO');
     </g>
 
     <text x="155" y="123" class="venue-map-road-label" transform="rotate(38 155 123)">
-      Nordre Sætrevei
+      {labels.primaryRoad}
     </text>
     <text x="637" y="501" class="venue-map-road-label" transform="rotate(32 637 501)">
-      Søndre Sætrevei
+      {labels.secondaryRoad}
     </text>
     <text x="369" y="608" class="venue-map-road-label" transform="rotate(-55 369 608)">
-      Sætrebakken
+      {labels.hillsideRoad}
     </text>
     <text x="520" y="341" class="venue-map-venue-label">
       {mapLabel}
     </text>
     <text x="835" y="210" class="venue-map-water-label" transform="rotate(90 835 210)">
-      Sætrepollen
+      {labels.water}
     </text>
   </svg>
 

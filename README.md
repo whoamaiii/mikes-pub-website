@@ -7,9 +7,11 @@ system for the Mike's Pub website project in Sætre, Norway. Other product route
 
 - Static-first Astro project with strict TypeScript, native components and plain external CSS.
 - WHO-18 provides the first approved responsive product route at `/` with verified concept content.
-- WHO-20 provides the date-neutral private-demo Program route at `/program` with shareable filters.
+- WHO-20 provides an honest Program route at `/program`. Filters appear only when at least one
+  verified event exists; the current production state publishes no placeholder events.
 - WHO-15 components and tokens are available through an isolated local-only preview build.
-- No server runtime, CMS, database, authentication, analytics, forms, maps or embeds.
+- No server runtime, CMS, database, authentication, analytics, forms, third-party maps or embeds.
+  Home uses a code-native locator diagram paired with an explicit Google Maps directions link.
 - The repository is currently public by Q's explicit decision. Do not add secrets, private sales
   material, client credentials, protected deployment configuration or unapproved assets.
 - Repository visibility must be reviewed before private demo content or protected deployment
@@ -78,6 +80,10 @@ tests/design-system-preview/  Isolated, non-production component preview
 tests/unit/              Repository and design-system policy tests
 tests/e2e/               Production and isolated-preview browser tests
 ```
+
+The Home build uses Astro's local image pipeline to generate responsive WebP widths from the two
+approved art-directed derivatives. The source crops, alternative text and focal points remain
+unchanged; viewport-matched preload metadata reuses the same generated source sets.
 
 All product routes beyond Home and Program remain deferred to their dedicated Linear issues.
 

@@ -2,6 +2,14 @@ import type { ConceptEventRow, EventCategory, EventRowData, LinkTarget } from '.
 
 export type ProgramFilterValue = 'all' | Exclude<EventCategory, 'special'>;
 
+type PublishedProgramEntry<T extends EventRowData> = T extends ConceptEventRow
+  ? never
+  : Omit<T, 'category'> & {
+      category: Exclude<ProgramFilterValue, 'all'>;
+    };
+
+export type ProgramPublishedEntry = PublishedProgramEntry<EventRowData>;
+
 export type ProgramConceptEntry = Omit<
   ConceptEventRow,
   'action' | 'category' | 'categoryLabel' | 'description' | 'image'
@@ -34,6 +42,14 @@ export type ProgramEventListState =
       kind: 'error';
       error: ProgramEventFeedback;
     };
+
+export type ProgramPublishedEventListState =
+  | {
+      kind: 'ready';
+      events: readonly ProgramPublishedEntry[];
+      filteredEmpty: ProgramEventFeedback;
+    }
+  | Exclude<ProgramEventListState, { kind: 'ready' }>;
 
 export type ProgramFilterDefinition = {
   value: ProgramFilterValue;

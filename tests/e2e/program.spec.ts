@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const programPath = '/program';
-const conceptDisclosure = 'Privat designforslag – ikke den offisielle nettsiden til Mike’s Pub.';
+const conceptDisclosure = 'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.';
 
 test('renders an honest Program page without placeholder events or dead filters', async ({
   page,
@@ -10,7 +10,19 @@ test('renders an honest Program page without placeholder events or dead filters'
   const response = await page.goto(programPath);
 
   expect(response?.status()).toBe(200);
-  await expect(page).toHaveTitle('Program | Mike’s Pub – privat designforslag');
+  expect(await response?.text()).not.toContain('data-program-filter-enhanced');
+  const scriptPayloads = await page.locator('script').evaluateAll(async (scripts) =>
+    Promise.all(
+      scripts.map(async (script) => {
+        const scriptElement = script as HTMLScriptElement;
+        return scriptElement.src
+          ? await fetch(scriptElement.src).then((result) => result.text())
+          : scriptElement.textContent;
+      }),
+    ),
+  );
+  expect(scriptPayloads.join('\n')).not.toContain('data-program-filter-enhanced');
+  await expect(page).toHaveTitle('Program | Mike’s Pub | privat designforslag');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('main')).toHaveCount(1);
   await expect(page.getByRole('contentinfo')).toHaveCount(1);
@@ -29,8 +41,8 @@ test('renders an honest Program page without placeholder events or dead filters'
   await expect(page.locator('time, .program-main img')).toHaveCount(0);
 
   await expect(
-    page.getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }),
-  ).toHaveCount(2);
+    page.locator('.program-empty-shell a[href="https://www.facebook.com/mikespub.saetre/"]'),
+  ).toHaveAttribute('data-external', 'true');
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(2);
@@ -90,6 +102,31 @@ test('moves keyboard focus from the skip link to Program content', async ({
   await expect(skipLink).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('main')).toBeFocused();
+});
+
+test('shows a contrasting focus ring on the light location action', async ({ page }) => {
+  await page.goto(programPath);
+
+  const directions = page.locator('.program-location .action-link');
+  await directions.focus();
+  await expect(directions).toBeFocused();
+
+  const focusIndicator = await directions.evaluate((element) => {
+    const linkStyle = getComputedStyle(element);
+    const panel = element.closest('.location-panel');
+    if (!panel) throw new Error('Expected the directions link inside a location panel.');
+
+    return {
+      outlineColor: linkStyle.outlineColor,
+      outlineStyle: linkStyle.outlineStyle,
+      outlineWidth: Number.parseFloat(linkStyle.outlineWidth),
+      panelColor: getComputedStyle(panel).backgroundColor,
+    };
+  });
+
+  expect(focusIndicator.outlineStyle).toBe('solid');
+  expect(focusIndicator.outlineWidth).toBeGreaterThanOrEqual(2);
+  expect(focusIndicator.outlineColor).not.toBe(focusIndicator.panelColor);
 });
 
 test('links the accepted Home navigation to Program', async ({ page }) => {

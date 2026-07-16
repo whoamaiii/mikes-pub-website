@@ -46,7 +46,7 @@ export const previewEvents: EventRowData[] = [
     description: 'Eksplisitt ikke-faktisk testoppføring for komponentkontroll.',
     status: 'scheduled',
     dateTime: '2000-01-01T12:00:00+01:00',
-    dateLabel: 'Eksempeltid – ikke fakta',
+    dateLabel: 'Eksempeltid: ikke fakta',
     action: previewAction,
   },
   {
@@ -69,7 +69,7 @@ export const previewEvents: EventRowData[] = [
     description: 'Tilstanden kommuniseres med tekst, ikon og struktur.',
     status: 'cancelled',
     dateTime: '2000-01-01T12:00:00+01:00',
-    dateLabel: 'Eksempeltid – ikke fakta',
+    dateLabel: 'Eksempeltid: ikke fakta',
   },
   {
     id: 'preview-expired',
@@ -78,14 +78,14 @@ export const previewEvents: EventRowData[] = [
     title: 'Utløpt tilstand',
     status: 'expired',
     dateTime: '2000-01-01T12:00:00+01:00',
-    dateLabel: 'Eksempeltid – ikke fakta',
+    dateLabel: 'Eksempeltid: ikke fakta',
   },
 ];
 
 export const previewEmptyEventListState: ProgramEventListState = {
   kind: 'empty',
   empty: {
-    heading: 'Tom programliste – testtilstand',
+    heading: 'Tom programliste: testtilstand',
     message: 'Ingen oppføringer finnes i denne isolerte komponent-fixturen.',
     action: { href: '#preview-filters', label: 'Vis filtereksempel' },
   },
@@ -94,7 +94,7 @@ export const previewEmptyEventListState: ProgramEventListState = {
 export const previewErrorEventListState: ProgramEventListState = {
   kind: 'error',
   error: {
-    heading: 'Programfeil – testtilstand',
+    heading: 'Programfeil: testtilstand',
     message: 'Dette er en isolert feilmelding, ikke en virkelig driftsstatus.',
     action: { href: '#preview-action-target', label: 'Prøv eksempelhandling' },
   },

@@ -1,8 +1,8 @@
 ---
 import EventList from '../components/events/EventList.astro';
-import CategoryFilter from '../components/filters/CategoryFilter.astro';
 import LocationPanel from '../components/location/LocationPanel.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
+import ProgramDirectory from '../components/program/ProgramDirectory.astro';
 import PageIntro from '../components/program/PageIntro.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
@@ -22,22 +22,24 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
 const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.postalCode} ${verifiedSiteLocation.city}`;
-const hasPublishedEvents =
-  programEventListState.kind === 'ready' && programEventListState.events.length > 0;
+const publishedProgramState =
+  programEventListState.kind === 'ready' && programEventListState.events.length > 0
+    ? programEventListState
+    : undefined;
 const programPageEventListState =
   programEventListState.kind === 'empty'
     ? {
         ...programEventListState,
         empty: {
           ...programEventListState.empty,
-          action: { ...venueLinks.facebook, label: 'Se siste nytt på Facebook' },
+          action: venueLinks.facebook,
         },
       }
     : programEventListState;
 ---
 
 <SiteLayout
-  title="Program | Mike’s Pub – privat designforslag"
+  title="Program | Mike’s Pub | privat designforslag"
   description="Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises."
 >
   <ConceptBanner />
@@ -54,37 +56,13 @@ const programPageEventListState =
 
     <div class="program-content ds-container">
       {
-        hasPublishedEvents ? (
-          <section class="program-directory" data-program-filter aria-label="Programoversikt">
-            {programFilterDefinitions.map((filter) => (
-              <span
-                id={filter.targetId}
-                class="program-filter-target"
-                data-filter-target={filter.value}
-                aria-hidden="true"
-              />
-            ))}
-
-            <div class="program-filter-shell" data-program-filter-shell>
-              <div class="program-filter-controls">
-                <div class="program-filter-group">
-                  <p class="program-filter-label">Filtrer program</p>
-                  <CategoryFilter categories={programCategories} />
-                </div>
-                <p class="program-filter-summary" data-program-filter-summary aria-live="polite">
-                  {programFilterDefinitions.map((filter) => (
-                    <span data-filter-summary-value={filter.value}>{filter.summary}</span>
-                  ))}
-                </p>
-              </div>
-
-              <EventList
-                id="program-events"
-                heading="Bekreftet program"
-                state={programEventListState}
-              />
-            </div>
-          </section>
+        publishedProgramState ? (
+          <ProgramDirectory
+            categories={programCategories}
+            filters={programFilterDefinitions}
+            heading="Bekreftet program"
+            state={publishedProgramState}
+          />
         ) : (
           <div class="program-empty-shell">
             <EventList
@@ -108,17 +86,3 @@ const programPageEventListState =
 
   <SiteFooter navigation={siteFooterNavigation} location={verifiedSiteLocation} />
 </SiteLayout>
-
-<script>
-  import { initializeProgramFilters } from '../scripts/program-filter';
-
-  const initialize = () => initializeProgramFilters();
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize, { once: true });
-  } else {
-    initialize();
-  }
-
-  window.addEventListener('pageshow', initialize);
-</script>

@@ -37,15 +37,15 @@ scripts and direct package entry, then regenerate the lockfile and rerun all rem
 
 ## Self-hosted font assets
 
-WHO-15 adds no package dependency. It self-hosts six WOFF2 files from approved immutable upstream
-commits so typography works without a third-party request. The fonts remain under SIL Open Font
-License 1.1; the application remains proprietary and `UNLICENSED`.
+The project adds no runtime font dependency. It self-hosts six WOFF2 files plus one TTF so typography
+works without a third-party request. The fonts remain under SIL Open Font License 1.1; the
+application remains proprietary and `UNLICENSED`.
 
-| Family           | Version and commit                                   | Files                               | Licence                                 | Runtime/security impact                                                        | Removal path                                                                              |
-| ---------------- | ---------------------------------------------------- | ----------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Barlow Condensed | `1.422`, `697600fcece1685b0ba409eb82868546def9a84e`  | Medium 500, SemiBold 600, Bold 700  | `LICENSES/barlow-condensed-OFL-1.1.txt` | Static local WOFF2 retained for traceability; not active in Midnight Brass CSS | Delete three files and licence when the old design direction no longer needs traceability |
-| Source Sans 3    | `3.052R`, `ed1808970eb3c7301c9a523bee26473ba0bb62fa` | Regular 400, Semibold 600, Bold 700 | `LICENSES/source-sans-3-OFL-1.1.md`     | Static local WOFF2 only; no script or network request; SHA-256 policy enforced | Delete three files, licence and matching `@font-face` rules; body fallback remains        |
-| UnifrakturCook   | Google Fonts specimen, local pinned bytes            | Bold 700                            | `public/fonts/unifraktur-cook/OFL.txt`  | Static local TTF only; no script or network request; SHA-256 policy enforced   | Delete the TTF, licence and matching `@font-face`; serif fallback remains                 |
+| Family           | Version and commit                                   | Files                               | Licence                                 | Runtime/security impact                                                               | Removal path                                                                       |
+| ---------------- | ---------------------------------------------------- | ----------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Barlow Condensed | `1.422`, `697600fcece1685b0ba409eb82868546def9a84e`  | Medium 500, SemiBold 600, Bold 700  | `LICENSES/barlow-condensed-OFL-1.1.txt` | SemiBold and Bold are active local heading faces; Medium is retained for traceability | Replace the heading token and face rules, then delete the three files and licence  |
+| Source Sans 3    | `3.052R`, `ed1808970eb3c7301c9a523bee26473ba0bb62fa` | Regular 400, Semibold 600, Bold 700 | `LICENSES/source-sans-3-OFL-1.1.md`     | Static local WOFF2 only; no script or network request; SHA-256 policy enforced        | Delete three files, licence and matching `@font-face` rules; body fallback remains |
+| UnifrakturCook   | Google Fonts specimen, local pinned bytes            | Bold 700                            | `public/fonts/unifraktur-cook/OFL.txt`  | Static local TTF only; no script or network request; SHA-256 policy enforced          | Delete the TTF, licence and matching `@font-face`; serif fallback remains          |
 
 Exact upstream paths, copyrights and SHA-256 hashes are recorded in
 [`docs/design-system.md`](design-system.md). The small SVG icon subset is original repository code,

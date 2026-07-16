@@ -1,0 +1,77 @@
+---
+import '../../../src/styles/global.css';
+
+import ProgramDirectory from '../../../src/components/program/ProgramDirectory.astro';
+import {
+  programCategories,
+  programFilterDefinitions,
+  resolveProgramEventListState,
+  validatePublishedProgramEntries,
+} from '../../../src/data/program';
+
+const syntheticEntries = validatePublishedProgramEntries([
+  {
+    id: 'fixture-music',
+    category: 'music',
+    categoryLabel: 'Musikk',
+    title: 'Musikkfixture',
+    description: 'Isolert syntetisk testdata: ikke et virkelig arrangement.',
+    status: 'scheduled',
+    dateTime: '2000-01-01T12:00:00+01:00',
+    dateLabel: 'Eksempeltid: ikke fakta',
+  },
+  {
+    id: 'fixture-sport',
+    category: 'sport',
+    categoryLabel: 'Sport',
+    title: 'Sportfixture',
+    description: 'Isolert syntetisk testdata: ikke et virkelig arrangement.',
+    status: 'postponed',
+    previousDateTime: '2000-01-01T12:00:00+01:00',
+    previousDateLabel: 'Tidligere eksempeltid',
+    replacementDateTime: '2000-01-02T12:00:00+01:00',
+    replacementDateLabel: 'Ny eksempeltid',
+  },
+  {
+    id: 'fixture-music-second',
+    category: 'music',
+    categoryLabel: 'Musikk',
+    title: 'Musikkfixture nummer to',
+    description: 'Isolert syntetisk testdata: ikke et virkelig arrangement.',
+    status: 'cancelled',
+    dateTime: '2000-01-01T12:00:00+01:00',
+    dateLabel: 'Eksempeltid: ikke fakta',
+  },
+]);
+const syntheticState = resolveProgramEventListState(syntheticEntries);
+
+if (syntheticState.kind !== 'ready') {
+  throw new TypeError('The isolated Program fixture requires publishable synthetic entries.');
+}
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Programfilter | isolert testfixture</title>
+  </head>
+  <body>
+    <main id="main-content" class="program-main" tabindex="-1">
+      <div class="program-content ds-container">
+        <h1>Programfilter: isolert testfixture</h1>
+        <p data-program-fixture-disclosure>
+          Syntetiske testoppføringer: ikke arrangementer eller publiserbare fakta.
+        </p>
+        <ProgramDirectory
+          categories={programCategories}
+          filters={programFilterDefinitions}
+          heading="Syntetiske programoppføringer"
+          state={syntheticState}
+        />
+      </div>
+    </main>
+  </body>
+</html>

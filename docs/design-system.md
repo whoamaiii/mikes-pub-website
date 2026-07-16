@@ -80,9 +80,9 @@ Q-authorized exterior image from the current direction:
   in the hero. Barlow Condensed carries editorial headings; navigation, controls, filters and body
   copy use Source Sans 3.
 - Home activities and Program events are open editorial rows with brass rules. Home activity rows
-  are intentionally non-interactive: one clearly labelled Facebook action carries current updates,
-  while the primary hero action continues the on-page story instead of promising an empty Program.
-  There are no soft cards, pill stacks, rounded badges or generic decorative panels.
+  are intentionally non-interactive: one explicitly unconfirmed Facebook action points to the
+  public listing, while the primary hero action continues the on-page story instead of promising an
+  empty Program. There are no soft cards, pill stacks, rounded badges or generic decorative panels.
 - The visit actions sit directly after the hero as a compact ledger. They become full-width rows on
   narrow screens and retain 44px or larger interaction targets.
 - Program preserves the filter and event-list behavior for future verified entries, including the
@@ -98,8 +98,8 @@ Q-authorized exterior image from the current direction:
   keeping the venue mood without turning the page into a novelty theme.
 - Motion is limited to a one-time content entrance. There is no continuous image breathing, marquee
   or ornamental line loop; reduced-motion users receive the same layout without animation.
-- The layout preloads the local display face and the viewport-matched hero crop documented in
-  `docs/assets/home-assets.md`.
+- The layout preloads the critical local display and heading faces plus the viewport-matched hero
+  source set documented in `docs/assets/home-assets.md`.
 
 The local ImageGen mockups under `output/imagegen/mikes-pub-midnight-brass/` are implementation
 references only. They are not shipped, imported or treated as licensed production assets; verified
@@ -173,8 +173,9 @@ repository's proprietary `UNLICENSED` application code.
 
 ### UnifrakturCook
 
-- Copyright: 2011 Peter Wiegel
-- Source: <https://fonts.google.com/specimen/UnifrakturCook>
+- Copyright: 2010 j. ‘mach’ wust, with Reserved Font Name UnifrakturCook; 2009 Peter Wiegel
+- Pinned commit: `fa02673f3b360ca4b9a8ba4f6d5a4aeb59eecd32`
+- Source: <https://github.com/google/fonts/tree/fa02673f3b360ca4b9a8ba4f6d5a4aeb59eecd32/ofl/unifrakturcook>
 - Licence: `public/fonts/unifraktur-cook/OFL.txt`
 
 | Local path                                             | SHA-256                                                            |

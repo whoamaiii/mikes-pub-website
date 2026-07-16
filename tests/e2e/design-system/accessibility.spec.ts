@@ -17,7 +17,7 @@ test('renders full-empty and error EventList states with explicit semantics', as
   await expect(empty.locator('[data-event-list] li')).toHaveCount(0);
   await expect(empty.locator('[data-event-feedback][data-state="empty"]')).toHaveCount(1);
   await expect(
-    empty.getByRole('heading', { name: 'Tom programliste – testtilstand' }),
+    empty.getByRole('heading', { name: 'Tom programliste: testtilstand' }),
   ).toBeVisible();
   await expect(empty.getByRole('link', { name: 'Vis filtereksempel' })).toBeVisible();
   await expect(empty.getByRole('alert')).toHaveCount(0);
@@ -27,7 +27,7 @@ test('renders full-empty and error EventList states with explicit semantics', as
   await expect(error.locator('[data-event-list] li')).toHaveCount(0);
   await expect(error.locator('[data-event-feedback][data-state="error"]')).toHaveCount(1);
   await expect(error.getByRole('alert')).toHaveCount(1);
-  await expect(error.getByRole('heading', { name: 'Programfeil – testtilstand' })).toBeVisible();
+  await expect(error.getByRole('heading', { name: 'Programfeil: testtilstand' })).toBeVisible();
   await expect(error.getByRole('link', { name: 'Prøv eksempelhandling' })).toBeVisible();
 });
 

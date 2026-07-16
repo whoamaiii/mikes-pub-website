@@ -1,12 +1,13 @@
 import exteriorDesktop from '../assets/images/mikes-pub-exterior-desktop.webp';
 import exteriorMobile from '../assets/images/mikes-pub-exterior-mobile.webp';
 import type { HomeHeroContent, HomeProgramItems, HomePromoContent } from '../types/home';
+import { venueLocationLabels } from './site';
 
 export const homeHero: HomeHeroContent = {
   title: 'Mike’s Pub',
-  eyebrow: 'Nordre Sætrevei · Sætre',
-  intro: 'Musikk, fotball, dart og shuffleboard i Sætre.',
-  location: 'Nordre Sætrevei 2, 3475 Sætre',
+  eyebrow: venueLocationLabels.eyebrow,
+  intro: 'Musikk og kultur i Sætre, med fotball, dart og shuffleboard omtalt i offentlige kilder.',
+  location: venueLocationLabels.inlineAddress,
   action: { href: '#about', label: 'Oppdag Mike’s' },
   image: {
     desktop: exteriorDesktop,
@@ -38,5 +39,5 @@ export const homeProgramItems = [
 export const sportPromo: HomePromoContent = {
   kicker: 'På skjerm',
   heading: 'Sport på storskjerm',
-  text: 'Fotballvisninger publiseres når kamp og tidspunkt er bekreftet. Se Facebook for siste oppdatering.',
+  text: 'Fotballvisninger publiseres her først når kamp og tidspunkt er bekreftet.',
 };

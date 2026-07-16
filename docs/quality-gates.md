@@ -97,9 +97,19 @@ real-device review.
 Stylelint covers external `src/**/*.css` files. WHO-15 keeps all production component styling in that
 external CSS boundary; it introduces no component-scoped `<style>` blocks.
 
-WHO-14 builds zero pages, so a numeric product performance budget would be untestable and invented.
-The accepted ADR requirement remains an explicit open decision for WHO-32/WHO-19, when approved UI
-assets, CSS and client-JavaScript behavior exist to measure.
+## Production UI performance budget
+
+The WHO-19 integrated UI enforces these uncompressed production-asset ceilings in the Home browser
+test: 24 KiB for Home HTML, 48 KiB total for every production stylesheet, 8 KiB total for every
+external client script, 500 KiB total for all locally declared font files and 320 KiB for the
+responsive hero candidate selected by the browser. The hero preload `media`, `imagesizes` and
+`imagesrcset` values must exactly match the rendered `<picture>` sources so the preload cannot
+trigger a redundant image download.
+
+These deterministic artifact checks protect the proof of concept before hosting exists. The launch
+performance target is an LCP at or below 2.5 seconds at the 75th percentile on mobile; it must be
+measured from the eventual production host before deployment because a localhost timing is not
+representative of real users.
 
 ## Hosted gate
 

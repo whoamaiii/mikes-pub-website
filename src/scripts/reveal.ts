@@ -33,4 +33,6 @@ export function initializeReveals(scope: ParentNode = document): void {
     initialized.add(element);
     observer.observe(element);
   }
+
+  document.documentElement.dataset.revealEnhanced = 'true';
 }

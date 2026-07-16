@@ -11,7 +11,7 @@ test('renders semantic components and explicit states', async ({ page }) => {
   );
   const conceptBanner = page.getByRole('complementary', { name: 'Konseptstatus' });
   await expect(conceptBanner).toHaveText(
-    'Privat designforslag – ikke den offisielle nettsiden til Mike’s Pub.',
+    'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.',
   );
   await expect(conceptBanner.locator('button, [role="button"]')).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Mike’s Pub - forside' }).first()).toBeAttached();

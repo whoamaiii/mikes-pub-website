@@ -7,6 +7,9 @@ interface Props {
   criticalImages?: ReadonlyArray<{
     href: string;
     media: string;
+    srcset?: string;
+    sizes?: string;
+    type?: string;
   }>;
 }
 
@@ -31,8 +34,10 @@ const { title, description, criticalImages = [] } = Astro.props;
           rel="preload"
           href={image.href}
           as="image"
-          type="image/webp"
+          type={image.type ?? 'image/webp'}
           media={image.media}
+          imagesrcset={image.srcset}
+          imagesizes={image.sizes}
           fetchpriority="high"
         />
       ))
@@ -42,27 +47,6 @@ const { title, description, criticalImages = [] } = Astro.props;
       href="/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf"
       as="font"
       type="font/ttf"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/source-sans-3/SourceSans3-Regular.ttf.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/source-sans-3/SourceSans3-Semibold.ttf.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/barlow-condensed/BarlowCondensed-SemiBold.woff2"
-      as="font"
-      type="font/woff2"
       crossorigin
     />
     <link

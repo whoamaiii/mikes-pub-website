@@ -1,0 +1,64 @@
+---
+import type { CategoryFilterItem } from '../../types/design-system';
+import type { ProgramFilterDefinition, ProgramPublishedEventListState } from '../../types/program';
+import EventList from '../events/EventList.astro';
+import CategoryFilter from '../filters/CategoryFilter.astro';
+
+interface Props {
+  categories: readonly CategoryFilterItem[];
+  filters: readonly ProgramFilterDefinition[];
+  heading: string;
+  state: Extract<ProgramPublishedEventListState, { kind: 'ready' }>;
+}
+
+const { categories, filters, heading, state } = Astro.props;
+const populatedCategories = new Set(state.events.map((event) => event.category));
+---
+
+<section class="program-directory" data-program-filter aria-label="Programoversikt">
+  {
+    filters.map((filter) => (
+      <span
+        id={filter.targetId}
+        class="program-filter-target"
+        data-filter-target={filter.value}
+        data-filter-empty={
+          filter.value !== 'all' && !populatedCategories.has(filter.value) ? 'true' : undefined
+        }
+        aria-hidden="true"
+      />
+    ))
+  }
+
+  <div class="program-filter-shell" data-program-filter-shell>
+    <div class="program-filter-controls">
+      <div class="program-filter-group">
+        <p class="program-filter-label">Filtrer program</p>
+        <CategoryFilter categories={categories} />
+      </div>
+      <p class="program-filter-summary" data-program-filter-summary aria-live="polite">
+        {
+          filters.map((filter) => (
+            <span data-filter-summary-value={filter.value}>{filter.summary}</span>
+          ))
+        }
+      </p>
+    </div>
+
+    <EventList id="program-events" heading={heading} state={state} />
+  </div>
+</section>
+
+<script>
+  import { initializeProgramFilters } from '../../scripts/program-filter';
+
+  const initialize = () => initializeProgramFilters();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else {
+    initialize();
+  }
+
+  window.addEventListener('pageshow', initialize);
+</script>

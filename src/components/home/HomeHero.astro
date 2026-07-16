@@ -2,11 +2,28 @@
 import type { HomeHeroContent } from '../../types/home';
 import ActionLink from '../ui/ActionLink.astro';
 
-interface Props extends HomeHeroContent {
+interface Props extends Omit<HomeHeroContent, 'image'> {
   id: string;
+  image: {
+    alt: HomeHeroContent['image']['alt'];
+    focalPoint: HomeHeroContent['image']['focalPoint'];
+    rightsStatus: HomeHeroContent['image']['rightsStatus'];
+    mobile: Pick<HomeHeroContent['image']['mobile'], 'width' | 'height'>;
+    desktop: Pick<HomeHeroContent['image']['desktop'], 'width' | 'height'>;
+  };
+  responsiveSources: {
+    mobile: ResponsiveSource;
+    desktop: ResponsiveSource;
+  };
 }
 
-const { id, title, eyebrow, intro, location, action, image } = Astro.props;
+interface ResponsiveSource {
+  src: string;
+  srcset: string;
+  sizes: string;
+}
+
+const { id, title, eyebrow, intro, location, action, image, responsiveSources } = Astro.props;
 const [venueFirstName = title, venueSecondName = ''] = title.trim().split(/\s+/, 2);
 ---
 
@@ -39,13 +56,16 @@ const [venueFirstName = title, venueSecondName = ''] = title.trim().split(/\s+/,
       <picture>
         <source
           media="(min-width: 64rem)"
-          srcset={image.desktop.src}
+          srcset={responsiveSources.desktop.srcset}
+          sizes={responsiveSources.desktop.sizes}
           width={image.desktop.width}
           height={image.desktop.height}
           type="image/webp"
         />
         <img
-          src={image.mobile.src}
+          src={responsiveSources.mobile.src}
+          srcset={responsiveSources.mobile.srcset}
+          sizes={responsiveSources.mobile.sizes}
           width={image.mobile.width}
           height={image.mobile.height}
           alt={image.alt}

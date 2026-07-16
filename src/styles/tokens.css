@@ -52,6 +52,7 @@
   --color-charcoal: #171916;
   --color-brass: #c99045;
   --color-brass-bright: #dda95e;
+  --color-brass-deep: #8f5c24;
   --color-bone: #f2ebdc;
   --color-muted: #ada69a;
   --color-error: #ff9c8c;
@@ -67,6 +68,7 @@
   --text-primary: var(--color-bone);
   --text-secondary: var(--color-muted);
   --text-accent: var(--color-brass-bright);
+  --text-accent-on-paper: var(--color-brass-deep);
   --text-on-accent: var(--color-ink);
   --text-on-paper: var(--color-soot);
   --text-on-paper-muted: rgb(17 19 17 / 64%);

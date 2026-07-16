@@ -694,6 +694,10 @@
   box-shadow: var(--shadow-cut);
 }
 
+.location-panel:not(.location-panel-dark) {
+  --focus-ring: var(--focus-ring-on-light);
+}
+
 .location-panel-kicker,
 .location-panel-coordinate,
 .site-footer-label {

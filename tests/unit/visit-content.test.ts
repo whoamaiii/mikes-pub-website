@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import { venueLinks, venueVisitInfo, verifiedSiteLocation } from '../../src/data/site';
+import {
+  venueLinks,
+  venueLocationLabels,
+  venueMapLabels,
+  venueVisitInfo,
+  verifiedSiteLocation,
+} from '../../src/data/site';
 
 describe('visit content policy', () => {
   test('keeps the verified address and public contact actions centralized', () => {
@@ -17,12 +23,15 @@ describe('visit content policy', () => {
     ]);
     expect(venueLinks.phone.href).toBe('tel:+4791855855');
     expect(venueLinks.phone.detail).toBe('918 55 855');
+    expect(venueLinks.directions.detail).toBe(verifiedSiteLocation.street);
+    expect(venueLocationLabels.inlineAddress).toBe('Nordre Sætrevei 2, 3475 Sætre');
+    expect(venueMapLabels.primaryRoad).toBe(venueLocationLabels.streetName);
   });
 
   test('keeps unconfirmed hours honest and free of invented schedules', () => {
     expect(venueVisitInfo.hours.verificationStatus).toBe('awaiting-owner-confirmation');
     expect(venueVisitInfo.hours.value).toBe('Ikke bekreftet');
-    expect(venueVisitInfo.hours.note).toContain('Facebook');
+    expect(venueVisitInfo.hours.note).toContain('Ring puben');
 
     const content = JSON.stringify(venueVisitInfo);
     expect(content).not.toMatch(/\b(?:mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)\b/i);
@@ -33,5 +42,7 @@ describe('visit content policy', () => {
     expect(venueLinks.directions.verificationStatus).toBe('verified-public-source');
     expect(venueLinks.phone.verificationStatus).toBe('verified-public-source');
     expect(venueLinks.facebook.verificationStatus).toBe('awaiting-owner-confirmation');
+    expect(venueLinks.facebook.detail).toBe('Ikke bekreftet av eier');
+    expect(venueLinks.facebook.accessibleLabel).toContain('ikke bekreftet av eier');
   });
 });

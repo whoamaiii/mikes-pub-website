@@ -100,17 +100,17 @@ a:hover {
   background: var(--surface-accent);
 }
 
-[data-reveal] {
+html[data-reveal-enhanced='true'] [data-reveal] {
   opacity: 0;
   transform: translateY(1.75rem);
+}
+
+html[data-reveal-enhanced='true'] [data-reveal][data-reveal-visible='true'] {
+  opacity: 1;
+  transform: translateY(0);
   transition:
     opacity var(--duration-slow) var(--ease-out),
     transform var(--duration-slow) var(--ease-out);
-}
-
-[data-reveal][data-reveal-visible='true'] {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -127,7 +127,8 @@ a:hover {
     transition-duration: 0.01ms !important;
   }
 
-  [data-reveal] {
+  [data-reveal],
+  html[data-reveal-enhanced='true'] [data-reveal] {
     opacity: 1;
     transform: none;
   }

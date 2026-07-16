@@ -2,7 +2,9 @@
 
 Last reviewed: 2026-07-15
 
-This file records the public sources used by the private Mike's Pub concept demo. Public listings are not a substitute for owner approval before an official launch.
+This file records the public sources used by the private Mike's Pub design proposal. Public listings
+support carefully qualified concept copy; they are not a substitute for owner approval or current
+operational information.
 
 ## Verified location
 
@@ -23,22 +25,30 @@ This file records the public sources used by the private Mike's Pub concept demo
 ## Facebook
 
 - Content: https://www.facebook.com/mikespub.saetre/
-- Status: likely owner-managed page based on indexed public results
+- Status: public page located; ownership and current editorial control are not confirmed
 - Production action: owner confirmation is required before an official launch
+- UX rule: label the destination as an unconfirmed public listing. Do not present it as the
+  authoritative source for current updates, opening hours or event details.
 
 ## Opening hours
 
 - Content: no fixed weekly opening hours are shown in the demo
 - Status: not verified
-- UX rule: direct visitors to the latest Facebook update without inventing days or times
+- UX rule: state that hours are unconfirmed without inventing days, times or an authoritative
+  external source
+- Production action: obtain current hours directly from the owner
 
 ## Program and activities
 
-- Confirmed direction: music and cultural events are included in the registered business purpose
+- Source-supported direction: music and cultural events are included in the registered business
+  purpose. This supports the category label `Musikk og kultur`, not a claim that a performance is
+  scheduled or currently taking place.
 - Source: https://www.proff.no/selskap/mike%E2%80%99s-pub-as/s%C3%A6tre/barer-og-puber/IFHAVJW01X8
-- Confirmed activity: dart and shuffleboard are named in the indexed Facebook description
-- Confirmed sport context: Mike's Pub appears on Allente's public 2026 World Cup viewing list
+- Public-listing activity: dart and shuffleboard are named in an indexed Facebook description;
+  owner confirmation remains required for production wording
+- Time-limited sport context: Mike's Pub appears on Allente's public 2026 World Cup viewing list
 - Source: https://www.allente.no/sport/fotball/vm/offentlig-visning-vm/
 - Demo copy rule: keep the visible sport wording date-neutral so a time-limited tournament listing
   does not become stale sales-demo copy
-- Program rule: no performer, date, time, price or availability may be presented as real until confirmed
+- Program rule: no filter controls appear until at least one verified event exists. No performer,
+  date, time, price or availability may be presented as real until confirmed.
