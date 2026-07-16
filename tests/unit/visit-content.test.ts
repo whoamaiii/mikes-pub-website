@@ -30,7 +30,7 @@ describe('visit content policy', () => {
 
   test('keeps unconfirmed hours honest and free of invented schedules', () => {
     expect(venueVisitInfo.hours.verificationStatus).toBe('awaiting-owner-confirmation');
-    expect(venueVisitInfo.hours.value).toBe('Ikke bekreftet');
+    expect(venueVisitInfo.hours.value).toBe('Publiseres snart');
     expect(venueVisitInfo.hours.note).toContain('Ring puben');
 
     const content = JSON.stringify(venueVisitInfo);
@@ -42,7 +42,7 @@ describe('visit content policy', () => {
     expect(venueLinks.directions.verificationStatus).toBe('verified-public-source');
     expect(venueLinks.phone.verificationStatus).toBe('verified-public-source');
     expect(venueLinks.facebook.verificationStatus).toBe('awaiting-owner-confirmation');
-    expect(venueLinks.facebook.detail).toBe('Ikke bekreftet av eier');
-    expect(venueLinks.facebook.accessibleLabel).toContain('ikke bekreftet av eier');
+    expect(venueLinks.facebook.detail).toBe('Siste nytt fra puben');
+    expect(venueLinks.facebook.accessibleLabel).toContain('på Facebook');
   });
 });

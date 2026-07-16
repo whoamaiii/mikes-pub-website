@@ -178,10 +178,14 @@ repository's proprietary `UNLICENSED` application code.
 - Source: <https://github.com/google/fonts/tree/fa02673f3b360ca4b9a8ba4f6d5a4aeb59eecd32/ofl/unifrakturcook>
 - Licence: `public/fonts/unifraktur-cook/OFL.txt`
 
-| Local path                                             | SHA-256                                                            |
-| ------------------------------------------------------ | ------------------------------------------------------------------ |
-| `public/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf` | `ea002fa9c65f1a612af100e00d87ab65f16381f450020ec3d021f3dbf79a6dcd` |
-| `public/fonts/unifraktur-cook/OFL.txt`                 | `99d2f30e282d6174af8ff68597f58bb53c0dcb2b104a4c1b8d19da49021d00d3` |
+| Local path                                               | SHA-256                                                            |
+| -------------------------------------------------------- | ------------------------------------------------------------------ |
+| `public/fonts/unifraktur-cook/UnifrakturCook-Bold.woff2` | `ee6b3505133fc3b95d5e50f20a70dac17d06ead14e9a862b16658a96dc3a6b19` |
+| `public/fonts/unifraktur-cook/OFL.txt`                   | `99d2f30e282d6174af8ff68597f58bb53c0dcb2b104a4c1b8d19da49021d00d3` |
+
+The WOFF2 binary is a lossless local fontTools conversion of the pinned upstream TTF (SHA-256
+`ea002fa9c65f1a612af100e00d87ab65f16381f450020ec3d021f3dbf79a6dcd`); see
+[`docs/assets/font-assets.md`](assets/font-assets.md).
 
 The six active `@font-face` rules use `font-display: swap` and approved system fallbacks. Unit tests
 verify every active binary and licence hash.

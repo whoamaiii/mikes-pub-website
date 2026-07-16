@@ -19,9 +19,8 @@ test('captures deterministic WHO-20 Program evidence', async ({ page }) => {
   for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/program');
-    await expect(page.locator('[data-program-filter-shell]')).toHaveCount(0);
-    await expect(page.locator('[data-event-row]')).toHaveCount(0);
-    await expect(page.locator('[data-event-feedback]')).toHaveAttribute('data-state', 'empty');
+    await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
+    await expect(page.locator('[data-event-row]')).toHaveCount(4);
     await page.evaluate(() => document.fonts.ready);
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
@@ -36,10 +35,9 @@ test('captures deterministic WHO-20 Program evidence', async ({ page }) => {
 
   await page.setViewportSize({ width: 375, height: 900 });
   await page.goto('/program');
-  const updateAction = page.locator('.program-empty-shell').getByRole('link', {
-    name: 'Åpne en offentlig Facebook-oppføring for Mike’s Pub. Siden er ikke bekreftet av eier',
-    exact: true,
-  });
+  const updateAction = page
+    .locator('.category-filter')
+    .getByRole('link', { name: 'Quiz', exact: true });
   await updateAction.focus();
   await expect(updateAction).toBeFocused();
   await updateAction.evaluate((element) => {

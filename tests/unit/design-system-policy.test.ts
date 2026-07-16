@@ -26,8 +26,8 @@ const approvedHashes = {
     '53492fb3a0def77354f166a55d09b63a10855e91c206c7620a81cf56e97f8ec3',
   'public/fonts/source-sans-3/SourceSans3-Semibold.ttf.woff2':
     '47b9b661b9f395fe7f0d0e119637fba5c8dad97bde3df60066fd24229c0792f4',
-  'public/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf':
-    'ea002fa9c65f1a612af100e00d87ab65f16381f450020ec3d021f3dbf79a6dcd',
+  'public/fonts/unifraktur-cook/UnifrakturCook-Bold.woff2':
+    'ee6b3505133fc3b95d5e50f20a70dac17d06ead14e9a862b16658a96dc3a6b19',
 } as const;
 
 async function listFiles(directory: string): Promise<string[]> {

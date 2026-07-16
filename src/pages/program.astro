@@ -1,5 +1,5 @@
 ---
-import EventList from '../components/events/EventList.astro';
+import InlineNotice from '../components/feedback/InlineNotice.astro';
 import LocationPanel from '../components/location/LocationPanel.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
 import ProgramDirectory from '../components/program/ProgramDirectory.astro';
@@ -7,6 +7,7 @@ import PageIntro from '../components/program/PageIntro.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
 import {
+  conceptProgramEventListState,
   programCategories,
   programEventListState,
   programFilterDefinitions,
@@ -26,16 +27,9 @@ const publishedProgramState =
   programEventListState.kind === 'ready' && programEventListState.events.length > 0
     ? programEventListState
     : undefined;
-const programPageEventListState =
-  programEventListState.kind === 'empty'
-    ? {
-        ...programEventListState,
-        empty: {
-          ...programEventListState.empty,
-          action: venueLinks.facebook,
-        },
-      }
-    : programEventListState;
+const directoryState = publishedProgramState ?? conceptProgramEventListState;
+const directoryHeading = publishedProgramState ? 'Bekreftet program' : 'Slik kan programmet se ut';
+const showConceptNotice = !publishedProgramState;
 ---
 
 <SiteLayout
@@ -56,23 +50,22 @@ const programPageEventListState =
 
     <div class="program-content ds-container">
       {
-        publishedProgramState ? (
-          <ProgramDirectory
-            categories={programCategories}
-            filters={programFilterDefinitions}
-            heading="Bekreftet program"
-            state={publishedProgramState}
+        showConceptNotice && (
+          <InlineNotice
+            id="program-concept-notice"
+            variant="info"
+            title="Eksempelinnhold"
+            text="Oppføringene nedenfor er konsepteksempler fra designforslaget. Ekte datoer og detaljer publiseres når puben har bekreftet dem."
+            headingLevel={2}
           />
-        ) : (
-          <div class="program-empty-shell">
-            <EventList
-              id="program-events"
-              heading="Programstatus"
-              state={programPageEventListState}
-            />
-          </div>
         )
       }
+      <ProgramDirectory
+        categories={programCategories}
+        filters={programFilterDefinitions}
+        heading={directoryHeading}
+        state={directoryState}
+      />
 
       <div class="program-location" id="location">
         <LocationPanel

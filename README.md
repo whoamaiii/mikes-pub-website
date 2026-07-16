@@ -7,8 +7,9 @@ system for the Mike's Pub website project in Sætre, Norway. Other product route
 
 - Static-first Astro project with strict TypeScript, native components and plain external CSS.
 - WHO-18 provides the first approved responsive product route at `/` with verified concept content.
-- WHO-20 provides an honest Program route at `/program`. Filters appear only when at least one
-  verified event exists; the current production state publishes no placeholder events.
+- WHO-20 provides an honest Program route at `/program`. Until verified events exist, the route
+  presents clearly labelled, date-neutral concept examples (validated demo-only records) so the
+  directory and filters are demonstrable; verified events replace them without layout changes.
 - WHO-15 components and tokens are available through an isolated local-only preview build.
 - No server runtime, CMS, database, authentication, analytics, forms, third-party maps or embeds.
   Home uses a code-native locator diagram paired with an explicit Google Maps directions link.

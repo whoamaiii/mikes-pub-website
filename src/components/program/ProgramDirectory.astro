@@ -1,6 +1,6 @@
 ---
 import type { CategoryFilterItem } from '../../types/design-system';
-import type { ProgramFilterDefinition, ProgramPublishedEventListState } from '../../types/program';
+import type { ProgramDirectoryReadyState, ProgramFilterDefinition } from '../../types/program';
 import EventList from '../events/EventList.astro';
 import CategoryFilter from '../filters/CategoryFilter.astro';
 
@@ -8,7 +8,7 @@ interface Props {
   categories: readonly CategoryFilterItem[];
   filters: readonly ProgramFilterDefinition[];
   heading: string;
-  state: Extract<ProgramPublishedEventListState, { kind: 'ready' }>;
+  state: ProgramDirectoryReadyState;
 }
 
 const { categories, filters, heading, state } = Astro.props;

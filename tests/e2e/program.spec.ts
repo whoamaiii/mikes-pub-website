@@ -3,25 +3,14 @@ import { expect, test } from '@playwright/test';
 
 const programPath = '/program';
 const conceptDisclosure = 'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.';
+const conceptCategories = ['music', 'sport', 'quiz', 'standup'];
 
-test('renders an honest Program page without placeholder events or dead filters', async ({
+test('renders the concept Program directory with working filters and honest labelling', async ({
   page,
 }) => {
   const response = await page.goto(programPath);
 
   expect(response?.status()).toBe(200);
-  expect(await response?.text()).not.toContain('data-program-filter-enhanced');
-  const scriptPayloads = await page.locator('script').evaluateAll(async (scripts) =>
-    Promise.all(
-      scripts.map(async (script) => {
-        const scriptElement = script as HTMLScriptElement;
-        return scriptElement.src
-          ? await fetch(scriptElement.src).then((result) => result.text())
-          : scriptElement.textContent;
-      }),
-    ),
-  );
-  expect(scriptPayloads.join('\n')).not.toContain('data-program-filter-enhanced');
   await expect(page).toHaveTitle('Program | Mike’s Pub | privat designforslag');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('main')).toHaveCount(1);
@@ -30,42 +19,66 @@ test('renders an honest Program page without placeholder events or dead filters'
   await expect(page.locator('.concept-banner')).toHaveText(conceptDisclosure);
   await expect(page.locator('.desktop-nav a[aria-current="page"]')).toHaveText('Program');
 
-  await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toHaveCount(0);
-  await expect(page.locator('[data-program-filter-shell]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Eksempelinnhold' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Slik kan programmet se ut' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toHaveCount(1);
+  await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
   await expect(page.locator('[data-event-list-region]')).toHaveCount(1);
-  await expect(page.locator('[data-event-row]')).toHaveCount(0);
-  await expect(page.locator('[data-event-feedback]')).toHaveAttribute('data-state', 'empty');
-  await expect(
-    page.getByRole('heading', { name: 'Ingen bekreftede arrangementer ennå.' }),
-  ).toBeVisible();
+  await expect(page.locator('[data-event-row]')).toHaveCount(conceptCategories.length);
+  for (const category of conceptCategories) {
+    await expect(page.locator(`[data-event-row][data-event-category="${category}"]`)).toHaveCount(
+      1,
+    );
+  }
+  await expect(page.locator('[data-event-row][data-event-status="concept"]')).toHaveCount(
+    conceptCategories.length,
+  );
   await expect(page.locator('time, .program-main img')).toHaveCount(0);
 
   await expect(
-    page.locator('.program-empty-shell a[href="https://www.facebook.com/mikespub.saetre/"]'),
-  ).toHaveAttribute('data-external', 'true');
-  await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(2);
-  await expect(page.locator('a[href^="http"]')).toHaveCount(4);
+  await expect(page.locator('a[href^="http"]')).toHaveCount(3);
 
   const visibleText = await page.locator('.program-main').innerText();
-  expect(visibleText).not.toMatch(/datonøytral|konseptoppføring|demo-only|testtilstand/i);
-  expect(visibleText).not.toMatch(/\b(?:kl\.|kr|hver fredag|åpningstid)\b/i);
+  expect(visibleText).toMatch(/eksempel – dato ikke fastsatt/i);
+  expect(visibleText).not.toMatch(/\b(?:kl\.|kr|billett|hver fredag|åpningstid)\b/i);
+  expect(visibleText).not.toMatch(/\b(?:mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)\b/i);
 });
 
-test('keeps legacy filter URLs fact-safe while there are no verified events', async ({ page }) => {
-  for (const path of [
-    '/program?kategori=musikk#filter-musikk',
-    '/program?kategori=standup#filter-standup',
-    '/program?kategori=ukjent#filter-ukjent',
+test('filters the concept directory per category from shareable URLs', async ({ page }) => {
+  for (const [query, fragment, category] of [
+    ['musikk', 'filter-musikk', 'music'],
+    ['sport', 'filter-sport', 'sport'],
+    ['quiz', 'filter-quiz', 'quiz'],
+    ['standup', 'filter-standup', 'standup'],
   ]) {
-    await page.goto(path);
-    await expect(page.locator('[data-program-filter-shell]')).toHaveCount(0);
-    await expect(page.locator('[data-event-row]')).toHaveCount(0);
+    await page.goto(`/program?kategori=${query}#${fragment}`);
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+    await expect(page.locator(`[data-event-row][data-event-category="${category}"]`)).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: 'Ingen bekreftede arrangementer ennå.' }),
-    ).toBeVisible();
+      page.locator(`.category-filter a[data-filter-value="${category}"]`),
+    ).toHaveAttribute('aria-current', 'page');
   }
+
+  await page.goto('/program?kategori=ukjent#filter-ukjent');
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
+});
+
+test('filters the concept directory through the category links', async ({ page }) => {
+  await page.goto(programPath);
+  await expect(page.locator('[data-program-filter-shell]')).toHaveAttribute(
+    'data-program-filter-enhanced',
+    'true',
+  );
+
+  await page.locator('.category-filter a[data-filter-value="quiz"]').click();
+  await expect(page).toHaveURL(/kategori=quiz/);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+  await expect(page.locator('[data-event-row][data-event-category="quiz"]')).toBeVisible();
+
+  await page.locator('.category-filter a[data-filter-value="all"]').click();
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
 });
 
 test('is accessible, same-origin and overflow-safe from narrow mobile to desktop', async ({
@@ -140,16 +153,20 @@ test('links the accepted Home navigation to Program', async ({ page }) => {
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('shows the same complete empty state without inactive controls', async ({ page }) => {
+  test('keeps the concept directory and CSS fragment filtering usable', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto(programPath);
 
-    await expect(page.locator('[data-program-filter-shell]')).toHaveCount(0);
-    await expect(page.locator('[data-event-row]')).toHaveCount(0);
-    await expect(page.locator('[data-event-feedback]')).toHaveAttribute('data-state', 'empty');
-    await expect(
-      page.getByRole('heading', { name: 'Ingen bekreftede arrangementer ennå.' }),
-    ).toBeVisible();
+    await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
+    await expect(page.locator('[data-program-filter-shell]')).not.toHaveAttribute(
+      'data-program-filter-enhanced',
+      'true',
+    );
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
+
+    await page.goto('/program?kategori=musikk#filter-musikk');
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+    await expect(page.locator('[data-event-row][data-event-category="music"]')).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

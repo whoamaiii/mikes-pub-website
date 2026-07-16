@@ -22,6 +22,14 @@ export type ProgramConceptEntry = Omit<
   image?: never;
 };
 
+export type ProgramDirectoryEntry = ProgramPublishedEntry | ProgramConceptEntry;
+
+export type ProgramDirectoryReadyState = {
+  kind: 'ready';
+  events: readonly ProgramDirectoryEntry[];
+  filteredEmpty: ProgramEventFeedback;
+};
+
 export type ProgramEventFeedback = {
   heading: string;
   message: string;

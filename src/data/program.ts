@@ -1,6 +1,7 @@
 import type { CategoryFilterItem } from '../types/design-system';
 import type {
   ProgramConceptEntry,
+  ProgramDirectoryReadyState,
   ProgramFilterDefinition,
   ProgramPublishedEntry,
   ProgramPublishedEventListState,
@@ -57,35 +58,35 @@ export const programFilterDefinitions = [
     label: 'Alle',
     query: 'alle',
     targetId: 'filter-all',
-    summary: 'Viser alle bekreftede arrangementer.',
+    summary: 'Viser hele programoversikten.',
   },
   {
     value: 'music',
     label: 'Musikk',
     query: 'musikk',
     targetId: 'filter-musikk',
-    summary: 'Viser bekreftede musikkarrangementer.',
+    summary: 'Viser musikkoppføringene.',
   },
   {
     value: 'sport',
     label: 'Sport',
     query: 'sport',
     targetId: 'filter-sport',
-    summary: 'Viser bekreftede sportsvisninger.',
+    summary: 'Viser sportsoppføringene.',
   },
   {
     value: 'quiz',
     label: 'Quiz',
     query: 'quiz',
     targetId: 'filter-quiz',
-    summary: 'Viser bekreftede quizer.',
+    summary: 'Viser quizoppføringene.',
   },
   {
     value: 'standup',
     label: 'Stand-up',
     query: 'standup',
     targetId: 'filter-standup',
-    summary: 'Viser bekreftede stand-up-arrangementer.',
+    summary: 'Viser stand-up-oppføringene.',
   },
 ] as const satisfies readonly ProgramFilterDefinition[];
 
@@ -361,6 +362,15 @@ export function validatePublishedProgramEntries(input: unknown): ProgramPublishe
   });
 }
 
+const programFilteredEmpty = {
+  heading: 'Ingen arrangementer i denne kategorien.',
+  message: 'Velg Alle for å se resten av programoversikten.',
+  action: {
+    href: '/program?kategori=alle#filter-all',
+    label: 'Vis alle',
+  },
+} as const;
+
 export function resolveProgramEventListState(
   entries: readonly ProgramPublishedEntry[],
   error?: unknown,
@@ -390,22 +400,61 @@ export function resolveProgramEventListState(
   return {
     kind: 'ready',
     events: entries,
-    filteredEmpty: {
-      heading: 'Ingen arrangementer i denne kategorien.',
-      message: 'Velg Alle for å se resten av det bekreftede programmet.',
-      action: {
-        href: '/program?kategori=alle#filter-all',
-        label: 'Vis alle',
-      },
-    },
+    filteredEmpty: programFilteredEmpty,
   };
 }
 
-// The production route stays empty until event facts are verified. Concept fixtures live only in
-// tests and the isolated design-system preview; this boundary rejects them.
+// Published entries carry verified facts only and stay empty until the owner confirms real
+// events. The concept entries below are date-neutral, demo-only records that let the pitch show
+// the directory and filters; the validator rejects any factual claims (dates, prices, tickets).
 export const publishedProgramEntries = validatePublishedProgramEntries([]);
 
 export const programEventListState = resolveProgramEventListState(publishedProgramEntries);
+
+export const programConceptEntries = validateProgramConceptEntries([
+  {
+    id: 'concept-music',
+    category: 'music',
+    categoryLabel: categoryLabels.music,
+    title: 'Livemusikk på scenen',
+    description: 'Konserter og kulturkvelder med lokale og tilreisende artister.',
+    status: 'concept',
+    demoOnly: true,
+  },
+  {
+    id: 'concept-sport',
+    category: 'sport',
+    categoryLabel: categoryLabels.sport,
+    title: 'Fotball på storskjerm',
+    description: 'Kampvisninger med lyd i lokalet når det spilles.',
+    status: 'concept',
+    demoOnly: true,
+  },
+  {
+    id: 'concept-quiz',
+    category: 'quiz',
+    categoryLabel: categoryLabels.quiz,
+    title: 'Pubquiz med quizmaster',
+    description: 'Lagbasert quiz over flere runder, med premie til kveldens beste lag.',
+    status: 'concept',
+    demoOnly: true,
+  },
+  {
+    id: 'concept-standup',
+    category: 'standup',
+    categoryLabel: categoryLabels.standup,
+    title: 'Stand-up-kveld',
+    description: 'Intim scene med etablerte og nye komikere.',
+    status: 'concept',
+    demoOnly: true,
+  },
+]);
+
+export const conceptProgramEventListState: ProgramDirectoryReadyState = {
+  kind: 'ready',
+  events: programConceptEntries,
+  filteredEmpty: programFilteredEmpty,
+};
 
 export const programIntro = {
   title: 'Program',

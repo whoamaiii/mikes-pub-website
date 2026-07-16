@@ -35,7 +35,7 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   await expect(page.locator('.home-main a[href="/program"]')).toHaveCount(0);
   await expect(
     page.locator('.home-program').getByRole('link', {
-      name: 'Åpne en offentlig Facebook-oppføring for Mike’s Pub. Siden er ikke bekreftet av eier',
+      name: 'Se siste nytt fra Mike’s Pub på Facebook',
     }),
   ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
   await expect(page.getByRole('link', { name: 'Ring Mike’s Pub på 918 55 855' })).toHaveAttribute(
@@ -66,9 +66,9 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   ]) {
     expect(visibleText).not.toContain(blockedText);
   }
-  expect(visibleText).toContain('Ikke bekreftet');
-  expect(visibleText).toContain('omtalt i offentlige kilder');
-  expect(visibleText).not.toContain('Fotball på skjermen. Dart og shuffleboard i lokalet.');
+  expect(visibleText).toContain('Fotball, dart og shuffleboard');
+  expect(visibleText).not.toContain('omtalt i offentlige kilder');
+  expect(visibleText).not.toContain('Ikke bekreftet av eier');
   await expect(page.locator('.home-hero-title-readable')).toHaveText('Mike’s');
   await expect(page.locator('.venue-map')).toHaveAccessibleName(
     /Stilisert kartutsnitt som markerer Mike’s Pub i Nordre Sætrevei 2/,
@@ -92,7 +92,7 @@ test('uses the supplied art-directed exterior image without local source masters
     .locator('link[rel="preload"][as="font"]')
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
   expect(fontPreloads).toEqual([
-    '/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf',
+    '/fonts/unifraktur-cook/UnifrakturCook-Bold.woff2',
     '/fonts/barlow-condensed/BarlowCondensed-Bold.woff2',
   ]);
 

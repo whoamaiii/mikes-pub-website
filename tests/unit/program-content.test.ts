@@ -1,7 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
 import {
+  conceptProgramEventListState,
   programCategories,
+  programConceptEntries,
   programFilterDefinitions,
   publishedProgramEntries,
   resolveProgramEventListState,
@@ -31,9 +33,25 @@ const validPublishedEntry = {
 } as const;
 
 describe('WHO-20 Program content policy', () => {
-  test('publishes no placeholder event records before facts are verified', () => {
+  test('publishes no factual event records before facts are verified', () => {
     expect(publishedProgramEntries).toEqual([]);
     expect(resolveProgramEventListState(publishedProgramEntries).kind).toBe('empty');
+  });
+
+  test('presents only validated, demo-only concept examples on the production route', () => {
+    expect(programConceptEntries.length).toBeGreaterThan(0);
+    expect(programConceptEntries.length).toBeLessThanOrEqual(4);
+    for (const entry of programConceptEntries) {
+      expect(entry.status).toBe('concept');
+      expect(entry.demoOnly).toBe(true);
+    }
+    expect(conceptProgramEventListState.kind).toBe('ready');
+    expect(conceptProgramEventListState.events).toBe(programConceptEntries);
+
+    const content = JSON.stringify(programConceptEntries);
+    expect(content).not.toMatch(/dateTime|dateLabel|price|ticket/i);
+    expect(content).not.toMatch(/\b(?:kl\.|kr|billett|hver fredag|åpningstid)\b/i);
+    expect(content).not.toMatch(/\b(?:mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)\b/i);
   });
 
   test('keeps synchronized, shareable query and fragment filter URLs', () => {

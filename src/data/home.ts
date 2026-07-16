@@ -6,7 +6,7 @@ import { venueLocationLabels } from './site';
 export const homeHero: HomeHeroContent = {
   title: 'Mike’s Pub',
   eyebrow: venueLocationLabels.eyebrow,
-  intro: 'Musikk og kultur i Sætre, med fotball, dart og shuffleboard omtalt i offentlige kilder.',
+  intro: 'Musikk og kultur i Sætre – med fotball, dart og shuffleboard i lokalet.',
   location: venueLocationLabels.inlineAddress,
   action: { href: '#about', label: 'Oppdag Mike’s' },
   image: {

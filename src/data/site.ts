@@ -33,7 +33,7 @@ export const siteNavigation: NavigationItem[] = [
 export const gamesPromo: HomePromoContent = {
   kicker: 'I lokalet',
   heading: 'Dart og shuffleboard',
-  text: 'Dart og shuffleboard står oppført som aktiviteter hos Mike’s Pub.',
+  text: 'Dart og shuffleboard står klare i lokalet – bare å utfordre noen.',
 };
 
 const directionsQuery = encodeURIComponent(
@@ -67,9 +67,9 @@ export const venueLinks = {
   facebook: {
     kind: 'social',
     href: 'https://www.facebook.com/mikespub.saetre/',
-    label: 'Facebook-oppføring',
-    detail: 'Ikke bekreftet av eier',
-    accessibleLabel: `Åpne en offentlig Facebook-oppføring for ${verifiedSiteLocation.name}. Siden er ikke bekreftet av eier`,
+    label: 'Facebook',
+    detail: 'Siste nytt fra puben',
+    accessibleLabel: `Se siste nytt fra ${verifiedSiteLocation.name} på Facebook`,
     external: true,
     verificationStatus: 'awaiting-owner-confirmation',
   },
@@ -77,11 +77,11 @@ export const venueLinks = {
 
 export const venueVisitInfo: VisitInfo = {
   heading: 'Før du drar',
-  intro: 'Adresse og kontakt på ett sted. Åpningstidene er fortsatt ubekreftet.',
+  intro: 'Adresse, kontakt og siste nytt samlet på ett sted.',
   hours: {
     label: 'Åpningstider',
-    value: 'Ikke bekreftet',
-    note: 'Ring puben for å bekrefte før du drar.',
+    value: 'Publiseres snart',
+    note: 'Ring puben for åpningstider.',
     verificationStatus: 'awaiting-owner-confirmation',
   },
   actions: [venueLinks.directions, venueLinks.phone, venueLinks.facebook],
@@ -99,7 +99,7 @@ export const siteFooterNavigation: NavigationItem[] = [
   {
     id: 'facebook',
     href: venueLinks.facebook.href,
-    label: 'Facebook-oppføring',
+    label: 'Facebook',
     accessibleLabel: venueLinks.facebook.accessibleLabel,
     external: true,
   },
