@@ -12,6 +12,8 @@ const approvedHashes = {
     '186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f',
   'LICENSES/source-sans-3-OFL-1.1.md':
     '89ad2c4f66dd29127527493e729c31e731f111cf10faf5774c3db9275ed0c22c',
+  'public/fonts/unifraktur-cook/OFL.txt':
+    '99d2f30e282d6174af8ff68597f58bb53c0dcb2b104a4c1b8d19da49021d00d3',
   'public/fonts/barlow-condensed/BarlowCondensed-Bold.woff2':
     'b8c0e6116eab19c30e2529326bc6a459e7c851a9881acc7215dab22ec8014176',
   'public/fonts/barlow-condensed/BarlowCondensed-Medium.woff2':
@@ -24,6 +26,8 @@ const approvedHashes = {
     '53492fb3a0def77354f166a55d09b63a10855e91c206c7620a81cf56e97f8ec3',
   'public/fonts/source-sans-3/SourceSans3-Semibold.ttf.woff2':
     '47b9b661b9f395fe7f0d0e119637fba5c8dad97bde3df60066fd24229c0792f4',
+  'public/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf':
+    'ea002fa9c65f1a612af100e00d87ab65f16381f450020ec3d021f3dbf79a6dcd',
 } as const;
 
 async function listFiles(directory: string): Promise<string[]> {
@@ -50,24 +54,25 @@ describe('design-system policy', () => {
   test('keeps WHO-10 palette values and semantic aliases centralized', async () => {
     const tokens = await readFile(path.join(root, 'src/styles/tokens.css'), 'utf8');
     const expectedTokens = {
-      '--color-facade': '#101310',
-      '--color-green': '#003e2f',
-      '--color-gold': '#d6a84b',
-      '--color-cream': '#f1e9d8',
-      '--color-lantern': '#d88a32',
-      '--color-muted': '#c8c0b2',
-      '--color-error': '#ff9b8f',
-      '--color-info': '#8dc6ff',
+      '--color-ink': '#0a0c0b',
+      '--color-soot': '#111311',
+      '--color-charcoal': '#171916',
+      '--color-brass': '#c99045',
+      '--color-brass-bright': '#dda95e',
+      '--color-bone': '#f2ebdc',
+      '--color-muted': '#ada69a',
+      '--color-error': '#ff9c8c',
+      '--color-info': '#9ac4cf',
     };
 
     for (const [token, value] of Object.entries(expectedTokens)) {
       expect(tokens).toContain(`${token}: ${value};`);
     }
 
-    expect(tokens).toContain('--text-on-accent: var(--color-facade);');
-    expect(tokens).toContain('--focus-ring: var(--color-cream);');
+    expect(tokens).toContain('--text-on-accent: var(--color-ink);');
+    expect(tokens).toContain('--focus-ring: var(--color-bone);');
     expect(tokens.match(/font-display:\s*swap;/g)).toHaveLength(6);
-    expect(tokens).toContain("--font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;");
+    expect(tokens).toContain("--font-display: 'UnifrakturCook', 'Times New Roman', serif;");
     expect(tokens).toMatch(/--font-body:\s*'Source Sans 3',\s*system-ui/);
   });
 
@@ -90,16 +95,21 @@ describe('design-system policy', () => {
     ).toBe(true);
   });
 
-  test('keeps production source free of references and third-party asset requests', async () => {
+  test('keeps production source free of references and limits third-party links', async () => {
     const sourceFiles = (await listFiles(path.join(root, 'src'))).filter((file) =>
       /\.(?:astro|css|ts)$/.test(file),
     );
     const source = (await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8')))).join(
       '\n',
     );
+    const approvedExternalLinks = [
+      'https://www.facebook.com/mikespub.saetre/',
+      'https://www.google.com/maps/search/?api=1&query=Mike%27s%20Pub%2C%20Nordre%20S%C3%A6trevei%202%2C%203475%20S%C3%A6tre',
+    ];
+    const externalLinks = source.match(/https?:\/\/[^\s'"`]+/g) ?? [];
 
     expect(source).not.toMatch(/design-reference\//i);
-    expect(source).not.toMatch(/https?:\/\//i);
+    expect(externalLinks.sort()).toEqual(approvedExternalLinks.sort());
   });
 
   test('isolates preview paths without modifying production Astro configuration', async () => {

@@ -7,7 +7,7 @@ if (process.env.NO_COLOR !== undefined) {
   process.env.FORCE_COLOR = '0';
 }
 
-const port = 4321;
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 4321);
 const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({

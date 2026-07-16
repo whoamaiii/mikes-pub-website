@@ -10,9 +10,10 @@ interface Props {
   items: NavigationItem[];
   currentId?: string;
   logoAsset?: ClearedImageAsset;
+  address?: string;
 }
 
-const { id, items, currentId, logoAsset } = Astro.props;
+const { id, items, currentId, logoAsset, address } = Astro.props;
 const titleId = `${id}-title`;
 ---
 
@@ -46,6 +47,7 @@ const titleId = `${id}-title`;
       <nav class="mobile-menu-navigation" aria-labelledby={titleId}>
         <NavigationItems items={items} currentId={currentId} />
       </nav>
+      {address && <p class="mobile-menu-address">{address}</p>}
     </div>
   </dialog>
 </div>

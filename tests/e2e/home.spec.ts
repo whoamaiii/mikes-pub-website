@@ -2,17 +2,17 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const homePath = '/';
-const conceptDisclosure = 'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.';
+const conceptDisclosure = 'Privat designforslag – ikke den offisielle nettsiden til Mike’s Pub.';
 
 test('renders the approved semantic Home hierarchy and safe content', async ({ page }) => {
   const response = await page.goto(homePath);
 
   expect(response?.status()).toBe(200);
-  await expect(page).toHaveTitle('Mike’s Pub i Sætre – privat konseptdemo');
+  await expect(page).toHaveTitle('Mike’s Pub i Sætre – privat designforslag');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('main')).toHaveCount(1);
   await expect(page.getByRole('contentinfo')).toHaveCount(1);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Mike’s Pub i Sætre');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Mike’s Pub');
   await expect(page.locator('.concept-banner')).toHaveText(conceptDisclosure);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
@@ -21,12 +21,30 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
 
   const headings = await page.getByRole('heading', { level: 2 }).allTextContents();
   expect(headings).toEqual([
-    'Dette skjer på Mike’s',
+    'Før du drar',
+    'Dette finner du på Mike’s',
     'Sport på storskjerm',
     'Dart og shuffleboard',
     'Finn oss i Sætre',
   ]);
-  await expect(page.locator('.home-program-item')).toHaveCount(4);
+  await expect(page.locator('.home-program-item')).toHaveCount(2);
+  await expect(page.locator('.home-program-entry')).toHaveCount(2);
+  await expect(page.locator('.home-program-item a')).toHaveCount(0);
+  await expect(page.locator('.home-hero-action a')).toHaveAttribute('href', '#about');
+  await expect(page.locator('.home-hero-action a')).toHaveText('Oppdag Mike’s');
+  await expect(page.locator('.home-main a[href="/program"]')).toHaveCount(0);
+  await expect(
+    page
+      .locator('.home-program')
+      .getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }),
+  ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
+  await expect(page.getByRole('link', { name: 'Ring Mike’s Pub på 918 55 855' })).toHaveAttribute(
+    'href',
+    'tel:+4791855855',
+  );
+  await expect(
+    page.locator('[data-verification-status="awaiting-owner-confirmation"]'),
+  ).toHaveCount(2);
   await expect(page.locator('time')).toHaveCount(0);
   await expect(page.locator('[id]')).toHaveCount(
     await page
@@ -38,18 +56,39 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   for (const blockedText of [
     'Puben midt i Sætre',
     'lokalt møtested',
-    'Åpningstider',
+    'Åpent nå',
+    'Åpent i dag',
     'Bestill bord',
     'Konserter, fotball, quiz og gode kvelder',
+    'Datonøytral konseptoppføring',
+    'God stemning. Fine folk.',
+    'fotball-VM 2026',
   ]) {
     expect(visibleText).not.toContain(blockedText);
   }
+  expect(visibleText).toContain('Ikke bekreftet');
+  await expect(page.locator('.home-hero-title-readable')).toHaveText('Mike’s');
+  await expect(page.locator('.venue-map')).toHaveAccessibleName(
+    /Stilisert kartutsnitt som markerer Mike’s Pub i Nordre Sætrevei 2/,
+  );
+  await expect(page.locator('.venue-map-marker')).toHaveCount(1);
+  await expect(page.locator('.venue-map-venue-label')).toHaveText('MIKE’S PUB');
+  await expect(page.locator('.venue-map-route, .venue-map-index, .venue-map-legend')).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
+  ).toHaveCount(3);
 });
 
-test('uses the verified art-directed exterior image without reference assets', async ({ page }) => {
+test('uses the supplied art-directed exterior image without local source masters', async ({
+  page,
+}) => {
   await page.goto(homePath);
 
-  const image = page.getByRole('img', { name: 'Fasaden til Mike’s Pub i Sætre.' });
+  const image = page.getByRole('img', {
+    name: 'Den svarte fasaden til Mike’s Pub med belyst skilt og grønn inngang i Sætre.',
+  });
   await expect(image).toBeVisible();
   await expect(page.locator('.home-hero-media')).toHaveAttribute(
     'data-rights-status',
@@ -64,8 +103,8 @@ test('uses the verified art-directed exterior image without reference assets', a
   expect(new URL(metadata.currentSrc).origin).toBe(new URL(page.url()).origin);
   expect(metadata.currentSrc).not.toMatch(/design-reference|\.tiff?$/i);
   expect([
-    { width: 880, height: 660 },
-    { width: 960, height: 640 },
+    { width: 1080, height: 1350 },
+    { width: 1920, height: 1080 },
   ]).toContainEqual({ width: metadata.width, height: metadata.height });
 });
 
@@ -90,7 +129,19 @@ test('keeps Home navigation local, valid and same-origin', async ({ page }) => {
   ).toBe(true);
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === new URL(page.url()).origin)).toBe(true);
-  await expect(page.locator('a[href^="http"]')).toHaveCount(0);
+  await expect(page.locator('a[href^="http"]')).toHaveCount(6);
+  expect(
+    await page
+      .locator('a[data-external="true"]')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('rel'))),
+  ).toEqual([
+    'noopener noreferrer',
+    'noopener noreferrer',
+    'noopener noreferrer',
+    'noopener noreferrer',
+    'noopener noreferrer',
+    'noopener noreferrer',
+  ]);
 });
 
 test('has no detectable automated accessibility violations', async ({ page }) => {
@@ -169,8 +220,7 @@ test('retains structure in forced colors', async ({ page, browserName }) => {
   await page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' });
   await page.goto(homePath);
   expect(await page.evaluate(() => matchMedia('(forced-colors: active)').matches)).toBe(true);
-  await expect(page.locator('.home-program-item').first()).toHaveCSS(
-    'border-bottom-style',
-    'solid',
-  );
+  const programItems = page.locator('.home-program-item');
+  expect(await programItems.count()).toBe(2);
+  await expect(programItems.nth(0)).toHaveCSS('border-bottom-style', 'solid');
 });

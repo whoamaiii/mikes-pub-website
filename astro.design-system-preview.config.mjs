@@ -7,6 +7,9 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   root,
   output: 'static',
+  devToolbar: {
+    enabled: false,
+  },
   srcDir: path.join(root, 'tests/design-system-preview'),
   publicDir: path.join(root, 'public'),
   outDir: path.join(root, '.design-system-preview/dist'),

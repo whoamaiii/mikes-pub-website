@@ -1,9 +1,9 @@
 @font-face {
-  font-family: 'Barlow Condensed';
+  font-family: UnifrakturCook;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   font-display: swap;
-  src: url('/fonts/barlow-condensed/BarlowCondensed-Medium.woff2') format('woff2');
+  src: url('/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf') format('truetype');
 }
 
 @font-face {
@@ -47,47 +47,55 @@
 }
 
 :root {
-  /* WHO-10 core palette */
-  --color-facade: #101310;
-  --color-green: #003e2f;
-  --color-gold: #d6a84b;
-  --color-cream: #f1e9d8;
-  --color-lantern: #d88a32;
-  --color-muted: #c8c0b2;
-  --color-error: #ff9b8f;
-  --color-info: #8dc6ff;
-
-  /* Semantic pairings: component CSS uses these aliases, not raw palette values. */
-  --surface-page: var(--color-facade);
-  --surface-brand: var(--color-green);
-  --surface-accent: var(--color-gold);
-  --surface-disabled: rgb(200 192 178 / 12%);
-  --text-primary: var(--color-cream);
+  --color-ink: #0a0c0b;
+  --color-soot: #111311;
+  --color-charcoal: #171916;
+  --color-brass: #c99045;
+  --color-brass-bright: #dda95e;
+  --color-bone: #f2ebdc;
+  --color-muted: #ada69a;
+  --color-error: #ff9c8c;
+  --color-info: #9ac4cf;
+  --surface-page: var(--color-ink);
+  --surface-brand: var(--color-soot);
+  --surface-accent: var(--color-brass);
+  --surface-raised: var(--color-charcoal);
+  --surface-brand-deep: var(--color-ink);
+  --surface-control-hover: var(--color-bone);
+  --surface-disabled: rgb(173 166 154 / 12%);
+  --surface-paper: var(--color-bone);
+  --text-primary: var(--color-bone);
   --text-secondary: var(--color-muted);
-  --text-accent: var(--color-gold);
-  --text-on-accent: var(--color-facade);
+  --text-accent: var(--color-brass-bright);
+  --text-on-accent: var(--color-ink);
+  --text-on-paper: var(--color-soot);
+  --text-on-paper-muted: rgb(17 19 17 / 64%);
   --text-info: var(--color-info);
   --text-error: var(--color-error);
-  --border-default: rgb(214 168 75 / 60%);
-  --border-muted: rgb(200 192 178 / 45%);
-  --focus-ring: var(--color-cream);
-  --focus-ring-on-light: var(--color-facade);
+  --border-default: rgb(201 144 69 / 44%);
+  --border-muted: rgb(173 166 154 / 26%);
+  --border-faint: rgb(242 235 220 / 10%);
+  --border-paper: rgb(17 19 17 / 19%);
+  --focus-ring: var(--color-bone);
+  --focus-ring-on-light: var(--color-ink);
   --state-info: var(--color-info);
-  --state-warning: var(--color-gold);
+  --state-warning: var(--color-brass-bright);
   --state-error: var(--color-error);
-  --state-success: var(--color-cream);
-  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --state-success: var(--color-bone);
+  --font-display: 'UnifrakturCook', 'Times New Roman', serif;
+  --font-heading: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --font-body:
     'Source Sans 3', system-ui, -apple-system, 'BlinkMacSystemFont', 'Segoe UI', sans-serif;
-  --text-xs: 0.8125rem;
+  --text-xs: 0.875rem;
   --text-sm: 0.9375rem;
   --text-md: 1rem;
-  --text-lg: 1.25rem;
-  --text-xl: clamp(1.5rem, 1.25rem + 0.8vw, 2rem);
-  --text-2xl: clamp(2rem, 1.55rem + 1.8vw, 3rem);
-  --text-hero: clamp(3.25rem, 1.8rem + 5vw, 6.75rem);
-  --leading-tight: 0.95;
-  --leading-heading: 1.08;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.5rem, 2.3vw, 2rem);
+  --text-2xl: clamp(2.5rem, 5vw, 4.75rem);
+  --text-3xl: clamp(3.25rem, 7vw, 7rem);
+  --text-hero: clamp(4rem, 9vw, 8rem);
+  --leading-tight: 0.88;
+  --leading-heading: 0.94;
   --leading-body: 1.55;
   --measure-body: 65ch;
   --measure-wide: 75ch;
@@ -101,29 +109,40 @@
   --space-7: 3rem;
   --space-8: 4rem;
   --space-9: 6rem;
-  --container-max: 90rem;
+  --space-10: 8rem;
+  --space-11: 11rem;
+  --container-max: 92rem;
   --content-max: 80rem;
-  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --gutter: clamp(1.25rem, 4.3vw, 4.75rem);
   --grid-gap: clamp(1rem, 2vw, 2rem);
   --grid-columns-mobile: 4;
   --grid-columns-tablet: 6;
   --grid-columns-desktop: 12;
-
-  /* Native CSS cannot use custom properties inside media conditions. */
   --breakpoint-compact: 30rem;
   --breakpoint-tablet: 48rem;
   --breakpoint-desktop: 64rem;
   --breakpoint-wide: 80rem;
   --radius-0: 0;
   --radius-1: 0.125rem;
-  --radius-2: 0.25rem;
+  --radius-2: 999px;
   --border-thin: 1px;
   --border-strong: 2px;
   --shadow-none: none;
+  --shadow-deep: 0 2rem 6rem rgb(0 0 0 / 48%);
+  --shadow-cut: 0 1.25rem 3.5rem rgb(10 12 11 / 18%);
+  --shadow-cut-hover: 0 1.75rem 4.5rem rgb(10 12 11 / 24%);
+  --shadow-cut-active: 0 0.75rem 2rem rgb(10 12 11 / 20%);
+  --texture-line: rgb(242 235 220 / 1.6%);
   --control-min-size: 2.75rem;
   --focus-size: 0.125rem;
-  --focus-offset: 0.125rem;
-  --duration-fast: 140ms;
-  --duration-normal: 220ms;
+  --focus-offset: 0.1875rem;
+  --duration-fast: 160ms;
+  --duration-normal: 320ms;
+  --duration-slow: 700ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --z-header: 10;
+  --z-menu: 20;
+  --z-grain: 25;
+  --z-skip: 30;
 }

@@ -4,44 +4,99 @@ import HomeHero from '../components/home/HomeHero.astro';
 import ProgramRail from '../components/home/ProgramRail.astro';
 import SportPromo from '../components/home/SportPromo.astro';
 import LocationPanel from '../components/location/LocationPanel.astro';
+import VenueMap from '../components/location/VenueMap.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
+import VisitActions from '../components/visit/VisitActions.astro';
 import { homeHero, homeProgramItems, sportPromo } from '../data/home';
-import { gamesPromo, siteNavigation, verifiedSiteLocation } from '../data/site';
+import {
+  gamesPromo,
+  siteFooterNavigation,
+  siteNavigation,
+  venueLinks,
+  venueVisitInfo,
+  verifiedSiteLocation,
+} from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
+const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.postalCode} ${verifiedSiteLocation.city}`;
 ---
 
 <SiteLayout
-  title="Mike’s Pub i Sætre – privat konseptdemo"
-  description="Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub."
+  title="Mike’s Pub i Sætre – privat designforslag"
+  description="Privat designforslag for Mike’s Pub i Sætre, med besøksinformasjon og et program som bare viser bekreftede arrangementer."
+  criticalImages={[
+    { href: homeHero.image.mobile.src, media: '(max-width: 63.999rem)' },
+    { href: homeHero.image.desktop.src, media: '(min-width: 64rem)' },
+  ]}
 >
-  <SiteHeader mainId={mainId} navigation={siteNavigation} mobileMenuId="home-mobile-menu" />
-  <ConceptBanner />
+  <div class="home-site">
+    <ConceptBanner />
+    <SiteHeader
+      mainId={mainId}
+      navigation={siteNavigation}
+      mobileMenuId="home-mobile-menu"
+      menuAddress={menuAddress}
+    />
 
-  <main id={mainId} class="home-main" tabindex="-1">
-    <HomeHero id="home-hero" {...homeHero} />
+    <main id={mainId} class="home-main" tabindex="-1">
+      <HomeHero id="home-hero" {...homeHero} />
 
-    <div class="home-content ds-container">
-      <ProgramRail
-        id="program"
-        heading="Dette skjer på Mike’s"
-        intro="Eksempelkategorier uten publiserte arrangementer."
-        items={homeProgramItems}
-      />
+      <VisitActions id="home-visit-actions" content={venueVisitInfo} />
 
-      <div class="home-promos">
-        <SportPromo id="sport" {...sportPromo} />
-        <GamesPromo id="games" {...gamesPromo} />
+      <section
+        class="home-manifesto ds-container"
+        id="about"
+        aria-label="Om Mike’s Pub"
+        data-reveal
+      >
+        <p class="home-manifesto-kicker">På Mike’s</p>
+        <p class="home-manifesto-statement">
+          Musikk på scenen. Fotball på skjermen. <em>Dart og shuffleboard</em> i lokalet.
+        </p>
+        <p class="home-manifesto-note">
+          Programmet publiseres først når datoer og detaljer er bekreftet.
+        </p>
+      </section>
+
+      <div class="home-content ds-container">
+        <ProgramRail
+          id="program"
+          heading="Dette finner du på Mike’s"
+          intro="Musikk og fotball på Mike’s – med datoer når detaljene er bekreftet."
+          items={homeProgramItems}
+          action={{ ...venueLinks.facebook, label: 'Se siste nytt på Facebook' }}
+        />
+
+        <div class="home-promos" id="venue" data-reveal>
+          <SportPromo id="sport" {...sportPromo} />
+          <GamesPromo id="games" {...gamesPromo} />
+        </div>
+
+        <div class="home-location" id="location" data-reveal>
+          <VenueMap id="home-location-map" location={verifiedSiteLocation} />
+          <LocationPanel
+            id="home-location"
+            location={verifiedSiteLocation}
+            directions={venueLinks.directions}
+            variant="dark"
+          />
+        </div>
       </div>
-
-      <div class="home-location" id="location">
-        <LocationPanel id="home-location" location={verifiedSiteLocation} />
-      </div>
-    </div>
-  </main>
-
-  <SiteFooter navigation={siteNavigation} location={verifiedSiteLocation} />
+    </main>
+  </div>
+  <SiteFooter navigation={siteFooterNavigation} location={verifiedSiteLocation} />
 </SiteLayout>
+
+<script>
+  import { initializeReveals } from '../scripts/reveal';
+
+  const initialize = () => initializeReveals();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else {
+    initialize();
+  }
+</script>

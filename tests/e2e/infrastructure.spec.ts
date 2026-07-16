@@ -26,6 +26,14 @@ test('serves unknown production routes without third-party requests', async ({ p
   const previewOrigin = new URL(page.url()).origin;
 
   expect(response?.status()).toBe(404);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Siden du leter etter, finnes ikke.' }),
+  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Til forsiden' })).toHaveAttribute('href', '/');
+  await expect(page.getByRole('link', { name: 'Se programmet' })).toHaveAttribute(
+    'href',
+    '/program',
+  );
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === previewOrigin)).toBe(true);
 });

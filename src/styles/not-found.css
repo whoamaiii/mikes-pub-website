@@ -1,0 +1,63 @@
+.not-found-main {
+  min-block-size: 66dvb;
+}
+
+.not-found-panel {
+  display: grid;
+  gap: var(--space-7);
+  padding-block: var(--space-9) var(--space-10);
+  align-items: end;
+}
+
+.not-found-code {
+  font-family: var(--font-heading);
+  font-size: clamp(7rem, 28vw, 20rem);
+  font-weight: 700;
+  line-height: 0.7;
+  color: rgb(201 144 69 / 18%);
+  letter-spacing: -0.06em;
+}
+
+.not-found-copy {
+  display: grid;
+  max-inline-size: 46rem;
+  gap: var(--space-4);
+}
+
+.not-found-kicker {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.not-found-copy h1 {
+  max-inline-size: 13ch;
+  font-size: clamp(3rem, 7vw, 6rem);
+}
+
+.not-found-copy > p:not(.not-found-kicker) {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  align-items: center;
+  margin-block-start: var(--space-4);
+}
+
+@media (width >= 48rem) {
+  .not-found-panel {
+    grid-template-columns: minmax(18rem, 5fr) minmax(0, 7fr);
+  }
+}
+
+@media (forced-colors: active) {
+  .not-found-code {
+    color: GrayText;
+  }
+}

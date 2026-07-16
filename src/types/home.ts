@@ -6,13 +6,18 @@ export type HomeHeroImage = {
   desktop: ImageMetadata;
   mobile: ImageMetadata;
   alt: string;
-  focalPoint: `${number}% ${number}%`;
+  focalPoint: {
+    desktop: `${number}% ${number}%`;
+    mobile: `${number}% ${number}%`;
+  };
   rightsStatus: RightsStatus;
 };
 
 export type HomeHeroContent = {
   title: string;
+  eyebrow: string;
   intro: string;
+  location: string;
   action: LinkTarget;
   image: HomeHeroImage;
 };
@@ -20,6 +25,7 @@ export type HomeHeroContent = {
 export type HomeProgramItem = {
   id: 'music' | 'sport' | 'quiz' | 'standup';
   label: string;
+  description: string;
   icon: Extract<IconName, 'music' | 'sport' | 'quiz' | 'standup'>;
 };
 
@@ -30,6 +36,7 @@ export type HomeProgramItems =
   | readonly [HomeProgramItem, HomeProgramItem, HomeProgramItem, HomeProgramItem];
 
 export type HomePromoContent = {
+  kicker: string;
   heading: string;
   text: string;
   action?: LinkTarget;

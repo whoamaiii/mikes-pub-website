@@ -11,10 +11,10 @@ test('renders semantic components and explicit states', async ({ page }) => {
   );
   const conceptBanner = page.getByRole('complementary', { name: 'Konseptstatus' });
   await expect(conceptBanner).toHaveText(
-    'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.',
+    'Privat designforslag – ikke den offisielle nettsiden til Mike’s Pub.',
   );
   await expect(conceptBanner.locator('button, [role="button"]')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Mike’s Pub – forside' }).first()).toBeAttached();
+  await expect(page.getByRole('link', { name: 'Mike’s Pub - forside' }).first()).toBeAttached();
   const desktopNavigation = page.locator('.desktop-nav');
   await expect(desktopNavigation).toBeAttached();
   await expect(desktopNavigation.locator('a[aria-current="page"]')).toHaveText('Program');

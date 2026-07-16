@@ -22,7 +22,9 @@ test('captures deterministic WHO-18 Home evidence', async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/');
     await page
-      .getByRole('img', { name: 'Fasaden til Mike’s Pub i Sætre.' })
+      .getByRole('img', {
+        name: 'Den svarte fasaden til Mike’s Pub med belyst skilt og grønn inngang i Sætre.',
+      })
       .evaluate(async (element: HTMLImageElement) => {
         await element.decode();
       });

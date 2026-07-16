@@ -9,28 +9,31 @@ interface Props {
   conceptText?: string;
 }
 
-const {
-  navigation,
-  location,
-  brandDescription,
-  conceptText = 'Privat konseptdemo – ikke den offisielle nettsiden til Mike’s Pub.',
-} = Astro.props;
+const { navigation, location, brandDescription, conceptText } = Astro.props;
 ---
 
 <footer class="site-footer">
   <div class="site-footer-inner ds-container">
     <div class="site-footer-brand">
       <BrandLogo context="footer" />
-      {brandDescription && <p>{brandDescription}</p>}
+      <p>{brandDescription ?? `${location.street} · ${location.city}`}</p>
     </div>
 
     <nav aria-label="Bunnmeny">
+      <span class="site-footer-label">Neste steg</span>
       <ul>
         {
           navigation.map((item) => (
             <li>
-              <a class="site-footer-link" href={item.href}>
+              <a
+                class="site-footer-link"
+                href={item.href}
+                aria-label={item.accessibleLabel}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+                data-external={item.external ? 'true' : undefined}
+              >
                 {item.label}
+                {item.external && <span class="visually-hidden">(ekstern lenke)</span>}
               </a>
             </li>
           ))
@@ -39,11 +42,12 @@ const {
     </nav>
 
     <address>
+      <span class="site-footer-label">Besøk</span>
       <span>{location.name}</span>
       <span>{location.street}</span>
       <span>{location.postalCode} {location.city}</span>
     </address>
 
-    <p class="site-footer-concept">{conceptText}</p>
+    {conceptText && <p class="site-footer-concept">{conceptText}</p>}
   </div>
 </footer>

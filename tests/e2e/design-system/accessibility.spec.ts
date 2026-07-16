@@ -74,7 +74,7 @@ test('starts with a visible skip-link focus and follows responsive navigation or
   );
 
   await page.keyboard.press(tabKey);
-  await expect(page.getByRole('link', { name: 'Mike’s Pub – forside' }).first()).toBeFocused();
+  await expect(page.getByRole('link', { name: 'Mike’s Pub - forside' }).first()).toBeFocused();
 
   await page.keyboard.press(tabKey);
   const viewportWidth = page.viewportSize()?.width ?? 0;

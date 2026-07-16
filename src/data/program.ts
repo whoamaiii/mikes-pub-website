@@ -28,35 +28,35 @@ export const programFilterDefinitions = [
     label: 'Alle',
     query: 'alle',
     targetId: 'filter-all',
-    summary: 'Viser alle datonøytrale konseptoppføringer.',
+    summary: 'Viser alle bekreftede arrangementer.',
   },
   {
     value: 'music',
     label: 'Musikk',
     query: 'musikk',
     targetId: 'filter-musikk',
-    summary: 'Viser datonøytrale konseptoppføringer for Musikk.',
+    summary: 'Viser bekreftede musikkarrangementer.',
   },
   {
     value: 'sport',
     label: 'Sport',
     query: 'sport',
     targetId: 'filter-sport',
-    summary: 'Viser datonøytrale konseptoppføringer for Sport.',
+    summary: 'Viser bekreftede sportsvisninger.',
   },
   {
     value: 'quiz',
     label: 'Quiz',
     query: 'quiz',
     targetId: 'filter-quiz',
-    summary: 'Viser datonøytrale konseptoppføringer for Quiz.',
+    summary: 'Viser bekreftede quizer.',
   },
   {
     value: 'standup',
     label: 'Stand-up',
     query: 'standup',
     targetId: 'filter-standup',
-    summary: 'Viser datonøytrale konseptoppføringer for Stand-up.',
+    summary: 'Viser bekreftede stand-up-arrangementer.',
   },
 ] as const satisfies readonly ProgramFilterDefinition[];
 
@@ -139,7 +139,7 @@ export function resolveProgramEventListState(
       kind: 'error',
       error: {
         heading: 'Programvisningen kunne ikke lastes.',
-        message: 'Last siden på nytt. Denne private demoen publiserer ikke arrangementer.',
+        message: 'Last siden på nytt eller se siste oppdatering på Facebook.',
         action: { href: '/program', label: 'Last inn på nytt' },
       },
     };
@@ -149,8 +149,9 @@ export function resolveProgramEventListState(
     return {
       kind: 'empty',
       empty: {
-        heading: 'Ingen konseptoppføringer er lagt til.',
-        message: 'Denne private demoen publiserer ikke arrangementer.',
+        heading: 'Ingen bekreftede arrangementer ennå.',
+        message:
+          'Dato, tidspunkt og eventuelle billettdetaljer publiseres først når informasjonen er klar.',
       },
     };
   }
@@ -159,8 +160,8 @@ export function resolveProgramEventListState(
     kind: 'ready',
     events: entries,
     filteredEmpty: {
-      heading: 'Ingen konseptoppføringer i denne kategorien.',
-      message: 'Velg Alle for å se de andre datonøytrale eksemplene.',
+      heading: 'Ingen arrangementer i denne kategorien.',
+      message: 'Velg Alle for å se resten av det bekreftede programmet.',
       action: {
         href: '/program?kategori=alle#filter-all',
         label: 'Vis alle',
@@ -169,45 +170,13 @@ export function resolveProgramEventListState(
   };
 }
 
-export const programConceptEntries = validateProgramConceptEntries([
-  {
-    id: 'concept-music',
-    category: 'music',
-    categoryLabel: 'Musikk',
-    title: 'Musikk',
-    description: 'Eksempel på en datonøytral programoppføring for musikk.',
-    status: 'concept',
-    demoOnly: true,
-  },
-  {
-    id: 'concept-sport',
-    category: 'sport',
-    categoryLabel: 'Sport',
-    title: 'Sport',
-    description: 'Eksempel på en datonøytral programoppføring for sport.',
-    status: 'concept',
-    demoOnly: true,
-  },
-  {
-    id: 'concept-quiz',
-    category: 'quiz',
-    categoryLabel: 'Quiz',
-    title: 'Quiz',
-    description: 'Eksempel på en datonøytral programoppføring for quiz.',
-    status: 'concept',
-    demoOnly: true,
-  },
-]);
+// The production route stays empty until event facts are verified. Concept fixtures live only in
+// tests and the isolated design-system preview.
+export const programConceptEntries = validateProgramConceptEntries([]);
 
 export const programEventListState = resolveProgramEventListState(programConceptEntries);
 
 export const programIntro = {
   title: 'Program',
-  intro:
-    'Datonøytrale konseptoppføringer viser hvordan programmet kan presenteres i en privat demo.',
-};
-
-export const programNotice = {
-  title: 'Om denne programvisningen',
-  text: 'Oppføringene er eksempler i en privat konseptdemo og er ikke publiserte arrangementer.',
+  intro: 'Datoer, tider og detaljer kommer her når de er bekreftet.',
 };

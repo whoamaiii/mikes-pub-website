@@ -1,0 +1,97 @@
+---
+import type { VenueLocation } from '../../types/design-system';
+
+interface Props {
+  id: string;
+  location: VenueLocation;
+}
+
+const { id, location } = Astro.props;
+const mapLabel = location.name.toLocaleUpperCase('nb-NO');
+---
+
+<figure class="venue-map" aria-labelledby={`${id}-caption`}>
+  <svg
+    class="venue-map-drawing"
+    viewBox="0 0 960 680"
+    aria-hidden="true"
+    focusable="false"
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <defs>
+      <pattern id={`${id}-grid`} width="96" height="96" patternUnits="userSpaceOnUse">
+        <path d="M 96 0 L 0 0 0 96" class="venue-map-grid-line"></path>
+      </pattern>
+    </defs>
+
+    <rect width="960" height="680" class="venue-map-field"></rect>
+    <rect width="960" height="680" fill={`url(#${id}-grid)`}></rect>
+
+    <path
+      class="venue-map-water"
+      d="M714-24H984V704H862C844 652 838 603 853 554 870 499 844 463 815 430 786 396 800 352 779 318 756 280 733 251 742 210 750 172 711 144 698 109 683 68 692 25 714-24Z"
+    ></path>
+
+    <g class="venue-map-side-streets">
+      <path d="M56 58 185 111 279 164M77 167l68 23 51 76M186 111l-44 76M243 147l-47 75"></path>
+      <path d="M257 0 294 52 281 103 323 140M334 70l61 33 38 51 54-18"></path>
+      <path d="M321 207l71-38 65 16 52 66M372 257l42-33 65 18 52 62"></path>
+      <path d="M552 70l57 76 57 20 50 49M537 187l51 42 51-20 68 55"></path>
+      <path d="M526 291l82-48 69 42 79-58M553 339l66-51 72 51 69-41"></path>
+      <path d="M558 389l75-44 71 52 78-49M586 444l71-39 66 47 74-31"></path>
+      <path d="M556 485l83 31 54 68M628 477l69 26 49 63M709 456l56 38 48 65"></path>
+      <path d="M407 462l-72 47-42 68M450 489l-55 66-34 103M502 516l-18 74 18 90"></path>
+      <path d="M247 514l-92 22-78 53M213 576l-67 49M304 598l-65 42"></path>
+    </g>
+
+    <g class="venue-map-blocks">
+      <path d="M70 91h77v42H70zM207 104h72v43h-72zM349 114h68v51h-68z"></path>
+      <path d="M92 299h75v58H92zM219 319h66v46h-66zM598 274h71v52h-71z"></path>
+      <path d="M644 351h67v49h-67zM572 422h74v54h-74zM704 429h62v48h-62z"></path>
+      <path d="M99 487h76v55H99zM235 512h69v48h-69zM378 543h72v52h-72z"></path>
+    </g>
+
+    <path
+      class="venue-map-main-road-underlay"
+      d="M-42 8C109 76 217 139 308 211 380 268 433 345 500 435"></path>
+    <path class="venue-map-main-road" d="M-42 8C109 76 217 139 308 211 380 268 433 345 500 435"
+    ></path>
+    <path
+      class="venue-map-main-road-underlay"
+      d="M500 435C622 470 741 552 872 710M500 435C444 495 380 584 326 710"></path>
+    <path
+      class="venue-map-main-road"
+      d="M500 435C622 470 741 552 872 710M500 435C444 495 380 584 326 710"></path>
+    <circle cx="500" cy="435" r="13" class="venue-map-junction"></circle>
+
+    <g class="venue-map-marker" transform="translate(469 337)">
+      <circle r="50" class="venue-map-marker-ring"></circle>
+      <circle r="35" class="venue-map-marker-ring"></circle>
+      <path
+        class="venue-map-marker-pin"
+        d="M0-27C-15-27-27-15-27 0c0 20 27 51 27 51S27 20 27 0C27-15 15-27 0-27Z"></path>
+      <circle cy="-1" r="7" class="venue-map-marker-cutout"></circle>
+    </g>
+
+    <text x="155" y="123" class="venue-map-road-label" transform="rotate(38 155 123)">
+      Nordre Sætrevei
+    </text>
+    <text x="637" y="501" class="venue-map-road-label" transform="rotate(32 637 501)">
+      Søndre Sætrevei
+    </text>
+    <text x="369" y="608" class="venue-map-road-label" transform="rotate(-55 369 608)">
+      Sætrebakken
+    </text>
+    <text x="520" y="341" class="venue-map-venue-label">
+      {mapLabel}
+    </text>
+    <text x="835" y="210" class="venue-map-water-label" transform="rotate(90 835 210)">
+      Sætrepollen
+    </text>
+  </svg>
+
+  <figcaption id={`${id}-caption`} class="visually-hidden">
+    Stilisert kartutsnitt som markerer {location.name} i {location.street}. Bruk lenken til Google
+    Maps for nøyaktig veibeskrivelse.
+  </figcaption>
+</figure>

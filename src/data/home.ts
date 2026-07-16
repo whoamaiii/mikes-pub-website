@@ -3,26 +3,40 @@ import exteriorMobile from '../assets/images/mikes-pub-exterior-mobile.webp';
 import type { HomeHeroContent, HomeProgramItems, HomePromoContent } from '../types/home';
 
 export const homeHero: HomeHeroContent = {
-  title: 'Mike’s Pub i Sætre',
-  intro: 'Nordre Sætrevei 2, 3475 Sætre',
-  action: { href: '#program', label: 'Se konseptet' },
+  title: 'Mike’s Pub',
+  eyebrow: 'Nordre Sætrevei · Sætre',
+  intro: 'Musikk, fotball, dart og shuffleboard i Sætre.',
+  location: 'Nordre Sætrevei 2, 3475 Sætre',
+  action: { href: '#about', label: 'Oppdag Mike’s' },
   image: {
     desktop: exteriorDesktop,
     mobile: exteriorMobile,
-    alt: 'Fasaden til Mike’s Pub i Sætre.',
-    focalPoint: '50% 55%',
+    alt: 'Den svarte fasaden til Mike’s Pub med belyst skilt og grønn inngang i Sætre.',
+    focalPoint: {
+      desktop: '50% 50%',
+      mobile: '90% 50%',
+    },
     rightsStatus: 'demo-cleared',
   },
 };
 
 export const homeProgramItems = [
-  { id: 'music', label: 'Musikk', icon: 'music' },
-  { id: 'sport', label: 'Sport', icon: 'sport' },
-  { id: 'quiz', label: 'Quiz', icon: 'quiz' },
-  { id: 'standup', label: 'Stand-up', icon: 'standup' },
+  {
+    id: 'music',
+    label: 'Musikk og kultur',
+    description: 'Datoer publiseres når artist, tid og detaljer er bekreftet.',
+    icon: 'music',
+  },
+  {
+    id: 'sport',
+    label: 'Fotball på skjerm',
+    description: 'Kampoversikten legges ut når visningene er bekreftet.',
+    icon: 'sport',
+  },
 ] as const satisfies HomeProgramItems;
 
 export const sportPromo: HomePromoContent = {
+  kicker: 'På skjerm',
   heading: 'Sport på storskjerm',
-  text: 'Program publiseres når informasjonen er bekreftet.',
+  text: 'Fotballvisninger publiseres når kamp og tidspunkt er bekreftet. Se Facebook for siste oppdatering.',
 };

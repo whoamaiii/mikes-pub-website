@@ -4,9 +4,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  criticalImages?: ReadonlyArray<{
+    href: string;
+    media: string;
+  }>;
 }
 
-const { title, description } = Astro.props;
+const { title, description, criticalImages = [] } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,6 +20,59 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="theme-color" content="#0a0c0b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {
+      criticalImages.map((image) => (
+        <link
+          rel="preload"
+          href={image.href}
+          as="image"
+          type="image/webp"
+          media={image.media}
+          fetchpriority="high"
+        />
+      ))
+    }
+    <link
+      rel="preload"
+      href="/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/source-sans-3/SourceSans3-Regular.ttf.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/source-sans-3/SourceSans3-Semibold.ttf.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/barlow-condensed/BarlowCondensed-SemiBold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/barlow-condensed/BarlowCondensed-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
   </head>
   <body>

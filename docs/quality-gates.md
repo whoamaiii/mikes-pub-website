@@ -38,9 +38,14 @@ their published checksums before execution, and record the versions and results 
 Do not bypass dependency resolution, disable checks or suppress compatibility warnings.
 
 The Playwright configuration contains Chromium, Firefox, WebKit, Mobile Chrome and Mobile Safari.
-The normal configuration exercises the static production output and intentionally missing routes.
+The normal configuration exercises the static production output, the custom 404 response and
+intentionally missing routes.
 The separate design-system configuration exercises the isolated WHO-15 component preview in the
 same five profiles. `npm run test:e2e` runs both configurations.
+
+When the Codex sidebar already uses the default production port, run
+`PLAYWRIGHT_PORT=4323 npm run test:e2e`. The override affects only the normal Playwright preview and
+keeps the visible development server running.
 
 The production-isolation assertion rejects a built `/design-system/` route, preview fixture marker or
 preview-only script in `dist/`. The preview has explicit `srcDir`, `outDir` and `cacheDir` values and
@@ -60,9 +65,9 @@ subsequent WHO-17 code or documentation change.
 WHO-18 Home evidence is generated with `npm run evidence:home`. It captures the real production Home
 route at 320px, 375px, 768px, 1024px and 1440px, plus focused skip-link, forced-colors and 200%-layout
 equivalent evidence under ignored `output/playwright/who-18/`. Record a written visual comparison at
-375px and 1440px, manually inspect the approved exterior crop and confirm every browser request is
-same-origin. Rerun both the complete local gate and the WHO-18 evidence command after any subsequent
-WHO-18 code, asset or documentation change.
+375px and 1440px, manually inspect both derivatives of the Q-supplied `MIKESUTE.png` source and
+confirm every browser request is same-origin. Rerun both the complete local gate and the WHO-18
+evidence command after any subsequent WHO-18 code, asset or documentation change.
 
 ## WHO-20 Lean targeted gate
 
@@ -80,9 +85,9 @@ supply-chain and full screenshot gate to WHO-19. WHO-20 therefore uses this targ
 8. Run `npm run evidence:program`.
 9. Run `git diff --check` and inspect the complete changed-file list and diff.
 
-The Program evidence command captures 375px, 768px and 1440px views plus a focused 375px
-Stand-up filtered-empty state under ignored `output/playwright/who-20/`. Any failure in
-this targeted gate remains blocking. The narrower gate does not claim that the complete gate or
+The Program evidence command captures the honest empty production state at 375px, 768px and 1440px,
+plus a focused 375px external-update action under ignored `output/playwright/who-20/`. Any failure
+in this targeted gate remains blocking. The narrower gate does not claim that the complete gate or
 hosted GitHub Actions passed.
 
 `@axe-core/playwright` is installed for accessibility checks once an approved UI exists. Automated

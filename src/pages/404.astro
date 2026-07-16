@@ -1,0 +1,41 @@
+---
+import SiteHeader from '../components/navigation/SiteHeader.astro';
+import ConceptBanner from '../components/site/ConceptBanner.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import ActionLink from '../components/ui/ActionLink.astro';
+import { siteFooterNavigation, siteNavigation, verifiedSiteLocation } from '../data/site';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const mainId = 'main-content';
+const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.postalCode} ${verifiedSiteLocation.city}`;
+---
+
+<SiteLayout
+  title="Siden finnes ikke | Mike’s Pub – privat designforslag"
+  description="Siden finnes ikke. Gå tilbake til forsiden eller programmet for Mike’s Pub."
+>
+  <ConceptBanner />
+  <SiteHeader
+    mainId={mainId}
+    navigation={siteNavigation}
+    mobileMenuId="not-found-mobile-menu"
+    menuAddress={menuAddress}
+  />
+
+  <main id={mainId} class="not-found-main" tabindex="-1">
+    <section class="not-found-panel ds-container" aria-labelledby="not-found-heading">
+      <p class="not-found-code" aria-hidden="true">404</p>
+      <div class="not-found-copy">
+        <p class="not-found-kicker">Feil side</p>
+        <h1 id="not-found-heading">Siden du leter etter, finnes ikke.</h1>
+        <p>Lenken kan være gammel, eller adressen kan være feil.</p>
+        <div class="not-found-actions">
+          <ActionLink href="/" label="Til forsiden" variant="primary" />
+          <ActionLink href="/program" label="Se programmet" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter navigation={siteFooterNavigation} location={verifiedSiteLocation} />
+</SiteLayout>

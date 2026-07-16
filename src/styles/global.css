@@ -7,4 +7,5 @@
 @import url('./components.css') layer(components);
 @import url('./home.css') layer(components);
 @import url('./program.css') layer(components);
+@import url('./not-found.css') layer(components);
 @import url('./utilities.css') layer(utilities);

@@ -1,10 +1,13 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  scroll-padding-block-start: var(--space-7);
   background: var(--surface-page);
 }
 
 body {
+  position: relative;
+  min-block-size: 100dvb;
   overflow-wrap: anywhere;
   font-family: var(--font-body);
   font-size: var(--text-md);
@@ -12,6 +15,30 @@ body {
   color: var(--text-primary);
   background: var(--surface-page);
   text-rendering: optimizelegibility;
+}
+
+body::before {
+  position: fixed;
+  z-index: var(--z-grain);
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background-image:
+    repeating-radial-gradient(
+      circle at 16% 28%,
+      rgb(242 235 220 / 4%) 0 0.6px,
+      transparent 0.8px 3px
+    ),
+    repeating-radial-gradient(
+      circle at 78% 72%,
+      rgb(201 144 69 / 2.5%) 0 0.55px,
+      transparent 0.75px 3.5px
+    );
+  background-size:
+    5px 5px,
+    7px 7px;
+  mix-blend-mode: soft-light;
+  opacity: 0.16;
 }
 
 main {
@@ -24,40 +51,46 @@ h2,
 h3,
 h4 {
   max-inline-size: var(--measure-body);
-  font-family: var(--font-display);
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-weight: 700;
   line-height: var(--leading-heading);
+  letter-spacing: -0.02em;
+  overflow-wrap: normal;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
 }
 
 h2 {
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
 }
 
 h3 {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
 }
 
 p {
-  max-inline-size: var(--measure-wide);
+  max-inline-size: var(--measure-body);
+  text-wrap: pretty;
 }
 
 a {
   color: inherit;
   text-decoration-color: var(--text-accent);
   text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.22em;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    text-decoration-color var(--duration-fast) var(--ease-standard);
 }
 
 a:hover {
   color: var(--text-accent);
 }
 
-:where(a, button, [tabindex]):focus-visible {
+:where(a, button, summary, [tabindex]):focus-visible {
   outline: var(--focus-size) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
@@ -65,6 +98,19 @@ a:hover {
 ::selection {
   color: var(--text-on-accent);
   background: var(--surface-accent);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+[data-reveal][data-reveal-visible='true'] {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -76,9 +122,14 @@ a:hover {
   *::before,
   *::after {
     scroll-behavior: auto;
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
-    transition-duration: 0.01ms;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -87,7 +138,11 @@ a:hover {
     color-scheme: light dark;
   }
 
-  :where(a, button, [tabindex]):focus-visible {
+  body::before {
+    display: none;
+  }
+
+  :where(a, button, summary, [tabindex]):focus-visible {
     outline-color: Highlight;
   }
 

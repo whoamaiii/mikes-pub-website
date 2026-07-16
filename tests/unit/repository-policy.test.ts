@@ -62,8 +62,8 @@ describe('repository policy', () => {
     expect(actionReferences.every((reference) => /@[0-9a-f]{40}$/.test(reference))).toBe(true);
   });
 
-  test('permits only the Home and Program pages approved for the private demo', async () => {
+  test('permits only Home, Program and the custom not-found page', async () => {
     const pageFiles = (await readdir(path.join(root, 'src/pages'))).sort();
-    expect(pageFiles).toEqual(['index.astro', 'program.astro']);
+    expect(pageFiles).toEqual(['404.astro', 'index.astro', 'program.astro']);
   });
 });

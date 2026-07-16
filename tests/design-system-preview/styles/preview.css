@@ -2,6 +2,11 @@
   padding-block: var(--space-7) var(--space-9);
 }
 
+.preview-main :where(h1, h2, h3, p) {
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+
 .preview-intro {
   display: grid;
   gap: var(--space-4);
@@ -16,7 +21,7 @@
   font-size: var(--text-sm);
   font-weight: 700;
   color: var(--text-accent);
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -81,24 +86,24 @@
   border: var(--border-thin) solid var(--border-default);
 }
 
-.preview-swatch--facade {
-  color: var(--color-cream);
-  background: var(--color-facade);
+.preview-swatch--ink {
+  color: var(--color-bone);
+  background: var(--color-ink);
 }
 
-.preview-swatch--green {
-  color: var(--color-cream);
-  background: var(--color-green);
+.preview-swatch--charcoal {
+  color: var(--color-bone);
+  background: var(--color-charcoal);
 }
 
-.preview-swatch--gold {
-  color: var(--color-facade);
-  background: var(--color-gold);
+.preview-swatch--brass {
+  color: var(--color-ink);
+  background: var(--color-brass);
 }
 
-.preview-swatch--cream {
-  color: var(--color-facade);
-  background: var(--color-cream);
+.preview-swatch--bone {
+  color: var(--color-ink);
+  background: var(--color-bone);
 }
 
 .preview-type-display {
@@ -107,7 +112,6 @@
   font-weight: 700;
   line-height: var(--leading-heading);
   color: var(--text-accent);
-  text-transform: uppercase;
 }
 
 .preview-type-body {

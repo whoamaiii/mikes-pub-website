@@ -10,9 +10,9 @@ const root = fileURLToPath(new URL('../..', import.meta.url));
 
 const approvedDerivativeHashes = {
   'src/assets/images/mikes-pub-exterior-desktop.webp':
-    'cb218b6a662d9ba67ac912b2c24792684b8734d9e3560d403f046ab2f733ea16',
+    '1aceb4537abd7b75e6ae8581c7b05518fb4d7490593f818fe10133c9cc5a72d2',
   'src/assets/images/mikes-pub-exterior-mobile.webp':
-    '58456c4566d911822c43de4478c0383a822a9e4011c7284ca514c4c791c9eedc',
+    '4ecbb2654825a592ea25fe27b6bc277648a89e79d08b0233286b7bd66ddd96de',
 } as const;
 
 describe('WHO-18 Home policy', () => {
@@ -24,7 +24,7 @@ describe('WHO-18 Home policy', () => {
     }
   });
 
-  test('keeps the TIFF master and local references outside Git', () => {
+  test('keeps local source masters and references outside Git', () => {
     const trackedFiles = execFileSync('git', ['ls-files'], {
       cwd: root,
       encoding: 'utf8',
@@ -33,19 +33,22 @@ describe('WHO-18 Home policy', () => {
       .filter(Boolean);
 
     expect(trackedFiles.some((file) => /\.tiff?$/i.test(file))).toBe(false);
+    expect(trackedFiles).not.toContain('MIKESUTE');
+    expect(trackedFiles).not.toContain('MIKESUTE.png');
     expect(trackedFiles.some((file) => file.startsWith('design-reference/'))).toBe(false);
   });
 
-  test('documents source integrity and non-generative transformation', async () => {
+  test('documents source integrity, transformation and publication limits', async () => {
     const provenance = await readFile(path.join(root, 'docs/assets/home-assets.md'), 'utf8');
 
     expect(provenance).toContain(
-      '4ce32467e449def948337339cf0eea83efff4154b5edcf86b7feac4d02800b26',
+      '0df92268d913da3a165ff26d943133c5d213dc126d670101bae5124df05c95e3',
     );
     for (const hash of Object.values(approvedDerivativeHashes)) {
       expect(provenance).toContain(hash);
     }
-    expect(provenance).toContain('No generative editing');
+    expect(provenance).toContain('have not been independently verified');
+    expect(provenance.toLowerCase()).toContain('client/owner confirmation');
     expect(provenance).toContain('must not be committed');
   });
 });

@@ -1,0 +1,53 @@
+---
+import type { VisitInfo } from '../../types/visit';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  id: string;
+  content: VisitInfo;
+}
+
+const { id, content } = Astro.props;
+---
+
+<section class="visit-actions" aria-labelledby={`${id}-heading`}>
+  <div class="visit-actions-inner ds-container">
+    <div class="visit-actions-intro">
+      <h2 id={`${id}-heading`}>{content.heading}</h2>
+      <p>{content.intro}</p>
+    </div>
+
+    <div class="visit-actions-grid">
+      <div class="visit-actions-hours" data-verification-status={content.hours.verificationStatus}>
+        <span class="visit-actions-label">{content.hours.label}</span>
+        <strong>{content.hours.value}</strong>
+        <span class="visit-actions-detail">{content.hours.note}</span>
+      </div>
+
+      <ul aria-label="Hurtighandlinger for besøk">
+        {
+          content.actions.map((action) => (
+            <li>
+              <a
+                class="visit-action-link"
+                href={action.href}
+                aria-label={action.accessibleLabel ?? `${action.label}: ${action.detail}`}
+                rel={action.external ? 'noopener noreferrer' : undefined}
+                data-action-kind={action.kind}
+                data-verification-status={action.verificationStatus}
+                data-external={action.external ? 'true' : undefined}
+              >
+                <span>
+                  <span class="visit-actions-label">{action.label}</span>
+                  <strong>{action.detail}</strong>
+                </span>
+                {action.external && <span class="visually-hidden">(ekstern lenke)</span>}
+                <Icon name="arrow-right" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

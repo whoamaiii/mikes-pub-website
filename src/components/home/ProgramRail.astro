@@ -1,5 +1,7 @@
 ---
+import type { LinkTarget } from '../../types/design-system';
 import type { HomeProgramItems } from '../../types/home';
+import ActionLink from '../ui/ActionLink.astro';
 import Icon from '../ui/Icon.astro';
 
 interface Props {
@@ -7,9 +9,10 @@ interface Props {
   heading: string;
   intro: string;
   items: HomeProgramItems;
+  action: LinkTarget;
 }
 
-const { id, heading, intro, items } = Astro.props;
+const { id, heading, intro, items, action } = Astro.props;
 ---
 
 <section
@@ -21,16 +24,25 @@ const { id, heading, intro, items } = Astro.props;
   <header class="home-section-header">
     <h2 id={`${id}-heading`}>{heading}</h2>
     <p id={`${id}-intro`}>{intro}</p>
+    <ActionLink {...action} />
   </header>
 
   <ul class="home-program-list">
     {
       items.map((item) => (
-        <li class="home-program-item" data-category={item.id}>
-          <span class="home-program-icon" aria-hidden="true">
-            <Icon name={item.icon} size={32} />
-          </span>
-          <span>{item.label}</span>
+        <li class="home-program-item" data-category={item.id} data-reveal>
+          <article class="home-program-entry">
+            <span class="home-program-number" aria-hidden="true">
+              {String(items.indexOf(item) + 1).padStart(2, '0')}
+            </span>
+            <span class="home-program-icon" aria-hidden="true">
+              <Icon name={item.icon} size={32} />
+            </span>
+            <span class="home-program-copy">
+              <span class="home-program-name">{item.label}</span>
+              <span class="home-program-description">{item.description}</span>
+            </span>
+          </article>
         </li>
       ))
     }

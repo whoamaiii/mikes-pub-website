@@ -46,7 +46,8 @@ const statusLabels: Record<EventRowData['status'], string> = {
       )
     }
 
-    <div class="event-row-category" aria-label={`Kategori: ${event.categoryLabel}`}>
+    <div class="event-row-category">
+      <span class="visually-hidden">Kategori: </span>
       <span class="event-row-icon"><Icon name={categoryIcons[event.category]} /></span>
       <span>{event.categoryLabel}</span>
     </div>

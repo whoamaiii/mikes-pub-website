@@ -6,22 +6,34 @@ interface Props extends HomeHeroContent {
   id: string;
 }
 
-const { id, title, intro, action, image } = Astro.props;
+const { id, title, eyebrow, intro, location, action, image } = Astro.props;
+const [venueFirstName = title, venueSecondName = ''] = title.trim().split(/\s+/, 2);
 ---
 
 <section class="home-hero" aria-labelledby={`${id}-heading`}>
   <div class="home-hero-inner ds-container">
     <div class="home-hero-content">
-      <h1 id={`${id}-heading`}>{title}</h1>
+      <p class="home-hero-eyebrow"><span>{eyebrow}</span></p>
+      <h1 id={`${id}-heading`}>
+        <span class="home-hero-title-lockup">
+          <span class="home-hero-title-readable">{venueFirstName}</span>{' '}
+          {venueSecondName && <span class="home-hero-title-display">{venueSecondName}</span>}
+        </span>
+      </h1>
       <p class="home-hero-intro">{intro}</p>
       <div class="home-hero-action">
         <ActionLink {...action} variant="primary" />
       </div>
     </div>
 
+    <div class="home-hero-meta" aria-label="Adresse">
+      <span class="home-hero-meta-label">Her finner du oss</span>
+      <span>{location}</span>
+    </div>
+
     <figure
       class="home-hero-media"
-      style={`--home-hero-focal-point: ${image.focalPoint}`}
+      style={`--home-hero-focal-point-mobile: ${image.focalPoint.mobile}; --home-hero-focal-point-desktop: ${image.focalPoint.desktop}`}
       data-rights-status={image.rightsStatus}
     >
       <picture>

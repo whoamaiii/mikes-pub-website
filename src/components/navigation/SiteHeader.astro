@@ -11,9 +11,10 @@ interface Props {
   currentId?: string;
   mobileMenuId: string;
   logoAsset?: ClearedImageAsset;
+  menuAddress?: string;
 }
 
-const { mainId, navigation, currentId, mobileMenuId, logoAsset } = Astro.props;
+const { mainId, navigation, currentId, mobileMenuId, logoAsset, menuAddress } = Astro.props;
 ---
 
 <header class="site-header">
@@ -21,6 +22,12 @@ const { mainId, navigation, currentId, mobileMenuId, logoAsset } = Astro.props;
   <div class="site-header-inner ds-container">
     <BrandLogo context="header" asset={logoAsset} />
     <DesktopNav items={navigation} currentId={currentId} />
-    <MobileMenu id={mobileMenuId} items={navigation} currentId={currentId} logoAsset={logoAsset} />
+    <MobileMenu
+      id={mobileMenuId}
+      items={navigation}
+      currentId={currentId}
+      logoAsset={logoAsset}
+      address={menuAddress}
+    />
   </div>
 </header>

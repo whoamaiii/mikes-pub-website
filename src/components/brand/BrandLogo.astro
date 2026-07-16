@@ -14,7 +14,7 @@ const { context, href = '/', label = 'Mike’s Pub', asset } = Astro.props;
 <a
   class:list={['brand-logo', `brand-logo-${context}`]}
   href={href}
-  aria-label={`${label} – forside`}
+  aria-label={`${label} - forside`}
 >
   {
     asset ? (
@@ -28,7 +28,8 @@ const { context, href = '/', label = 'Mike’s Pub', asset } = Astro.props;
       />
     ) : (
       <span class="brand-logo-placeholder" data-logo-placeholder>
-        {label}
+        <span class="brand-logo-name">{label}</span>
+        <span class="brand-logo-place">Sætre</span>
       </span>
     )
   }

@@ -10,15 +10,17 @@ interface Props {
   text: string;
   action?: LinkTarget;
   live?: boolean;
+  headingLevel?: 2 | 3;
 }
 
-const { id, variant, title, text, action, live = false } = Astro.props;
+const { id, variant, title, text, action, live = false, headingLevel = 3 } = Astro.props;
 const icons: Record<NoticeVariant, IconName> = {
   info: 'info',
   warning: 'warning',
   error: 'error',
   success: 'success',
 };
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
 ---
 
 <aside
@@ -28,7 +30,7 @@ const icons: Record<NoticeVariant, IconName> = {
 >
   <Icon name={icons[variant]} />
   <div>
-    <h3 id={`${id}-title`}>{title}</h3>
+    <Heading id={`${id}-title`}>{title}</Heading>
     <p>{text}</p>
     {action && <ActionLink {...action} />}
   </div>

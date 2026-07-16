@@ -1,20 +1,23 @@
 ---
 import type { LinkTarget, VenueLocation } from '../../types/design-system';
 import ActionLink from '../ui/ActionLink.astro';
-import Icon from '../ui/Icon.astro';
 
 interface Props {
   id: string;
   location: VenueLocation;
   heading?: string;
   directions?: LinkTarget;
+  variant?: 'paper' | 'dark';
 }
 
-const { id, location, heading = 'Finn oss i Sætre', directions } = Astro.props;
+const { id, location, heading = 'Finn oss i Sætre', directions, variant = 'paper' } = Astro.props;
 ---
 
-<section class="location-panel" aria-labelledby={`${id}-heading`}>
-  <Icon name="location" size={32} />
+<section
+  class:list={['location-panel', variant === 'dark' && 'location-panel-dark']}
+  aria-labelledby={`${id}-heading`}
+>
+  <p class="location-panel-kicker">Nordre Sætrevei</p>
   <div class="location-panel-content">
     <h2 id={`${id}-heading`}>{heading}</h2>
     <address>
@@ -23,5 +26,6 @@ const { id, location, heading = 'Finn oss i Sætre', directions } = Astro.props;
       <span>{location.postalCode} {location.city}</span>
     </address>
   </div>
+  <span class="location-panel-coordinate" aria-hidden="true">Mike’s Pub / 3475 Sætre</span>
   {directions && <ActionLink {...directions} />}
 </section>

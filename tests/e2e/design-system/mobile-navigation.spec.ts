@@ -62,7 +62,7 @@ test('opens without pointer input, contains focus, closes with Escape and return
 
   const dialog = page.getByRole('dialog', { name: 'Hovedmeny' });
   const closeButton = dialog.getByRole('button', { name: 'Lukk meny' });
-  const firstLink = dialog.getByRole('link', { name: 'Mike’s Pub – forside' });
+  const firstLink = dialog.getByRole('link', { name: 'Mike’s Pub - forside' });
   const lastLink = dialog.getByRole('link', { name: 'Finn oss' });
   await expect(closeButton).toBeFocused();
 

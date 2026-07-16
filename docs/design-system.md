@@ -9,22 +9,23 @@ responsive decisions. Generated references remain local-only guidance and are ne
 The coded system contains global foundations and reusable primitives for navigation, controls,
 filters, event presentation, feedback, location and footer composition. WHO-15 deliberately created
 no product route; WHO-18 now composes the accepted system on Home. WHO-17 provides the approved
-mobile-navigation behavior, and WHO-20 composes the same system on the private-demo Program route.
+mobile-navigation behavior, WHO-20 composes the same system on Program, and the custom `404.astro`
+route keeps failed navigation inside the same branded, accessible shell.
 
 ## Token policy
 
 Raw palette values exist only in `src/styles/tokens.css`. Production components use semantic aliases.
+Standalone assets that cannot consume CSS custom properties may embed verified palette values when
+their ownership and use are documented; the local favicon is the sole current exception.
 
-| Pairing                              | Use                              |
-| ------------------------------------ | -------------------------------- |
-| Cream on facade or green             | Primary text                     |
-| Muted on facade or green             | Secondary text                   |
-| Gold on facade or green              | Text, rules and controls         |
-| Facade or green on gold              | Filled controls                  |
-| Lantern on facade                    | Large, non-essential accent only |
-| Cream on gold                        | Prohibited                       |
-| Lantern on gold                      | Prohibited                       |
-| Lantern on green at normal text size | Prohibited                       |
+| Pairing                 | Use                             |
+| ----------------------- | ------------------------------- |
+| Bone on ink or charcoal | Primary text                    |
+| Muted on ink            | Secondary text                  |
+| Brass on ink            | Text, rules and controls        |
+| Ink on brass            | Filled controls and selection   |
+| Bone on brass           | Prohibited                      |
+| Low-contrast brass text | Prohibited at normal text sizes |
 
 Spacing follows the frozen 4px scale. Component spacing uses 8/12/16/24px; section spacing uses
 48/64/96px. Layout uses 4, 6 and 12 columns with reference breakpoints at 30, 48, 64 and 80rem.
@@ -51,10 +52,61 @@ motion reduces non-essential transitions to effectively immediate changes.
   cancelled and expired rows require time; postponed rows require the prior time and show a
   replacement only when both replacement values exist.
 - Draft records have no renderable row variant because WHO-32 forbids publishing them.
-- WHO-20 validates its local date-neutral concept boundary. Production publication validation
-  remains outside the private-demo component contract.
+- WHO-20 validates its local date-neutral concept boundary for tests and the isolated preview. The
+  production Program route stays empty until event facts have been verified; filters appear only
+  when there are publishable entries.
 - Missing optional descriptions, actions and images collapse without broken placeholders.
 - `BrandLogo` renders a plain typographic placeholder until an authorized logo master is supplied.
+- `VisitActions` presents the visit decision as one status cell plus directions, phone and Facebook
+  actions. It never calculates or implies an opening status. External destinations are allowlisted,
+  explicitly labelled and recorded in `docs/content-sources.md`.
+- `VenueMap` is a code-native, stylized locator diagram rather than a navigation map. It marks the
+  verified street and pairs with the allowlisted Google Maps directions link; its hidden caption
+  tells assistive-technology users to use that link for the exact route.
+
+## Midnight Brass visual direction
+
+The current Home and Program composition follows the selected ImageGen reference as a dark,
+nighttime pub frontage. It keeps only the verified venue name, address, existing routes and
+Q-authorized exterior image from the current direction:
+
+- Home uses the exterior photograph as the full first viewport. The title, address and primary
+  action sit directly on the image with controlled dark overlays, never inside a floating card.
+  Mobile and desktop use separate focal positions from the same approved image bytes so the venue
+  sign remains legible without retouching or replacing the photograph.
+- `Mike’s Pub` is the hero headline. The Sætre address remains supporting copy, not part of the
+  brand name.
+- Local `UnifrakturCook` echoes the real pub sign in the compact brand wordmark and the `Pub` accent
+  in the hero. Barlow Condensed carries editorial headings; navigation, controls, filters and body
+  copy use Source Sans 3.
+- Home activities and Program events are open editorial rows with brass rules. Home activity rows
+  are intentionally non-interactive: one clearly labelled Facebook action carries current updates,
+  while the primary hero action continues the on-page story instead of promising an empty Program.
+  There are no soft cards, pill stacks, rounded badges or generic decorative panels.
+- The visit actions sit directly after the hero as a compact ledger. They become full-width rows on
+  narrow screens and retain 44px or larger interaction targets.
+- Program preserves the filter and event-list behavior for future verified entries, including the
+  no-JS fragment fallback. With no verified entries it renders a deliberate empty state without
+  fake event rows or inactive filter controls.
+- The concept disclosure is a short, consistent line above the header on every route. It clearly
+  separates the private proposal from an official Mike’s Pub website without dominating the page.
+- Brass is the only decorative accent. Depth comes from photo layering, sparse lines, typographic
+  scale and dark tonal contrast.
+- Persistent labels and supporting copy use a 14px minimum token; the display hierarchy, rather
+  than undersized utility text, supplies visual contrast.
+- The Home hero pairs a highly legible condensed `Mike’s` with a restrained blackletter `Pub`,
+  keeping the venue mood without turning the page into a novelty theme.
+- Motion is limited to a one-time content entrance. There is no continuous image breathing, marquee
+  or ornamental line loop; reduced-motion users receive the same layout without animation.
+- The layout preloads the local display face and the viewport-matched hero crop documented in
+  `docs/assets/home-assets.md`.
+
+The local ImageGen mockups under `output/imagegen/mikes-pub-midnight-brass/` are implementation
+references only. They are not shipped, imported or treated as licensed production assets; verified
+repository content and the currently supplied photography remain authoritative for this proposal.
+
+The local private-demo favicon is a project-authored monogram, not an official logo. Its provenance
+and limits are recorded in `docs/assets/favicon.md`.
 
 ## Local-only preview
 
@@ -119,9 +171,19 @@ repository's proprietary `UNLICENSED` application code.
 | `WOFF2/TTF/SourceSans3-Bold.ttf.woff2`     | `8d35c6d40e750a4ee23bbbba2bd604ad098d172907369b43281507e16b8e2e7a` |
 | `LICENSE.md`                               | `89ad2c4f66dd29127527493e729c31e731f111cf10faf5774c3db9275ed0c22c` |
 
-All six `@font-face` rules use `font-display: swap` and approved system fallbacks. Unit tests verify
-every binary and licence hash. Removing the fonts means deleting the files, upstream licences and
-`@font-face` declarations; the fallback stacks remain usable.
+### UnifrakturCook
+
+- Copyright: 2011 Peter Wiegel
+- Source: <https://fonts.google.com/specimen/UnifrakturCook>
+- Licence: `public/fonts/unifraktur-cook/OFL.txt`
+
+| Local path                                             | SHA-256                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `public/fonts/unifraktur-cook/UnifrakturCook-Bold.ttf` | `ea002fa9c65f1a612af100e00d87ab65f16381f450020ec3d021f3dbf79a6dcd` |
+| `public/fonts/unifraktur-cook/OFL.txt`                 | `99d2f30e282d6174af8ff68597f58bb53c0dcb2b104a4c1b8d19da49021d00d3` |
+
+The six active `@font-face` rules use `font-display: swap` and approved system fallbacks. Unit tests
+verify every active binary and licence hash.
 
 ## Icon provenance
 

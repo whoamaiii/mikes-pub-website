@@ -1,8 +1,6 @@
 ---
 import EventList from '../components/events/EventList.astro';
-import InlineNotice from '../components/feedback/InlineNotice.astro';
 import CategoryFilter from '../components/filters/CategoryFilter.astro';
-import GamesPromo from '../components/home/GamesPromo.astro';
 import LocationPanel from '../components/location/LocationPanel.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
 import PageIntro from '../components/program/PageIntro.astro';
@@ -13,77 +11,102 @@ import {
   programEventListState,
   programFilterDefinitions,
   programIntro,
-  programNotice,
 } from '../data/program';
-import { gamesPromo, siteNavigation, verifiedSiteLocation } from '../data/site';
+import {
+  siteFooterNavigation,
+  siteNavigation,
+  venueLinks,
+  verifiedSiteLocation,
+} from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
+const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.postalCode} ${verifiedSiteLocation.city}`;
+const hasPublishedEvents =
+  programEventListState.kind === 'ready' && programEventListState.events.length > 0;
+const programPageEventListState =
+  programEventListState.kind === 'empty'
+    ? {
+        ...programEventListState,
+        empty: {
+          ...programEventListState.empty,
+          action: { ...venueLinks.facebook, label: 'Se siste nytt på Facebook' },
+        },
+      }
+    : programEventListState;
 ---
 
 <SiteLayout
-  title="Program – Mike’s Pub privat konseptdemo"
-  description="Datonøytral programvisning i en privat konseptdemo for Mike’s Pub."
+  title="Program | Mike’s Pub – privat designforslag"
+  description="Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises."
 >
+  <ConceptBanner />
   <SiteHeader
     mainId={mainId}
     navigation={siteNavigation}
     currentId="program"
     mobileMenuId="program-mobile-menu"
+    menuAddress={menuAddress}
   />
-  <ConceptBanner />
 
   <main id={mainId} class="program-main" tabindex="-1">
     <PageIntro id="program-intro" {...programIntro} />
 
     <div class="program-content ds-container">
-      <section class="program-directory" data-program-filter aria-label="Programoversikt">
-        {
-          programFilterDefinitions.map((filter) => (
-            <span
-              id={filter.targetId}
-              class="program-filter-target"
-              data-filter-target={filter.value}
-              aria-hidden="true"
+      {
+        hasPublishedEvents ? (
+          <section class="program-directory" data-program-filter aria-label="Programoversikt">
+            {programFilterDefinitions.map((filter) => (
+              <span
+                id={filter.targetId}
+                class="program-filter-target"
+                data-filter-target={filter.value}
+                aria-hidden="true"
+              />
+            ))}
+
+            <div class="program-filter-shell" data-program-filter-shell>
+              <div class="program-filter-controls">
+                <div class="program-filter-group">
+                  <p class="program-filter-label">Filtrer program</p>
+                  <CategoryFilter categories={programCategories} />
+                </div>
+                <p class="program-filter-summary" data-program-filter-summary aria-live="polite">
+                  {programFilterDefinitions.map((filter) => (
+                    <span data-filter-summary-value={filter.value}>{filter.summary}</span>
+                  ))}
+                </p>
+              </div>
+
+              <EventList
+                id="program-events"
+                heading="Bekreftet program"
+                state={programEventListState}
+              />
+            </div>
+          </section>
+        ) : (
+          <div class="program-empty-shell">
+            <EventList
+              id="program-events"
+              heading="Programstatus"
+              state={programPageEventListState}
             />
-          ))
-        }
-
-        <div class="program-filter-shell" data-program-filter-shell>
-          <div class="program-filter-controls">
-            <CategoryFilter categories={programCategories} />
-            <p class="program-filter-summary" data-program-filter-summary aria-live="polite">
-              {
-                programFilterDefinitions.map((filter) => (
-                  <span data-filter-summary-value={filter.value}>{filter.summary}</span>
-                ))
-              }
-            </p>
           </div>
-
-          <EventList
-            id="program-events"
-            heading="Konseptoppføringer"
-            state={programEventListState}
-          />
-        </div>
-      </section>
-
-      <div class="program-notice">
-        <InlineNotice id="program-status" variant="info" {...programNotice} />
-      </div>
-
-      <div class="program-games">
-        <GamesPromo id="program-games" {...gamesPromo} />
-      </div>
+        )
+      }
 
       <div class="program-location" id="location">
-        <LocationPanel id="program-location" location={verifiedSiteLocation} />
+        <LocationPanel
+          id="program-location"
+          location={verifiedSiteLocation}
+          directions={venueLinks.directions}
+        />
       </div>
     </div>
   </main>
 
-  <SiteFooter navigation={siteNavigation} location={verifiedSiteLocation} />
+  <SiteFooter navigation={siteFooterNavigation} location={verifiedSiteLocation} />
 </SiteLayout>
 
 <script>
