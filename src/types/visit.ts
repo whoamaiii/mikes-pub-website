@@ -1,6 +1,6 @@
 import type { LinkTarget } from './design-system';
 
-export type VisitVerificationStatus = 'verified-public-source' | 'awaiting-owner-confirmation';
+export type VisitVerificationStatus = 'verified-public-source' | 'owner-confirmed';
 
 export type VisitAction = LinkTarget & {
   kind: 'directions' | 'phone' | 'social';

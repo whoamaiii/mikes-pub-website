@@ -28,14 +28,15 @@ const publishedProgramState =
     ? programEventListState
     : undefined;
 const directoryState = publishedProgramState ?? conceptProgramEventListState;
-const directoryHeading = publishedProgramState ? 'Bekreftet program' : 'Slik kan programmet se ut';
+const directoryHeading = publishedProgramState ? 'Bekreftet program' : 'Eksempelprogram';
+const directoryMode = publishedProgramState ? 'published' : 'concept';
 const showConceptNotice = !publishedProgramState;
+const pageDescription = publishedProgramState
+  ? 'Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises.'
+  : 'Privat designforslag til en framtidig programoversikt for Mike’s Pub i Sætre. Ingen arrangementer er bekreftet.';
 ---
 
-<SiteLayout
-  title="Program | Mike’s Pub | privat designforslag"
-  description="Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises."
->
+<SiteLayout title="Program | Mike’s Pub | privat designforslag" description={pageDescription}>
   <ConceptBanner />
   <SiteHeader
     mainId={mainId}
@@ -46,16 +47,25 @@ const showConceptNotice = !publishedProgramState;
   />
 
   <main id={mainId} class="program-main" tabindex="-1">
-    <PageIntro id="program-intro" {...programIntro} />
+    <PageIntro
+      id="program-intro"
+      title={programIntro.title}
+      intro={publishedProgramState
+        ? programIntro.intro
+        : 'Ingen bekreftede arrangementer er publisert ennå.'}
+      eyebrow={publishedProgramState ? 'Hva skjer' : 'Programstatus'}
+    />
 
     <div class="program-content ds-container">
       {
         showConceptNotice && (
           <InlineNotice
             id="program-concept-notice"
+            className="program-concept-notice"
             variant="info"
-            title="Eksempelinnhold"
-            text="Oppføringene nedenfor er konsepteksempler fra designforslaget. Ekte datoer og detaljer publiseres når puben har bekreftet dem."
+            title="Designforslag"
+            text="Oppføringene under viser hvordan et framtidig program kan se ut – de er ikke ekte arrangementer."
+            action={{ ...venueLinks.facebook, label: 'Se siste nytt' }}
             headingLevel={2}
           />
         )
@@ -64,6 +74,7 @@ const showConceptNotice = !publishedProgramState;
         categories={programCategories}
         filters={programFilterDefinitions}
         heading={directoryHeading}
+        mode={directoryMode}
         state={directoryState}
       />
 

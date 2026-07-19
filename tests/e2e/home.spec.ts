@@ -22,16 +22,21 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   const headings = await page.getByRole('heading', { level: 2 }).allTextContents();
   expect(headings).toEqual([
     'Før du drar',
-    'Dette finner du på Mike’s',
+    'Inne på Mike’s',
     'Sport på storskjerm',
     'Dart og shuffleboard',
     'Finn oss i Sætre',
   ]);
+  await expect(page.locator('.home-section-kicker')).toHaveText('Scene · skjerm · spill');
   await expect(page.locator('.home-program-item')).toHaveCount(2);
   await expect(page.locator('.home-program-entry')).toHaveCount(2);
+  await expect(page.locator('.home-program-entry h3')).toHaveText([
+    'Musikk og kultur',
+    'Fotball på skjerm',
+  ]);
   await expect(page.locator('.home-program-item a')).toHaveCount(0);
-  await expect(page.locator('.home-hero-action a')).toHaveAttribute('href', '#about');
-  await expect(page.locator('.home-hero-action a')).toHaveText('Oppdag Mike’s');
+  await expect(page.locator('.home-hero-action a')).toHaveAttribute('href', '#program');
+  await expect(page.locator('.home-hero-action a')).toHaveText('Se hva du finner hos oss');
   await expect(page.locator('.home-main a[href="/program"]')).toHaveCount(0);
   await expect(
     page.locator('.home-program').getByRole('link', {
@@ -42,9 +47,10 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     'href',
     'tel:+4791855855',
   );
+  await expect(page.locator('[data-verification-status="owner-confirmed"]')).toHaveCount(3);
   await expect(
     page.locator('[data-verification-status="awaiting-owner-confirmation"]'),
-  ).toHaveCount(2);
+  ).toHaveCount(0);
   await expect(page.locator('time')).toHaveCount(0);
   await expect(page.locator('[id]')).toHaveCount(
     await page
@@ -132,7 +138,7 @@ test('uses the supplied art-directed exterior image without local source masters
   await expect(image).toBeVisible();
   await expect(page.locator('.home-hero-media')).toHaveAttribute(
     'data-rights-status',
-    'demo-cleared',
+    'production-cleared',
   );
 
   const metadata = await image.evaluate(async (element: HTMLImageElement) => {
@@ -335,6 +341,29 @@ test('reflows without horizontal overflow from 320px through wide desktop', asyn
     }));
     expect(dimensions.scrollWidth, `${width}px`).toBeLessThanOrEqual(dimensions.clientWidth);
   }
+});
+
+test('uses an editorial lower-page flow instead of repeated card panels', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1000 });
+  await page.goto(homePath);
+
+  const promos = page.locator('.home-promo');
+  await expect(promos).toHaveCount(2);
+  await expect(promos.locator('.home-promo-index')).toHaveText(['01', '02']);
+  await expect(promos.nth(0)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(promos.nth(1)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+
+  const sportBox = await promos.nth(0).boundingBox();
+  const gamesBox = await promos.nth(1).boundingBox();
+  expect(sportBox).not.toBeNull();
+  expect(gamesBox).not.toBeNull();
+  expect(gamesBox!.x).toBeGreaterThan(sportBox!.x);
+
+  const mapBox = await page.locator('.venue-map').boundingBox();
+  const locationBox = await page.locator('.home-location .location-panel').boundingBox();
+  expect(mapBox).not.toBeNull();
+  expect(locationBox).not.toBeNull();
+  expect(locationBox!.x).toBeLessThan(mapBox!.x + mapBox!.width);
 });
 
 test('preserves reflow at the 200 percent layout equivalent', async ({ page }) => {

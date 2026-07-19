@@ -16,7 +16,7 @@ const categoryIcons: Record<EventRowData['category'], IconName> = {
   special: 'calendar',
 };
 const statusLabels: Record<EventRowData['status'], string> = {
-  concept: 'Konsept',
+  concept: 'Eksempel',
   scheduled: 'Planlagt',
   postponed: 'Utsatt',
   cancelled: 'Avlyst',
@@ -57,9 +57,7 @@ const statusLabels: Record<EventRowData['status'], string> = {
       <h3 id={`${event.id}-title`}>{event.title}</h3>
 
       {
-        event.status === 'concept' ? (
-          <p class="event-row-temporal">Eksempel – dato ikke fastsatt</p>
-        ) : event.status === 'postponed' ? (
+        event.status === 'concept' ? null : event.status === 'postponed' ? (
           <div class="event-row-temporal">
             <p>
               Tidligere: <time datetime={event.previousDateTime}>{event.previousDateLabel}</time>

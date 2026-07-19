@@ -59,6 +59,7 @@ export const programFilterDefinitions = [
     query: 'alle',
     targetId: 'filter-all',
     summary: 'Viser hele programoversikten.',
+    conceptSummary: 'Viser alle eksemplene.',
   },
   {
     value: 'music',
@@ -66,6 +67,7 @@ export const programFilterDefinitions = [
     query: 'musikk',
     targetId: 'filter-musikk',
     summary: 'Viser musikkoppføringene.',
+    conceptSummary: 'Viser musikkeksemplet.',
   },
   {
     value: 'sport',
@@ -73,6 +75,7 @@ export const programFilterDefinitions = [
     query: 'sport',
     targetId: 'filter-sport',
     summary: 'Viser sportsoppføringene.',
+    conceptSummary: 'Viser sportseksemplet.',
   },
   {
     value: 'quiz',
@@ -80,6 +83,7 @@ export const programFilterDefinitions = [
     query: 'quiz',
     targetId: 'filter-quiz',
     summary: 'Viser quizoppføringene.',
+    conceptSummary: 'Viser quizeksemplet.',
   },
   {
     value: 'standup',
@@ -87,6 +91,7 @@ export const programFilterDefinitions = [
     query: 'standup',
     targetId: 'filter-standup',
     summary: 'Viser stand-up-oppføringene.',
+    conceptSummary: 'Viser stand-up-eksemplet.',
   },
 ] as const satisfies readonly ProgramFilterDefinition[];
 

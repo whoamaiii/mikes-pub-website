@@ -79,10 +79,12 @@ Q-authorized exterior image from the current direction:
 - Local `UnifrakturCook` echoes the real pub sign in the compact brand wordmark and the `Pub` accent
   in the hero. Barlow Condensed carries editorial headings; navigation, controls, filters and body
   copy use Source Sans 3.
-- Home activities and Program events are open editorial rows with brass rules. Home activity rows
-  are intentionally non-interactive: one explicitly unconfirmed Facebook action points to the
-  public listing, while the primary hero action continues the on-page story instead of promising an
-  empty Program. There are no soft cards, pill stacks, rounded badges or generic decorative panels.
+- Home activities and Program events are open editorial rows with brass rules. The lower Home flow
+  moves from numbered activity rows into an asymmetrical paper feature band and an overlapping map
+  finale instead of repeating equal card grids. Home activity rows are intentionally
+  non-interactive: one explicitly unconfirmed Facebook action points to the public listing, while
+  the primary hero action continues the on-page story instead of promising an empty Program. There
+  are no soft cards, pill stacks, rounded badges or generic decorative panels.
 - The visit actions sit directly after the hero as a compact ledger. They become full-width rows on
   narrow screens and retain 44px or larger interaction targets.
 - Program preserves the filter and event-list behavior for future verified entries, including the

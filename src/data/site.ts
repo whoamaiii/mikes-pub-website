@@ -62,7 +62,7 @@ export const venueLinks = {
     label: 'Ring puben',
     detail: '918 55 855',
     accessibleLabel: `Ring ${verifiedSiteLocation.name} på 918 55 855`,
-    verificationStatus: 'verified-public-source',
+    verificationStatus: 'owner-confirmed',
   },
   facebook: {
     kind: 'social',
@@ -71,7 +71,7 @@ export const venueLinks = {
     detail: 'Siste nytt fra puben',
     accessibleLabel: `Se siste nytt fra ${verifiedSiteLocation.name} på Facebook`,
     external: true,
-    verificationStatus: 'awaiting-owner-confirmation',
+    verificationStatus: 'owner-confirmed',
   },
 } as const;
 
@@ -82,7 +82,7 @@ export const venueVisitInfo: VisitInfo = {
     label: 'Åpningstider',
     value: 'Publiseres snart',
     note: 'Ring puben for åpningstider.',
-    verificationStatus: 'awaiting-owner-confirmation',
+    verificationStatus: 'owner-confirmed',
   },
   actions: [venueLinks.directions, venueLinks.phone, venueLinks.facebook],
 };

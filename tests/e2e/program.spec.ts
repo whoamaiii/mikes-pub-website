@@ -19,9 +19,10 @@ test('renders the concept Program directory with working filters and honest labe
   await expect(page.locator('.concept-banner')).toHaveText(conceptDisclosure);
   await expect(page.locator('.desktop-nav a[aria-current="page"]')).toHaveText('Program');
 
-  await expect(page.getByRole('heading', { name: 'Eksempelinnhold' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Slik kan programmet se ut' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toHaveCount(1);
+  await expect(page.getByText('Ingen bekreftede arrangementer er publisert ennå.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Designforslag' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Eksempelprogram' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Filtrer programeksempler' })).toHaveCount(1);
   await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
   await expect(page.locator('[data-event-list-region]')).toHaveCount(1);
   await expect(page.locator('[data-event-row]')).toHaveCount(conceptCategories.length);
@@ -33,15 +34,21 @@ test('renders the concept Program directory with working filters and honest labe
   await expect(page.locator('[data-event-row][data-event-status="concept"]')).toHaveCount(
     conceptCategories.length,
   );
+  await expect(page.locator('.event-row-status')).toHaveText(
+    conceptCategories.map(() => 'Eksempel'),
+  );
   await expect(page.locator('time, .program-main img')).toHaveCount(0);
 
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(2);
-  await expect(page.locator('a[href^="http"]')).toHaveCount(3);
+  await expect(
+    page.getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }).first(),
+  ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
+  await expect(page.locator('a[href^="http"]')).toHaveCount(4);
 
   const visibleText = await page.locator('.program-main').innerText();
-  expect(visibleText).toMatch(/eksempel – dato ikke fastsatt/i);
+  expect(visibleText).not.toMatch(/dato ikke fastsatt/i);
   expect(visibleText).not.toMatch(/\b(?:kl\.|kr|billett|hver fredag|åpningstid)\b/i);
   expect(visibleText).not.toMatch(/\b(?:mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)\b/i);
 });

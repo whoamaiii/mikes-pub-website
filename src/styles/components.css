@@ -822,6 +822,35 @@
   color: var(--text-secondary);
 }
 
+@media (width >= 30rem) and (width < 48rem) {
+  .visit-actions-grid ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .visit-actions-grid li {
+    border-block-end: 0;
+  }
+
+  .visit-actions-grid li + li {
+    border-inline-start: var(--border-thin) solid var(--border-faint);
+  }
+
+  .visit-action-link {
+    min-block-size: 8rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-4);
+  }
+
+  .visit-action-link .icon {
+    display: none;
+  }
+
+  .visit-action-link strong {
+    font-size: var(--text-md);
+  }
+}
+
 @media (width >= 48rem) {
   .visit-actions-grid {
     display: grid;

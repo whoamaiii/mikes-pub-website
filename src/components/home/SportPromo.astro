@@ -10,6 +10,7 @@ const { id, kicker, heading, text, action } = Astro.props;
 ---
 
 <section class="home-promo home-promo-sport" id={id} aria-labelledby={`${id}-heading`}>
+  <span class="home-promo-index" aria-hidden="true">01</span>
   <p class="home-promo-kicker">{kicker}</p>
   <div class="home-promo-content">
     <h2 id={`${id}-heading`}>{heading}</h2>

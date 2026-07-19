@@ -1,8 +1,10 @@
 # Home hero asset provenance
 
 The Home hero uses two art-directed WebP derivatives of `MIKESUTE.png`, the image Q supplied and
-explicitly directed Codex to use for this private design proposal on 2026-07-15. The full-resolution
-PNG is a local source master: it is ignored by Git and must not be committed.
+explicitly directed Codex to use for this private design proposal on 2026-07-15. On 2026-07-19, Q
+reported that the Mike's Pub owner approved this exact image and its derivatives for production use
+on the Mike's Pub website. The full-resolution PNG is a local source master: it is ignored by Git
+and must not be committed.
 
 ## Supplied source
 
@@ -13,13 +15,12 @@ PNG is a local source master: it is ignored by Git and must not be committed.
 | Format          | PNG, non-interlaced, 8-bit RGB                                     |
 | Dimensions      | 3840 × 2160 pixels                                                 |
 | People          | No identifiable people visible                                     |
-| Current use     | Q-authorized private Mike’s Pub design proposal                    |
+| Current use     | Owner-approved Mike’s Pub website and private design proposal      |
 
 The image depicts a black pub exterior with a lit `Mike’s Pub` sign and green entrance. Q’s active
-instruction is the authority for using it in this local proposal. Its authorship, generation
-history, ownership chain and third-party publication rights have not been independently verified.
-Client/owner confirmation is still required before production publication or presentation as an
-official Mike’s Pub asset.
+instruction and reported owner approval are the authority for production use in this project. Its
+authorship, generation history and third-party ownership chain have not been independently audited;
+the production clearance records the client's authorization rather than a separate copyright audit.
 
 ## Reproducible derivatives
 

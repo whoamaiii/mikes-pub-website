@@ -28,8 +28,8 @@ describe('visit content policy', () => {
     expect(venueMapLabels.primaryRoad).toBe(venueLocationLabels.streetName);
   });
 
-  test('keeps unconfirmed hours honest and free of invented schedules', () => {
-    expect(venueVisitInfo.hours.verificationStatus).toBe('awaiting-owner-confirmation');
+  test('keeps the owner-approved hours placeholder free of invented schedules', () => {
+    expect(venueVisitInfo.hours.verificationStatus).toBe('owner-confirmed');
     expect(venueVisitInfo.hours.value).toBe('Publiseres snart');
     expect(venueVisitInfo.hours.note).toContain('Ring puben');
 
@@ -38,10 +38,10 @@ describe('visit content policy', () => {
     expect(content).not.toMatch(/\b(?:kl\.|åpent nå|åpent i dag)\b/i);
   });
 
-  test('marks public and owner-confirmation status separately', () => {
+  test('marks public and owner-confirmed content separately', () => {
     expect(venueLinks.directions.verificationStatus).toBe('verified-public-source');
-    expect(venueLinks.phone.verificationStatus).toBe('verified-public-source');
-    expect(venueLinks.facebook.verificationStatus).toBe('awaiting-owner-confirmation');
+    expect(venueLinks.phone.verificationStatus).toBe('owner-confirmed');
+    expect(venueLinks.facebook.verificationStatus).toBe('owner-confirmed');
     expect(venueLinks.facebook.detail).toBe('Siste nytt fra puben');
     expect(venueLinks.facebook.accessibleLabel).toContain('på Facebook');
   });

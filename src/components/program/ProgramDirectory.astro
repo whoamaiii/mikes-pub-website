@@ -8,14 +8,20 @@ interface Props {
   categories: readonly CategoryFilterItem[];
   filters: readonly ProgramFilterDefinition[];
   heading: string;
+  mode: 'published' | 'concept';
   state: ProgramDirectoryReadyState;
 }
 
-const { categories, filters, heading, state } = Astro.props;
+const { categories, filters, heading, mode, state } = Astro.props;
 const populatedCategories = new Set(state.events.map((event) => event.category));
+const isConcept = mode === 'concept';
 ---
 
-<section class="program-directory" data-program-filter aria-label="Programoversikt">
+<section
+  class="program-directory"
+  data-program-filter
+  aria-label={isConcept ? 'Filtrer og vis programeksempler' : 'Filtrer og vis programoversikt'}
+>
   {
     filters.map((filter) => (
       <span
@@ -33,13 +39,18 @@ const populatedCategories = new Set(state.events.map((event) => event.category))
   <div class="program-filter-shell" data-program-filter-shell>
     <div class="program-filter-controls">
       <div class="program-filter-group">
-        <p class="program-filter-label">Filtrer program</p>
-        <CategoryFilter categories={categories} />
+        <p class="program-filter-label">{isConcept ? 'Filtrer eksempler' : 'Filtrer program'}</p>
+        <CategoryFilter
+          categories={categories}
+          label={isConcept ? 'Filtrer programeksempler' : 'Filtrer arrangementer'}
+        />
       </div>
       <p class="program-filter-summary" data-program-filter-summary aria-live="polite">
         {
           filters.map((filter) => (
-            <span data-filter-summary-value={filter.value}>{filter.summary}</span>
+            <span data-filter-summary-value={filter.value}>
+              {isConcept ? filter.conceptSummary : filter.summary}
+            </span>
           ))
         }
       </p>

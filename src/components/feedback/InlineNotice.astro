@@ -9,11 +9,12 @@ interface Props {
   title: string;
   text: string;
   action?: LinkTarget;
+  className?: string;
   live?: boolean;
   headingLevel?: 2 | 3;
 }
 
-const { id, variant, title, text, action, live = false, headingLevel = 3 } = Astro.props;
+const { id, variant, title, text, action, className, live = false, headingLevel = 3 } = Astro.props;
 const icons: Record<NoticeVariant, IconName> = {
   info: 'info',
   warning: 'warning',
@@ -24,7 +25,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
 ---
 
 <aside
-  class:list={['inline-notice', `inline-notice-${variant}`]}
+  class:list={['inline-notice', `inline-notice-${variant}`, className]}
   aria-labelledby={`${id}-title`}
   role={live ? (variant === 'error' ? 'alert' : 'status') : undefined}
 >

@@ -79,13 +79,28 @@ const mapLabel = location.name.toLocaleUpperCase('nb-NO');
       <circle cy="-1" r="7" class="venue-map-marker-cutout"></circle>
     </g>
 
-    <text x="155" y="123" class="venue-map-road-label" transform="rotate(38 155 123)">
+    <text
+      x="220"
+      y="165"
+      class="venue-map-road-label venue-map-road-label-primary"
+      transform="rotate(38 220 165)"
+    >
       {labels.primaryRoad}
     </text>
-    <text x="637" y="501" class="venue-map-road-label" transform="rotate(32 637 501)">
+    <text
+      x="637"
+      y="501"
+      class="venue-map-road-label venue-map-road-label-secondary"
+      transform="rotate(32 637 501)"
+    >
       {labels.secondaryRoad}
     </text>
-    <text x="369" y="608" class="venue-map-road-label" transform="rotate(-55 369 608)">
+    <text
+      x="369"
+      y="608"
+      class="venue-map-road-label venue-map-road-label-hillside"
+      transform="rotate(-55 369 608)"
+    >
       {labels.hillsideRoad}
     </text>
     <text x="520" y="341" class="venue-map-venue-label">

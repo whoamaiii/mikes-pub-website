@@ -65,4 +65,5 @@ export type ProgramFilterDefinition = {
   query: string;
   targetId: `filter-${string}`;
   summary: string;
+  conceptSummary: string;
 };

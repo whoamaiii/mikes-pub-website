@@ -38,7 +38,7 @@ describe('WHO-18 Home policy', () => {
     expect(trackedFiles.some((file) => file.startsWith('design-reference/'))).toBe(false);
   });
 
-  test('documents source integrity, transformation and publication limits', async () => {
+  test('documents source integrity, transformation and production approval', async () => {
     const provenance = await readFile(path.join(root, 'docs/assets/home-assets.md'), 'utf8');
 
     expect(provenance).toContain(
@@ -47,8 +47,10 @@ describe('WHO-18 Home policy', () => {
     for (const hash of Object.values(approvedDerivativeHashes)) {
       expect(provenance).toContain(hash);
     }
-    expect(provenance).toContain('have not been independently verified');
-    expect(provenance.toLowerCase()).toContain('client/owner confirmation');
+    expect(provenance).toContain('have not been independently audited');
+    expect(provenance).toContain(
+      'approved this exact image and its derivatives for production use',
+    );
     expect(provenance).toContain('must not be committed');
   });
 });

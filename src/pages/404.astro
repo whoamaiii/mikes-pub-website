@@ -3,7 +3,12 @@ import SiteHeader from '../components/navigation/SiteHeader.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
 import ActionLink from '../components/ui/ActionLink.astro';
-import { siteFooterNavigation, siteNavigation, verifiedSiteLocation } from '../data/site';
+import {
+  siteFooterNavigation,
+  siteNavigation,
+  venueLinks,
+  verifiedSiteLocation,
+} from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
 
 const mainId = 'main-content';
@@ -12,7 +17,7 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
 
 <SiteLayout
   title="Siden finnes ikke | Mike’s Pub | privat designforslag"
-  description="Siden finnes ikke. Gå tilbake til forsiden eller programmet for Mike’s Pub."
+  description="Siden finnes ikke. Gå tilbake til forsiden eller se siste nytt fra Mike’s Pub."
 >
   <ConceptBanner />
   <SiteHeader
@@ -31,7 +36,7 @@ const menuAddress = `${verifiedSiteLocation.street}, ${verifiedSiteLocation.post
         <p>Lenken kan være gammel, eller adressen kan være feil.</p>
         <div class="not-found-actions">
           <ActionLink href="/" label="Til forsiden" variant="primary" />
-          <ActionLink href="/program" label="Se programmet" />
+          <ActionLink {...venueLinks.facebook} label="Se siste nytt" />
         </div>
       </div>
     </section>

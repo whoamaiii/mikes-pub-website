@@ -3,14 +3,16 @@ interface Props {
   id: string;
   title: string;
   intro: string;
+  eyebrow?: string;
 }
 
-const { id, title, intro } = Astro.props;
+const { id, title, intro, eyebrow = 'Hva skjer' } = Astro.props;
 ---
 
 <header class="page-intro" aria-labelledby={`${id}-title`}>
   <div class="page-intro-inner ds-container">
+    <p class="page-intro-eyebrow">{eyebrow}</p>
     <h1 id={`${id}-title`}>{title}</h1>
-    <p>{intro}</p>
+    <p class="page-intro-description">{intro}</p>
   </div>
 </header>

@@ -8,7 +8,7 @@ export const homeHero: HomeHeroContent = {
   eyebrow: venueLocationLabels.eyebrow,
   intro: 'Musikk og kultur i Sætre – med fotball, dart og shuffleboard i lokalet.',
   location: venueLocationLabels.inlineAddress,
-  action: { href: '#about', label: 'Oppdag Mike’s' },
+  action: { href: '#program', label: 'Se hva du finner hos oss' },
   image: {
     desktop: exteriorDesktop,
     mobile: exteriorMobile,
@@ -17,7 +17,7 @@ export const homeHero: HomeHeroContent = {
       desktop: '50% 50%',
       mobile: '90% 50%',
     },
-    rightsStatus: 'demo-cleared',
+    rightsStatus: 'production-cleared',
   },
 };
 
@@ -25,13 +25,13 @@ export const homeProgramItems = [
   {
     id: 'music',
     label: 'Musikk og kultur',
-    description: 'Datoer publiseres når artist, tid og detaljer er bekreftet.',
+    description: 'Konserter og kulturkvelder på scenen.',
     icon: 'music',
   },
   {
     id: 'sport',
     label: 'Fotball på skjerm',
-    description: 'Kampoversikten legges ut når visningene er bekreftet.',
+    description: 'Utvalgte fotballkamper med lyd på storskjerm.',
     icon: 'sport',
   },
 ] as const satisfies HomeProgramItems;
@@ -39,5 +39,5 @@ export const homeProgramItems = [
 export const sportPromo: HomePromoContent = {
   kicker: 'På skjerm',
   heading: 'Sport på storskjerm',
-  text: 'Fotballvisninger publiseres her først når kamp og tidspunkt er bekreftet.',
+  text: 'Sett deg til rette for fotball på storskjerm, med lyd i lokalet.',
 };

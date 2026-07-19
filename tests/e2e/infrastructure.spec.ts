@@ -30,10 +30,11 @@ test('serves unknown production routes without third-party requests', async ({ p
     page.getByRole('heading', { level: 1, name: 'Siden du leter etter, finnes ikke.' }),
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Til forsiden' })).toHaveAttribute('href', '/');
-  await expect(page.getByRole('link', { name: 'Se programmet' })).toHaveAttribute(
-    'href',
-    '/program',
-  );
+  await expect(
+    page
+      .locator('.not-found-actions')
+      .getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }),
+  ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === previewOrigin)).toBe(true);
 });
