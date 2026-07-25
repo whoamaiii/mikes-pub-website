@@ -5,20 +5,26 @@ import GamesPromo from '../components/home/GamesPromo.astro';
 import HomeHero from '../components/home/HomeHero.astro';
 import ProgramRail from '../components/home/ProgramRail.astro';
 import SportPromo from '../components/home/SportPromo.astro';
+import VenueGallery from '../components/home/VenueGallery.astro';
+import GoogleMapsEmbed from '../components/location/GoogleMapsEmbed.astro';
 import LocationPanel from '../components/location/LocationPanel.astro';
-import VenueMap from '../components/location/VenueMap.astro';
 import SiteHeader from '../components/navigation/SiteHeader.astro';
 import ConceptBanner from '../components/site/ConceptBanner.astro';
 import SiteFooter from '../components/site/SiteFooter.astro';
 import VisitActions from '../components/visit/VisitActions.astro';
-import { homeHero, homeProgramItems, sportPromo } from '../data/home';
+import {
+  homeHero,
+  homeManifesto,
+  homeProgramItems,
+  homeVenueGallery,
+  sportPromo,
+} from '../data/home';
 import {
   gamesPromo,
   siteFooterNavigation,
   siteNavigation,
   venueLinks,
   venueLocationLabels,
-  venueMapLabels,
   venueVisitInfo,
   verifiedSiteLocation,
 } from '../data/site';
@@ -116,14 +122,18 @@ const heroImagePresentation = {
         aria-label="Om Mike’s Pub"
         data-reveal
       >
-        <p class="home-manifesto-kicker">På Mike’s</p>
+        <p class="home-manifesto-kicker">{homeManifesto.kicker}</p>
         <p class="home-manifesto-statement">
-          Musikk og kultur. <em>Fotball, dart og shuffleboard</em> i lokalet.
+          {homeManifesto.statementLead}
+          <em>{homeManifesto.statementAccent}</em>{' '}
+          {homeManifesto.statementTail}
         </p>
-        <p class="home-manifesto-note">Scene, storskjerm og spillbord – samlet under samme tak.</p>
+        <p class="home-manifesto-note">{homeManifesto.note}</p>
       </section>
 
       <div class="home-content ds-container">
+        <VenueGallery id="gallery" {...homeVenueGallery} />
+
         <ProgramRail
           id="program"
           eyebrow="Scene · skjerm · spill"
@@ -139,11 +149,8 @@ const heroImagePresentation = {
         </div>
 
         <div class="home-location" id="location" data-reveal>
-          <VenueMap
-            id="home-location-map"
-            location={verifiedSiteLocation}
-            labels={venueMapLabels}
-          />
+          <!-- Local comparison only. The recoverable dark version remains in VenueMap.astro. -->
+          <GoogleMapsEmbed id="home-location-map" location={verifiedSiteLocation} />
           <LocationPanel
             id="home-location"
             location={verifiedSiteLocation}

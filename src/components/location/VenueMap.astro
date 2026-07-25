@@ -116,3 +116,125 @@ const mapLabel = location.name.toLocaleUpperCase('nb-NO');
     Maps for nøyaktig veibeskrivelse.
   </figcaption>
 </figure>
+
+<style>
+  .venue-map-drawing {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .venue-map-field {
+    fill: var(--surface-brand-deep);
+  }
+
+  .venue-map-grid-line,
+  .venue-map-side-streets,
+  .venue-map-blocks,
+  .venue-map-main-road-underlay,
+  .venue-map-main-road,
+  .venue-map-marker-ring {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .venue-map-grid-line {
+    opacity: 0.32;
+    stroke: var(--border-faint);
+    stroke-width: var(--border-thin);
+  }
+
+  .venue-map-water {
+    opacity: 0.72;
+    fill: var(--surface-raised);
+  }
+
+  .venue-map-side-streets,
+  .venue-map-blocks {
+    stroke: var(--text-secondary);
+    stroke-width: var(--border-thin);
+  }
+
+  .venue-map-side-streets {
+    opacity: 0.48;
+  }
+
+  .venue-map-blocks {
+    opacity: 0.28;
+  }
+
+  .venue-map-main-road-underlay {
+    stroke: var(--surface-page);
+    stroke-width: 18px;
+  }
+
+  .venue-map-main-road {
+    opacity: 0.78;
+    stroke: var(--text-secondary);
+    stroke-width: 7px;
+  }
+
+  .venue-map-junction {
+    opacity: 0.82;
+    fill: var(--surface-page);
+    stroke: var(--text-secondary);
+    stroke-width: 5px;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .venue-map-marker-ring {
+    stroke: var(--text-accent);
+    stroke-width: var(--border-strong);
+  }
+
+  .venue-map-marker-pin {
+    fill: var(--surface-accent);
+  }
+
+  .venue-map-marker-cutout {
+    fill: var(--surface-page);
+  }
+
+  .venue-map-road-label,
+  .venue-map-water-label {
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    fill: var(--text-secondary);
+  }
+
+  .venue-map-water-label {
+    opacity: 0.62;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .venue-map-venue-label {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    fill: var(--text-accent);
+  }
+
+  @media (width < 48rem) {
+    .venue-map-road-label-secondary,
+    .venue-map-road-label-hillside,
+    .venue-map-water-label {
+      display: none;
+    }
+
+    .venue-map-road-label-primary {
+      font-size: 32px;
+      font-weight: 700;
+      fill: var(--text-primary);
+    }
+
+    .venue-map-venue-label {
+      font-size: 38px;
+    }
+  }
+</style>

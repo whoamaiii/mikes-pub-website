@@ -409,10 +409,53 @@ export function resolveProgramEventListState(
   };
 }
 
-// Published entries carry verified facts only and stay empty until the owner confirms real
-// events. The concept entries below are date-neutral, demo-only records that let the pitch show
-// the directory and filters; the validator rejects any factual claims (dates, prices, tickets).
-export const publishedProgramEntries = validatePublishedProgramEntries([]);
+// Published entries carry verified facts only. The records below reproduce past events from the
+// pub's own public Facebook events and posters, documented in docs/content-sources.md (reviewed
+// 2026-07-20). No upcoming event may be added before the owner confirms it. The concept entries
+// below are date-neutral, demo-only records that let the pitch show the directory and filters
+// when no published entries exist; the validator rejects any factual claims in concept records.
+export const publishedProgramEntries = validatePublishedProgramEntries([
+  {
+    id: 'pubquiz-2026-02-05',
+    category: 'quiz',
+    categoryLabel: categoryLabels.quiz,
+    title: 'Pubquiz',
+    description: 'Månedlig torsdagsquiz med varierte temaer – det sosiale i fokus.',
+    status: 'expired',
+    dateTime: '2026-02-05T19:00:00+01:00',
+    dateLabel: 'Torsdag 5. februar 2026, kl. 19.00',
+  },
+  {
+    id: 'vm-semifinale-2026-07-15',
+    category: 'sport',
+    categoryLabel: categoryLabels.sport,
+    title: 'VM-semifinale: Argentina–England',
+    description: 'Kampvisning på storskjerm i lokalet.',
+    status: 'expired',
+    dateTime: '2026-07-15T21:00:00+02:00',
+    dateLabel: 'Onsdag 15. juli 2026, kl. 21.00',
+  },
+  {
+    id: 'vm-bronsefinale-2026-07-18',
+    category: 'sport',
+    categoryLabel: categoryLabels.sport,
+    title: 'VM-bronsefinale: Frankrike–England',
+    description: 'Kampvisning på storskjerm. Gratis inngang.',
+    status: 'expired',
+    dateTime: '2026-07-18T23:00:00+02:00',
+    dateLabel: 'Lørdag 18. juli 2026, kl. 23.00',
+  },
+  {
+    id: 'vm-finale-2026-07-19',
+    category: 'sport',
+    categoryLabel: categoryLabels.sport,
+    title: 'VM-finale: Spania–Argentina',
+    description: 'Kampvisning på storskjerm. Gratis inngang, dørene åpnet kl. 19.00.',
+    status: 'expired',
+    dateTime: '2026-07-19T21:00:00+02:00',
+    dateLabel: 'Søndag 19. juli 2026, kl. 21.00',
+  },
+]);
 
 export const programEventListState = resolveProgramEventListState(publishedProgramEntries);
 
@@ -463,5 +506,6 @@ export const conceptProgramEventListState: ProgramDirectoryReadyState = {
 
 export const programIntro = {
   title: 'Program',
-  intro: 'Datoer, tider og detaljer kommer her når de er bekreftet.',
+  intro:
+    'Slik har det sett ut på Mike’s Pub i det siste. Nye datoer legges ut her når de er bekreftet.',
 };

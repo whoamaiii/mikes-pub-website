@@ -104,6 +104,10 @@ describe('design-system policy', () => {
     );
     const approvedExternalLinks = [
       'https://www.facebook.com/mikespub.saetre/',
+      'https://www.facebook.com/photo.php?fbid=122113473831171907',
+      'https://www.facebook.com/photo.php?fbid=122118484995171907',
+      'https://www.facebook.com/photo.php?fbid=122125775085171907',
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2014.067482372028!2d10.526875400000002!3d59.681803499999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46414700458fc5b5%3A0x857bef11ca0e1ee6!2sMike%27s%20Pub!5e0!3m2!1sno!2sno!4v1784895561115!5m2!1sno!2sno',
       'https://www.google.com/maps/search/?api=1&query=Mike%27s%20Pub%2C%20Nordre%20S%C3%A6trevei%202%2C%203475%20S%C3%A6tre',
     ];
     const externalLinks = source.match(/https?:\/\/[^\s'"`]+/g) ?? [];

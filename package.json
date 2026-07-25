@@ -15,6 +15,11 @@
     "build:design-system-preview": "astro build --config astro.design-system-preview.config.mjs",
     "preview": "astro preview",
     "preview:design-system": "astro preview --config astro.design-system-preview.config.mjs",
+    "preview:protected": "npm run build && wrangler pages dev dist",
+    "cloudflare:login": "wrangler login",
+    "cloudflare:create-project": "wrangler pages project create mikes-pub-private-preview --production-branch main",
+    "cloudflare:set-password": "wrangler pages secret put PREVIEW_PASSWORD --project-name mikes-pub-private-preview",
+    "deploy:protected": "npm run build && wrangler pages deploy dist --project-name mikes-pub-private-preview",
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -48,11 +53,14 @@
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.2",
     "typescript-eslint": "8.63.0",
-    "vitest": "4.1.10"
+    "vitest": "4.1.10",
+    "wrangler": "4.112.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.2": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "sharp@0.34.5": false,
+    "workerd@1.20260714.1": true
   }
 }

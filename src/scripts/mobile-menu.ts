@@ -122,6 +122,7 @@ export function initializeMobileMenu(root: HTMLElement): MobileMenuController | 
   const trigger = root.querySelector<HTMLButtonElement>('.mobile-menu-trigger');
   const dialog = root.querySelector<HTMLDialogElement>('[data-mobile-menu-dialog]');
   const closeButton = root.querySelector<HTMLButtonElement>('[data-mobile-menu-close]');
+  const surface = dialog?.querySelector<HTMLElement>('.mobile-menu-surface');
   const navigation = dialog?.querySelector<HTMLElement>('.mobile-menu-navigation');
 
   if (
@@ -130,6 +131,7 @@ export function initializeMobileMenu(root: HTMLElement): MobileMenuController | 
     !trigger ||
     !dialog ||
     !closeButton ||
+    !surface ||
     !navigation ||
     !isDialogSupported(dialog)
   ) {
@@ -138,8 +140,36 @@ export function initializeMobileMenu(root: HTMLElement): MobileMenuController | 
 
   const events = new AbortController();
   const desktopQuery = window.matchMedia(desktopMedia);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let isOpen = false;
   let scrollLock: ScrollLock | null = null;
+  let entryAnimation: Animation | null = null;
+
+  const cancelEntryAnimation = () => {
+    entryAnimation?.cancel();
+    entryAnimation = null;
+  };
+
+  const animateOpen = () => {
+    cancelEntryAnimation();
+    if (reducedMotion.matches) return;
+
+    const animation = surface.animate(
+      [
+        { opacity: 0, transform: 'translate3d(0, 0.75rem, 0)' },
+        { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+      ],
+      { duration: 320, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+    );
+    entryAnimation = animation;
+    animation.addEventListener(
+      'finish',
+      () => {
+        if (entryAnimation === animation) entryAnimation = null;
+      },
+      { once: true },
+    );
+  };
 
   const resetTrigger = () => {
     trigger.setAttribute('aria-expanded', 'false');
@@ -169,6 +199,7 @@ export function initializeMobileMenu(root: HTMLElement): MobileMenuController | 
   const closeMenu = (reason: CloseReason) => {
     const focusWasInside = dialog.contains(document.activeElement);
     isOpen = false;
+    cancelEntryAnimation();
     if (dialog.open) dialog.close();
     finalizeClose(reason, focusWasInside);
   };
@@ -199,6 +230,7 @@ export function initializeMobileMenu(root: HTMLElement): MobileMenuController | 
       dialog.showModal();
       isOpen = true;
       applyScrollLock(scrollLock);
+      animateOpen();
       trigger.setAttribute('aria-expanded', 'true');
       trigger.setAttribute('aria-label', 'Lukk meny');
       closeButton.focus({ preventScroll: true });

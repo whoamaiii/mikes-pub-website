@@ -143,10 +143,13 @@
   transition: transform var(--duration-normal) var(--ease-out);
 }
 
-.desktop-nav a:hover::after,
-.desktop-nav a[aria-current='page']::after {
+.desktop-nav a:is(:hover, :focus-visible, [aria-current='page'])::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+.desktop-nav a:focus-visible::after {
+  transition: none;
 }
 
 .desktop-nav a[aria-current='page'] {

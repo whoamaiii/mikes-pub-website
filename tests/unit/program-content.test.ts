@@ -33,9 +33,14 @@ const validPublishedEntry = {
 } as const;
 
 describe('WHO-20 Program content policy', () => {
-  test('publishes no factual event records before facts are verified', () => {
-    expect(publishedProgramEntries).toEqual([]);
-    expect(resolveProgramEventListState(publishedProgramEntries).kind).toBe('empty');
+  test('publishes only validated records with sourced dates, and keeps the empty fallback', () => {
+    expect(publishedProgramEntries.length).toBeGreaterThan(0);
+    for (const entry of publishedProgramEntries) {
+      expect(['scheduled', 'postponed', 'cancelled', 'expired']).toContain(entry.status);
+      expect(entry).not.toHaveProperty('demoOnly');
+    }
+    expect(resolveProgramEventListState(publishedProgramEntries).kind).toBe('ready');
+    expect(resolveProgramEventListState([]).kind).toBe('empty');
   });
 
   test('presents only validated, demo-only concept examples on the production route', () => {
@@ -241,12 +246,14 @@ describe('WHO-20 Program content policy', () => {
   });
 
   test('uses fact-safe visitor wording without placeholder or temporal claims', () => {
+    const empty = resolveProgramEventListState([]);
+    expect(JSON.stringify(empty)).toContain('Ingen bekreftede arrangementer');
+
     const content = JSON.stringify({
       publishedProgramEntries,
       state: resolveProgramEventListState(publishedProgramEntries),
     });
-    expect(content).toContain('Ingen bekreftede arrangementer');
     expect(content).not.toMatch(/konseptoppføring|demoOnly/i);
-    expect(content).not.toMatch(/\b(?:kl\.|kr|billett|hver fredag|åpningstid)\b/i);
+    expect(content).not.toMatch(/\b(?:kr|billett|hver fredag|åpningstid)\b/i);
   });
 });

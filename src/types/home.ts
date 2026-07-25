@@ -41,3 +41,26 @@ export type HomePromoContent = {
   text: string;
   action?: LinkTarget;
 };
+
+export type HomeManifestoContent = {
+  kicker: string;
+  statementLead: string;
+  statementAccent: string;
+  statementTail: string;
+  note: string;
+};
+
+export type HomeVenueGalleryItem = {
+  id: 'quiz-night' | 'interior' | 'screen-night';
+  image: ImageMetadata;
+  alt: string;
+  caption: string;
+  source: LinkTarget;
+  rightsStatus: Extract<RightsStatus, 'demo-cleared'>;
+};
+
+export type HomeVenueGalleryContent = {
+  kicker: string;
+  heading: string;
+  items: readonly [HomeVenueGalleryItem, HomeVenueGalleryItem, HomeVenueGalleryItem];
+};

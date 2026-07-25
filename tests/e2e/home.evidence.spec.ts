@@ -28,6 +28,9 @@ test('captures deterministic WHO-18 Home evidence', async ({ page }) => {
       .evaluate(async (element: HTMLImageElement) => {
         await element.decode();
       });
+    await page.locator('.home-gallery img').evaluateAll(async (images: HTMLImageElement[]) => {
+      await Promise.all(images.map((image) => image.decode()));
+    });
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

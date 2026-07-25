@@ -354,6 +354,33 @@ test('has no overflow at supported widths and makes only same-origin requests', 
   expect(requests.every((url) => new URL(url).origin === origin)).toBe(true);
 });
 
+test('uses a short transform-only entrance when motion is allowed', async ({ page }) => {
+  await loadMobilePreview(page);
+  await page.getByRole('button', { name: 'Åpne meny' }).click();
+
+  const motion = await page.locator('.mobile-menu-surface').evaluate((element) => {
+    const animation = element.getAnimations()[0];
+    const effect = animation?.effect;
+    if (!(effect instanceof KeyframeEffect)) return null;
+
+    const frames = effect.getKeyframes();
+    return {
+      duration: effect.getTiming().duration,
+      firstOpacity: frames[0]?.opacity,
+      firstTransform: frames[0]?.transform,
+      lastOpacity: frames.at(-1)?.opacity,
+      lastTransform: frames.at(-1)?.transform,
+    };
+  });
+  expect(motion).toEqual({
+    duration: 320,
+    firstOpacity: '0',
+    firstTransform: 'translate3d(0px, 0.75rem, 0px)',
+    lastOpacity: '1',
+    lastTransform: 'translate3d(0px, 0px, 0px)',
+  });
+});
+
 test('uses immediate behavior when reduced motion is requested', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await loadMobilePreview(page);
@@ -365,6 +392,11 @@ test('uses immediate behavior when reduced motion is requested', async ({ page }
       .map((duration) => Number.parseFloat(duration)),
   );
   expect(transitionDurations.every((duration) => duration <= 0.00001)).toBe(true);
+  expect(
+    await page
+      .locator('.mobile-menu-surface')
+      .evaluate((element) => element.getAnimations().length),
+  ).toBe(0);
 });
 
 test('uses system colors in forced colors', async ({ page, browserName }) => {

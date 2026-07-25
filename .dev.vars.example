@@ -1,0 +1,3 @@
+# Copy this file to .dev.vars for local protected-preview testing.
+# Use a unique passphrase of at least 12 characters. Never commit the real value.
+PREVIEW_PASSWORD=replace-with-a-long-private-passphrase

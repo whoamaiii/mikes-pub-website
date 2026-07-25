@@ -45,3 +45,21 @@ Alternative text: “Den svarte fasaden til Mike’s Pub med belyst skilt og gr�
 
 The repository derivatives remain rights-controlled project assets. Their presence does not place
 them under the application’s `UNLICENSED` terms or grant a separate reuse licence.
+
+## Facebook venue gallery — private demo only
+
+On 2026-07-24, Q explicitly authorized use of images published by Mike’s Pub on its official
+Facebook page in the private, password-protected design presentation. These three derivatives are
+therefore marked `demo-cleared`, not `production-cleared`. They must not be reused in an official
+launch, a public deployment or other marketing until the owner confirms the final selection and
+rights scope.
+
+| Repository derivative                                    | Official Facebook source                                     | Source post context                    | Dimensions  | SHA-256                                                            |
+| -------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------- | ----------- | ------------------------------------------------------------------ |
+| `src/assets/images/mikes-pub-facebook-quiz-night.webp`   | `https://www.facebook.com/photo.php?fbid=122118484995171907` | “Fult hus på pub quiz”, 19 March 2026  | 1152 × 1536 | `89e31fcc8ff2babee148166195710541536cffb23c948e543aa14afb09b1ff7e` |
+| `src/assets/images/mikes-pub-facebook-interior.webp`     | `https://www.facebook.com/photo.php?fbid=122113473831171907` | Public venue photo, 7 February 2026    | 1152 × 1536 | `0018667d28e731f5641b7be0c316e4946cdc67a7eda7b37aedd8e821d250f890` |
+| `src/assets/images/mikes-pub-facebook-screen-night.webp` | `https://www.facebook.com/photo.php?fbid=122125775085171907` | Public screen-night photo, 16 May 2026 | 1152 × 1536 | `4cf405ce67b5e5f6faa0ee623ee2bbdcb498ca9cd740269ddf5a002ea62e63a7` |
+
+The Facebook-delivered JPEGs were resized from 1536 × 2048 to 1152 × 1536, stripped of metadata and
+encoded as WebP at quality 84. No generative fill, object removal or content alteration was used.
+The source URLs remain on each image in the presentation so reviewers can inspect the public post.

@@ -3,9 +3,15 @@ import { expect, test } from '@playwright/test';
 
 const programPath = '/program';
 const conceptDisclosure = 'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.';
-const conceptCategories = ['music', 'sport', 'quiz', 'standup'];
+const publishedRowCount = 4;
+const publishedCategoryCounts: Record<string, number> = {
+  music: 0,
+  sport: 3,
+  quiz: 1,
+  standup: 0,
+};
 
-test('renders the concept Program directory with working filters and honest labelling', async ({
+test('renders the published Program directory with working filters and honest labelling', async ({
   page,
 }) => {
   const response = await page.goto(programPath);
@@ -19,41 +25,44 @@ test('renders the concept Program directory with working filters and honest labe
   await expect(page.locator('.concept-banner')).toHaveText(conceptDisclosure);
   await expect(page.locator('.desktop-nav a[aria-current="page"]')).toHaveText('Program');
 
-  await expect(page.getByText('Ingen bekreftede arrangementer er publisert ennå.')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Designforslag' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Eksempelprogram' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Filtrer programeksempler' })).toHaveCount(1);
+  await expect(page.getByText('Ingen bekreftede arrangementer er publisert ennå.')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Designforslag' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Eksempelprogram' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Bekreftet program' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toHaveCount(1);
   await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
   await expect(page.locator('[data-event-list-region]')).toHaveCount(1);
-  await expect(page.locator('[data-event-row]')).toHaveCount(conceptCategories.length);
-  for (const category of conceptCategories) {
+  await expect(page.locator('[data-event-row]')).toHaveCount(publishedRowCount);
+  for (const [category, count] of Object.entries(publishedCategoryCounts)) {
     await expect(page.locator(`[data-event-row][data-event-category="${category}"]`)).toHaveCount(
-      1,
+      count,
     );
   }
-  await expect(page.locator('[data-event-row][data-event-status="concept"]')).toHaveCount(
-    conceptCategories.length,
+  await expect(page.locator('[data-event-row][data-event-status="expired"]')).toHaveCount(
+    publishedRowCount,
   );
   await expect(page.locator('.event-row-status')).toHaveText(
-    conceptCategories.map(() => 'Eksempel'),
+    Array(publishedRowCount).fill('Utløpt'),
   );
-  await expect(page.locator('time, .program-main img')).toHaveCount(0);
+  await expect(page.locator('time')).toHaveCount(publishedRowCount);
+  await expect(page.locator('.program-main img')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Pubquiz' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'VM-finale: Spania–Argentina' })).toBeVisible();
 
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(2);
   await expect(
-    page.getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }).first(),
+    page.getByRole('link', { name: 'Se siste nytt fra Mike’s Pub på Facebook' }),
   ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
-  await expect(page.locator('a[href^="http"]')).toHaveCount(4);
+  await expect(page.locator('a[href^="http"]')).toHaveCount(3);
 
   const visibleText = await page.locator('.program-main').innerText();
   expect(visibleText).not.toMatch(/dato ikke fastsatt/i);
-  expect(visibleText).not.toMatch(/\b(?:kl\.|kr|billett|hver fredag|åpningstid)\b/i);
-  expect(visibleText).not.toMatch(/\b(?:mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)\b/i);
+  expect(visibleText).not.toMatch(/\b(?:kr|billett|hver fredag|åpningstid)\b/i);
 });
 
-test('filters the concept directory per category from shareable URLs', async ({ page }) => {
+test('filters the published directory per category from shareable URLs', async ({ page }) => {
   for (const [query, fragment, category] of [
     ['musikk', 'filter-musikk', 'music'],
     ['sport', 'filter-sport', 'sport'],
@@ -61,18 +70,25 @@ test('filters the concept directory per category from shareable URLs', async ({ 
     ['standup', 'filter-standup', 'standup'],
   ]) {
     await page.goto(`/program?kategori=${query}#${fragment}`);
-    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
-    await expect(page.locator(`[data-event-row][data-event-category="${category}"]`)).toBeVisible();
+    const expectedCount = publishedCategoryCounts[category];
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(expectedCount);
+    if (expectedCount > 0) {
+      await expect(page.locator(`[data-event-row][data-event-category="${category}"]`)).toHaveCount(
+        expectedCount,
+      );
+    } else {
+      await expect(page.getByText('Ingen arrangementer i denne kategorien.')).toBeVisible();
+    }
     await expect(
       page.locator(`.category-filter a[data-filter-value="${category}"]`),
     ).toHaveAttribute('aria-current', 'page');
   }
 
   await page.goto('/program?kategori=ukjent#filter-ukjent');
-  await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(publishedRowCount);
 });
 
-test('filters the concept directory through the category links', async ({ page }) => {
+test('filters the published directory through the category links', async ({ page }) => {
   await page.goto(programPath);
   await expect(page.locator('[data-program-filter-shell]')).toHaveAttribute(
     'data-program-filter-enhanced',
@@ -85,7 +101,7 @@ test('filters the concept directory through the category links', async ({ page }
   await expect(page.locator('[data-event-row][data-event-category="quiz"]')).toBeVisible();
 
   await page.locator('.category-filter a[data-filter-value="all"]').click();
-  await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(publishedRowCount);
 });
 
 test('is accessible, same-origin and overflow-safe from narrow mobile to desktop', async ({
@@ -160,7 +176,7 @@ test('links the accepted Home navigation to Program', async ({ page }) => {
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('keeps the concept directory and CSS fragment filtering usable', async ({ page }) => {
+  test('keeps the published directory and CSS fragment filtering usable', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto(programPath);
 
@@ -169,11 +185,11 @@ test.describe('without JavaScript', () => {
       'data-program-filter-enhanced',
       'true',
     );
-    await expect(page.locator('[data-event-row]:visible')).toHaveCount(conceptCategories.length);
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(publishedRowCount);
 
     await page.goto('/program?kategori=musikk#filter-musikk');
-    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
-    await expect(page.locator('[data-event-row][data-event-category="music"]')).toBeVisible();
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(0);
+    await expect(page.getByText('Ingen arrangementer i denne kategorien.')).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

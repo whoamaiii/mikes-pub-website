@@ -34,7 +34,8 @@ describe('repository policy', () => {
       return (
         basename === '.DS_Store' ||
         file.split('/').includes('.direnv') ||
-        (basename.startsWith('.env') && basename !== '.env.example')
+        (basename.startsWith('.env') && basename !== '.env.example') ||
+        (basename.startsWith('.dev.vars') && basename !== '.dev.vars.example')
       );
     });
 

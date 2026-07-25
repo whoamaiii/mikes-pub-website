@@ -1,0 +1,83 @@
+---
+import type { VenueLocation } from '../../types/design-system';
+
+interface Props {
+  id: string;
+  location: VenueLocation;
+}
+
+const { id, location } = Astro.props;
+const embedSrc =
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2014.067482372028!2d10.526875400000002!3d59.681803499999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46414700458fc5b5%3A0x857bef11ca0e1ee6!2sMike%27s%20Pub!5e0!3m2!1sno!2sno!4v1784895561115!5m2!1sno!2sno';
+---
+
+<figure
+  class="venue-map google-map-embed"
+  aria-labelledby={`${id}-caption`}
+  data-map-source="official-google-maps-embed"
+  data-map-state="idle"
+  data-comparison-status="local-unpublished"
+>
+  <div class="google-map-gate" data-map-gate>
+    <div class="google-map-gate-copy">
+      <strong data-map-gate-heading>Interaktivt kart</strong>
+      <span data-map-gate-detail>Google Maps lastes først når du velger det.</span>
+      <button class="button" type="button" aria-label="Vis Google Maps-kart" data-map-load hidden
+        >Vis kart</button
+      >
+    </div>
+  </div>
+  <template data-map-template>
+    <iframe
+      src={embedSrc}
+      title={`Google Maps-kart som viser ${location.name} i ${location.street}`}
+      width="600"
+      height="450"
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </template>
+  <figcaption id={`${id}-caption`} class="visually-hidden">
+    Offisielt Google Maps-kart som viser {location.name} i {location.street}. Kartdata lastes først
+    når du velger Vis kart. Google-logo, kartdata, vilkår og kreditering vises i selve kartet.
+  </figcaption>
+  <p class="visually-hidden" aria-live="polite" data-map-status></p>
+</figure>
+
+<script>
+  import { initializeGoogleMapEmbeds } from '../../scripts/google-map-embed';
+
+  const initialize = () => initializeGoogleMapEmbeds();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else {
+    initialize();
+  }
+
+  window.addEventListener('pageshow', initialize);
+</script>
+
+<style is:inline>
+  .google-map-embed[data-map-state='ready']::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0 0 var(--space-5);
+    background:
+      linear-gradient(90deg, rgb(10 12 11 / 72%), transparent 17% 83%, rgb(10 12 11 / 72%)),
+      linear-gradient(180deg, rgb(10 12 11 / 68%), transparent 22%);
+    content: '';
+    pointer-events: none;
+  }
+
+  @media (width >= 48rem) {
+    .google-map-embed[data-map-state='ready']::before {
+      inset-block-end: 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .google-map-embed[data-map-state='ready']::before {
+      display: none;
+    }
+  }
+</style>

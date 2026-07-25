@@ -15,9 +15,26 @@ const approvedDerivativeHashes = {
     '4ecbb2654825a592ea25fe27b6bc277648a89e79d08b0233286b7bd66ddd96de',
 } as const;
 
+const demoGalleryDerivativeHashes = {
+  'src/assets/images/mikes-pub-facebook-interior.webp':
+    '0018667d28e731f5641b7be0c316e4946cdc67a7eda7b37aedd8e821d250f890',
+  'src/assets/images/mikes-pub-facebook-quiz-night.webp':
+    '89e31fcc8ff2babee148166195710541536cffb23c948e543aa14afb09b1ff7e',
+  'src/assets/images/mikes-pub-facebook-screen-night.webp':
+    '4cf405ce67b5e5f6faa0ee623ee2bbdcb498ca9cd740269ddf5a002ea62e63a7',
+} as const;
+
 describe('WHO-18 Home policy', () => {
   test('pins the approved exterior derivative bytes', async () => {
     for (const [relativePath, expectedHash] of Object.entries(approvedDerivativeHashes)) {
+      const bytes = await readFile(path.join(root, relativePath));
+      const actualHash = createHash('sha256').update(bytes).digest('hex');
+      expect(actualHash, relativePath).toBe(expectedHash);
+    }
+  });
+
+  test('pins the private-demo Facebook gallery derivative bytes', async () => {
+    for (const [relativePath, expectedHash] of Object.entries(demoGalleryDerivativeHashes)) {
       const bytes = await readFile(path.join(root, relativePath));
       const actualHash = createHash('sha256').update(bytes).digest('hex');
       expect(actualHash, relativePath).toBe(expectedHash);
@@ -47,10 +64,15 @@ describe('WHO-18 Home policy', () => {
     for (const hash of Object.values(approvedDerivativeHashes)) {
       expect(provenance).toContain(hash);
     }
+    for (const hash of Object.values(demoGalleryDerivativeHashes)) {
+      expect(provenance).toContain(hash);
+    }
     expect(provenance).toContain('have not been independently audited');
     expect(provenance).toContain(
       'approved this exact image and its derivatives for production use',
     );
     expect(provenance).toContain('must not be committed');
+    expect(provenance).toContain('demo-cleared');
+    expect(provenance).toContain('must not be reused in an official');
   });
 });

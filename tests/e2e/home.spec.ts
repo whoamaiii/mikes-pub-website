@@ -5,6 +5,10 @@ const homePath = '/';
 const conceptDisclosure = 'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.';
 
 test('renders the approved semantic Home hierarchy and safe content', async ({ page }) => {
+  const googleRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).hostname === 'www.google.com') googleRequests.push(request.url());
+  });
   const response = await page.goto(homePath);
 
   expect(response?.status()).toBe(200);
@@ -22,12 +26,31 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   const headings = await page.getByRole('heading', { level: 2 }).allTextContents();
   expect(headings).toEqual([
     'Før du drar',
+    'Et sted folk møtes',
     'Inne på Mike’s',
     'Sport på storskjerm',
     'Dart og shuffleboard',
     'Finn oss i Sætre',
   ]);
-  await expect(page.locator('.home-section-kicker')).toHaveText('Scene · skjerm · spill');
+  await expect(page.locator('.home-program .home-section-kicker')).toHaveText(
+    'Scene · skjerm · spill',
+  );
+  await expect(page.locator('.home-gallery-item')).toHaveCount(3);
+  expect(
+    await page
+      .locator('.home-gallery-link')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('data-rights-status'))),
+  ).toEqual(['demo-cleared', 'demo-cleared', 'demo-cleared']);
+  expect(
+    await page
+      .locator('.home-gallery-link')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('aria-label'))),
+  ).toEqual([
+    'Se pubquizbildet på Facebook (åpnes i ny fane)',
+    'Se interiørbildet på Facebook (åpnes i ny fane)',
+    'Se stemningsbildet på Facebook (åpnes i ny fane)',
+  ]);
+  await expect(page.locator('.home-gallery img')).toHaveCount(3);
   await expect(page.locator('.home-program-item')).toHaveCount(2);
   await expect(page.locator('.home-program-entry')).toHaveCount(2);
   await expect(page.locator('.home-program-entry h3')).toHaveText([
@@ -76,14 +99,24 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   expect(visibleText).not.toContain('omtalt i offentlige kilder');
   expect(visibleText).not.toContain('Ikke bekreftet av eier');
   await expect(page.locator('.home-hero-title-readable')).toHaveText('Mike’s');
-  await expect(page.locator('.venue-map')).toHaveAccessibleName(
-    /Stilisert kartutsnitt som markerer Mike’s Pub i Nordre Sætrevei 2/,
+  await expect(page.locator('.google-map-embed')).toHaveAccessibleName(
+    /Offisielt Google Maps-kart som viser Mike’s Pub i Nordre Sætrevei 2/,
   );
-  await expect(page.locator('.venue-map-marker')).toHaveCount(1);
-  await expect(page.locator('.venue-map-venue-label')).toHaveText('MIKE’S PUB');
-  await expect(page.locator('.venue-map-route, .venue-map-index, .venue-map-legend')).toHaveCount(
-    0,
+  const map = page.locator('.google-map-embed');
+  await expect(map.locator('iframe')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Vis Google Maps-kart' })).toBeVisible();
+  expect(
+    await map.locator('[data-map-gate]').evaluate((gate) => getComputedStyle(gate).backgroundImage),
+  ).not.toBe('none');
+  expect(googleRequests).toEqual([]);
+  await page.getByRole('button', { name: 'Vis Google Maps-kart' }).click();
+  await expect(map.locator('iframe')).toHaveAttribute(
+    'src',
+    /^https:\/\/www\.google\.com\/maps\/embed\?pb=/,
   );
+  await expect(map.locator('iframe')).toHaveAttribute('loading', 'lazy');
+  await expect.poll(() => googleRequests.length).toBeGreaterThan(0);
+  await expect(map.locator('iframe')).toHaveCSS('pointer-events', 'auto');
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(3);
@@ -222,7 +255,11 @@ test('uses the supplied art-directed exterior image without local source masters
 
 test('keeps Home navigation local, valid and same-origin', async ({ page }) => {
   const requests: string[] = [];
-  page.on('request', (request) => requests.push(request.url()));
+  page.on('request', (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
+      requests.push(request.url());
+    }
+  });
   await page.goto(homePath);
 
   const hrefs = await page
@@ -241,12 +278,15 @@ test('keeps Home navigation local, valid and same-origin', async ({ page }) => {
   ).toBe(true);
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === new URL(page.url()).origin)).toBe(true);
-  await expect(page.locator('a[href^="http"]')).toHaveCount(6);
+  await expect(page.locator('a[href^="http"]')).toHaveCount(9);
   expect(
     await page
       .locator('a[data-external="true"]')
       .evaluateAll((links) => links.map((link) => link.getAttribute('rel'))),
   ).toEqual([
+    'noopener noreferrer',
+    'noopener noreferrer',
+    'noopener noreferrer',
     'noopener noreferrer',
     'noopener noreferrer',
     'noopener noreferrer',
@@ -359,11 +399,48 @@ test('uses an editorial lower-page flow instead of repeated card panels', async 
   expect(gamesBox).not.toBeNull();
   expect(gamesBox!.x).toBeGreaterThan(sportBox!.x);
 
-  const mapBox = await page.locator('.venue-map').boundingBox();
+  const mapBox = await page.locator('.google-map-embed').boundingBox();
   const locationBox = await page.locator('.home-location .location-panel').boundingBox();
   expect(mapBox).not.toBeNull();
   expect(locationBox).not.toBeNull();
   expect(locationBox!.x).toBeLessThan(mapBox!.x + mapBox!.width);
+});
+
+test('gives keyboard focus the same restrained polish as pointer interaction', async ({
+  page,
+  browserName,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 1000 });
+  await page.goto(homePath);
+
+  const forwardTab = browserName === 'webkit' ? 'Alt+Tab' : 'Tab';
+  const reverseTab = browserName === 'webkit' ? 'Alt+Shift+Tab' : 'Shift+Tab';
+  const desktopNavLink = page.locator('.desktop-nav').getByRole('link', { name: 'Om puben' });
+  await page.locator('.desktop-nav').getByRole('link', { name: 'Program' }).focus();
+  await page.keyboard.press(forwardTab);
+  await expect(desktopNavLink).toBeFocused();
+  expect(
+    await desktopNavLink.evaluate((link) => getComputedStyle(link, '::after').transform),
+  ).not.toBe('matrix(0, 0, 0, 1, 0, 0)');
+
+  const galleryLink = page.locator('.home-gallery-link').first();
+  await galleryLink.focus();
+  await page.keyboard.press(forwardTab);
+  await page.keyboard.press(reverseTab);
+  await expect(galleryLink).toBeFocused();
+  await expect(galleryLink.locator('img')).toHaveCSS('transform', 'matrix(1.02, 0, 0, 1.02, 0, 0)');
+  await expect(galleryLink.locator('figcaption span').last()).toHaveCSS(
+    'transform',
+    'matrix(1, 0, 0, 1, 3.2, -3.2)',
+  );
+
+  const map = page.locator('.google-map-embed');
+  await page.getByRole('button', { name: 'Vis Google Maps-kart' }).click();
+  const mapFrame = map.locator('iframe');
+  await mapFrame.focus();
+  await expect(map).toHaveAttribute('data-map-focus', 'true');
+  await expect(map).toHaveCSS('outline-style', 'solid');
+  await expect(map).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)');
 });
 
 test('preserves reflow at the 200 percent layout equivalent', async ({ page }) => {
@@ -409,7 +486,7 @@ test.describe('without JavaScript', () => {
     await page.goto(homePath);
 
     const revealSections = page.locator('[data-reveal]');
-    await expect(revealSections).toHaveCount(5);
+    await expect(revealSections).toHaveCount(6);
     for (let index = 0; index < (await revealSections.count()); index += 1) {
       await expect(revealSections.nth(index)).toBeVisible();
       await expect(revealSections.nth(index)).toHaveCSS('opacity', '1');
