@@ -511,30 +511,32 @@
 
 .google-map-gate {
   display: grid;
-  padding: var(--space-6);
+  padding: var(--space-5);
   background:
-    linear-gradient(146deg, transparent 48%, rgb(201 144 69 / 18%) 49% 50%, transparent 51%),
+    linear-gradient(148deg, transparent 43%, rgb(201 144 69 / 22%) 44% 45%, transparent 46%),
     repeating-linear-gradient(90deg, rgb(242 235 220 / 5%) 0 1px, transparent 1px 5rem),
     var(--surface-brand-deep);
-  place-items: center;
+  place-items: end start;
 }
 
 .google-map-gate-copy {
   display: grid;
-  max-inline-size: 25rem;
-  gap: var(--space-3);
-  justify-items: center;
-  padding: var(--space-5);
-  text-align: center;
-  background: rgb(10 12 11 / 88%);
+  inline-size: min(100%, 22rem);
+  gap: var(--space-2);
+  justify-items: start;
+  padding: var(--space-4);
+  text-align: start;
+  background: rgb(10 12 11 / 82%);
   border: var(--border-thin) solid var(--border-default);
   box-shadow: var(--shadow-deep);
 }
 
 .google-map-gate-copy strong {
   font-family: var(--font-heading);
-  font-size: var(--text-2xl);
-  line-height: var(--leading-heading);
+  max-inline-size: 9ch;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 0.9;
+  letter-spacing: -0.015em;
 }
 
 [data-map-gate-detail] {
@@ -542,7 +544,7 @@
 }
 
 .google-map-gate-copy .button {
-  margin-block-start: var(--space-2);
+  margin-block-start: var(--space-3);
 }
 
 @media (prefers-reduced-motion: no-preference) {

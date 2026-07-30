@@ -522,14 +522,24 @@
   text-transform: uppercase;
 }
 
+.event-row-status {
+  width: fit-content;
+  padding: 0.2rem 0.45rem;
+  background: rgb(201 144 69 / 10%);
+  border: var(--border-thin) solid rgb(201 144 69 / 32%);
+}
+
 .event-row-description {
   color: var(--text-secondary);
 }
 
-.event-row-cancelled h3,
-.event-row-expired h3 {
+.event-row-cancelled h3 {
   color: var(--text-secondary);
   text-decoration: line-through;
+}
+
+.event-row-expired h3 {
+  text-decoration: none;
 }
 
 .event-state,

@@ -27,12 +27,20 @@ const publishedProgramState =
   programEventListState.kind === 'ready' && programEventListState.events.length > 0
     ? programEventListState
     : undefined;
+const publishedProgramIsHistory =
+  publishedProgramState?.events.every((event) => event.status === 'expired') ?? false;
 const directoryState = publishedProgramState ?? conceptProgramEventListState;
-const directoryHeading = publishedProgramState ? 'Bekreftet program' : 'Eksempelprogram';
+const directoryHeading = publishedProgramState
+  ? publishedProgramIsHistory
+    ? 'Tidligere arrangementer'
+    : 'Bekreftet program'
+  : 'Eksempelprogram';
 const directoryMode = publishedProgramState ? 'published' : 'concept';
 const showConceptNotice = !publishedProgramState;
 const pageDescription = publishedProgramState
-  ? 'Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises.'
+  ? publishedProgramIsHistory
+    ? 'Tidligere arrangementer hos Mike’s Pub i Sætre. Nye bekreftede datoer publiseres når de er klare.'
+    : 'Programoversikt for Mike’s Pub i Sætre. Bare bekreftede arrangementer vises.'
   : 'Privat designforslag til en framtidig programoversikt for Mike’s Pub i Sætre. Ingen arrangementer er bekreftet.';
 ---
 
@@ -53,7 +61,11 @@ const pageDescription = publishedProgramState
       intro={publishedProgramState
         ? programIntro.intro
         : 'Ingen bekreftede arrangementer er publisert ennå.'}
-      eyebrow={publishedProgramState ? 'Hva skjer' : 'Programstatus'}
+      eyebrow={publishedProgramState
+        ? publishedProgramIsHistory
+          ? 'Sist på programmet'
+          : 'Hva skjer'
+        : 'Programstatus'}
     />
 
     <div class="program-content ds-container">

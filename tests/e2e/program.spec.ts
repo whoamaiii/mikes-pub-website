@@ -28,7 +28,8 @@ test('renders the published Program directory with working filters and honest la
   await expect(page.getByText('Ingen bekreftede arrangementer er publisert ennå.')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Designforslag' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Eksempelprogram' })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Bekreftet program' })).toBeVisible();
+  await expect(page.getByText('Sist på programmet')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Tidligere arrangementer' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Filtrer arrangementer' })).toHaveCount(1);
   await expect(page.locator('[data-program-filter-shell]')).toHaveCount(1);
   await expect(page.locator('[data-event-list-region]')).toHaveCount(1);
@@ -42,7 +43,7 @@ test('renders the published Program directory with working filters and honest la
     publishedRowCount,
   );
   await expect(page.locator('.event-row-status')).toHaveText(
-    Array(publishedRowCount).fill('Utløpt'),
+    Array(publishedRowCount).fill('Tidligere'),
   );
   await expect(page.locator('time')).toHaveCount(publishedRowCount);
   await expect(page.locator('.program-main img')).toHaveCount(0);
