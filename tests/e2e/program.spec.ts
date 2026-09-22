@@ -48,7 +48,10 @@ test('renders the published Program directory with working filters and honest la
   await expect(page.locator('time')).toHaveCount(publishedRowCount);
   await expect(page.locator('.program-main img')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Pubquiz' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'VM-finale: Spania–Argentina' })).toBeVisible();
+  expect(await page.locator('.event-row-category').first().ariaSnapshot()).toContain(
+    'Kategori: Quiz',
+  );
+  await expect(page.getByRole('heading', { name: 'VM-finale: Spania-Argentina' })).toBeVisible();
 
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
@@ -105,6 +108,67 @@ test('filters the published directory through the category links', async ({ page
   await expect(page.locator('[data-event-row]:visible')).toHaveCount(publishedRowCount);
 });
 
+for (const path of ['/program', '/program/']) {
+  test(`preserves the current path and keyboard focus when filtering from ${path}`, async ({
+    page,
+  }) => {
+    await page.goto(`${path}?kategori=quiz`);
+    await expect(page.locator('[data-program-filter-shell]')).toHaveAttribute(
+      'data-program-filter-enhanced',
+      'true',
+    );
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+    const requests: string[] = [];
+    page.on('request', (request) => {
+      if (request.resourceType() === 'document') requests.push(request.url());
+    });
+    const sport = page.locator('[data-program-filter-link][data-filter-value="sport"]');
+    await sport.focus();
+    await page.keyboard.press('Enter');
+    await expect(sport).toBeFocused();
+    expect(new URL(page.url()).pathname).toBe(path);
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(3);
+    await page.goBack();
+    await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+    expect(new URL(page.url()).pathname).toBe(path);
+    expect(requests).toEqual([]);
+    await page.reload();
+    await expect(page.locator('[data-program-filter-shell]')).toHaveAttribute(
+      'data-active-filter',
+      'quiz',
+    );
+  });
+}
+
+test('keeps the selected category when using the skip link and reloading its URL', async ({
+  page,
+}) => {
+  await page.goto('/program?kategori=quiz');
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+  await page.getByRole('link', { name: 'Hopp til hovedinnhold' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('main')).toBeFocused();
+  await expect(page).toHaveURL(/kategori=quiz#main-content$/);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+  await page.reload();
+  await expect(page).toHaveURL(/kategori=quiz#main-content$/);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+});
+
+test('does not add duplicate history entries when reselecting the active category', async ({
+  page,
+}) => {
+  await page.goto('/program?kategori=quiz');
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+  const sport = page.locator('[data-program-filter-link][data-filter-value="sport"]');
+  await sport.click();
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(3);
+  await sport.click();
+  await page.goBack();
+  await expect(page).toHaveURL(/kategori=quiz#filter-quiz$/);
+  await expect(page.locator('[data-event-row]:visible')).toHaveCount(1);
+});
+
 test('is accessible, same-origin and overflow-safe from narrow mobile to desktop', async ({
   page,
 }) => {
@@ -141,7 +205,7 @@ test('moves keyboard focus from the skip link to Program content', async ({
   await expect(page.getByRole('main')).toBeFocused();
 });
 
-test('shows a contrasting focus ring on the light location action', async ({ page }) => {
+test('shows a contrasting focus ring on the location action', async ({ page }) => {
   await page.goto(programPath);
 
   const directions = page.locator('.program-location .action-link');
@@ -198,4 +262,21 @@ test.describe('without JavaScript', () => {
     }));
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
   });
+});
+
+test('makes event dates readable and the first listing reachable in the mobile viewport', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(programPath);
+  const firstEvent = page.locator('[data-event-row]').first();
+  const date = firstEvent.locator('time');
+  const dateBox = await date.boundingBox();
+  expect(dateBox!.y + dateBox!.height).toBeLessThan(844);
+  const typography = await date.evaluate((element) => ({
+    fontSize: parseFloat(getComputedStyle(element).fontSize),
+    textTransform: getComputedStyle(element).textTransform,
+  }));
+  expect(typography.fontSize).toBeGreaterThanOrEqual(18);
+  expect(typography.textTransform).toBe('none');
 });

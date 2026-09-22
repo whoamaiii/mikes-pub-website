@@ -25,6 +25,21 @@ function relativeUrl(url: URL): string {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
+function samePageUrl(href: string): URL | null {
+  const current = new URL(window.location.href);
+  const url = new URL(href, current);
+  if (
+    url.origin !== current.origin ||
+    url.pathname.replace(/\/$/, '') !== current.pathname.replace(/\/$/, '')
+  ) {
+    return null;
+  }
+
+  // Keep the host's canonical path in history, including Cloudflare's trailing slash.
+  url.pathname = current.pathname;
+  return url;
+}
+
 export function initializeProgramFilter(root: HTMLElement): ProgramFilterController | null {
   const existing = controllers.get(root);
   if (existing) {
@@ -62,7 +77,8 @@ export function initializeProgramFilter(root: HTMLElement): ProgramFilterControl
 
   for (const link of links) {
     const category = link.dataset.filterValue;
-    const url = new URL(link.href, window.location.href);
+    const url = samePageUrl(link.href);
+    if (!url) return null;
     const query = url.searchParams.get('kategori');
     const fragment = url.hash.slice(1);
 
@@ -70,8 +86,6 @@ export function initializeProgramFilter(root: HTMLElement): ProgramFilterControl
       !isProgramCategory(category) ||
       !query ||
       !fragment ||
-      url.origin !== window.location.origin ||
-      url.pathname !== window.location.pathname ||
       markerCategories.get(fragment) !== category ||
       !summaryCategories.has(category) ||
       entryByCategory.has(category) ||
@@ -168,10 +182,12 @@ export function initializeProgramFilter(root: HTMLElement): ProgramFilterControl
       ? categoryByQuery.get(url.searchParams.get('kategori') ?? '')
       : undefined;
     const fragmentCategory = hasFragment ? categoryByFragment.get(url.hash.slice(1)) : undefined;
+    const pageAnchor =
+      hasFragment && !fragmentCategory && document.getElementById(url.hash.slice(1)) !== null;
 
     const hasInvalidState =
       (hasQuery && !queryCategory) ||
-      (hasFragment && !fragmentCategory) ||
+      (hasFragment && !fragmentCategory && !pageAnchor) ||
       Boolean(queryCategory && fragmentCategory && queryCategory !== fragmentCategory);
     const category: ProgramCategory = hasInvalidState
       ? 'all'
@@ -180,7 +196,13 @@ export function initializeProgramFilter(root: HTMLElement): ProgramFilterControl
     const cleanDefault = !hasQuery && !hasFragment && category === 'all';
     return {
       category,
-      canonicalHref: cleanDefault ? window.location.pathname : entryByCategory.get(category)!.href,
+      // Native anchors such as the skip link must not reset a valid category.
+      canonicalHref:
+        pageAnchor && !hasInvalidState
+          ? relativeUrl(url)
+          : cleanDefault
+            ? window.location.pathname
+            : entryByCategory.get(category)!.href,
     };
   };
 
@@ -208,13 +230,16 @@ export function initializeProgramFilter(root: HTMLElement): ProgramFilterControl
     const link = target instanceof Element ? target.closest<HTMLAnchorElement>('a[href]') : null;
     if (!link || link.target || link.hasAttribute('download')) return;
 
-    const url = new URL(link.href, window.location.href);
+    const url = samePageUrl(link.href);
+    if (!url) return;
     const entry = entryByHref.get(relativeUrl(url));
-    if (!entry || url.origin !== window.location.origin) return;
+    if (!entry) return;
 
     event.preventDefault();
     try {
-      window.history.pushState(null, '', entry.href);
+      if (relativeUrl(new URL(window.location.href)) !== entry.href) {
+        window.history.pushState(null, '', entry.href);
+      }
       applyCategory(entry.category);
       if (feedback.contains(link) && feedback.hidden) {
         entry.link.focus({ preventScroll: true });

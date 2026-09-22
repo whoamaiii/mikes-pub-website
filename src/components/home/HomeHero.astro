@@ -23,7 +23,7 @@ interface ResponsiveSource {
   sizes: string;
 }
 
-const { id, title, eyebrow, intro, location, action, image, responsiveSources } = Astro.props;
+const { id, title, eyebrow, intro, action, image, responsiveSources } = Astro.props;
 const [venueFirstName = title, venueSecondName = ''] = title.trim().split(/\s+/, 2);
 ---
 
@@ -41,11 +41,6 @@ const [venueFirstName = title, venueSecondName = ''] = title.trim().split(/\s+/,
       <div class="home-hero-action">
         <ActionLink {...action} variant="primary" />
       </div>
-    </div>
-
-    <div class="home-hero-meta" aria-label="Adresse">
-      <span class="home-hero-meta-label">Her finner du oss</span>
-      <span>{location}</span>
     </div>
 
     <figure

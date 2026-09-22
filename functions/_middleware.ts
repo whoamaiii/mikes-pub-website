@@ -1,7 +1,8 @@
 const COOKIE_NAME = '__Host-mikes-pub-preview';
 const LOGIN_PATH = '/__preview';
 const LOGOUT_PATH = '/__preview/logout';
-const SESSION_PURPOSE = 'mikes-pub-private-preview-v1';
+const SESSION_PURPOSE = 'mikes-pub-private-preview-v2';
+const PASSWORD_CHECK_PURPOSE = 'mikes-pub-preview-password-check';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 const MINIMUM_PASSWORD_LENGTH = 12;
 
@@ -72,23 +73,31 @@ function decodeBase64Url(value: string): ArrayBuffer | null {
 }
 
 async function sessionToken(secret: string): Promise<string> {
+  const issuedAt = Math.floor(Date.now() / 1_000);
+  const expiresAt = issuedAt + SESSION_MAX_AGE_SECONDS;
+  const nonce = encodeBase64Url(crypto.getRandomValues(new Uint8Array(16)));
+  const payload = `v2.${issuedAt}.${expiresAt}.${nonce}`;
   const signature = await crypto.subtle.sign(
     'HMAC',
     await importHmacKey(secret),
-    encoder.encode(SESSION_PURPOSE),
+    encoder.encode(`${SESSION_PURPOSE}:${payload}`),
   );
-  return encodeBase64Url(new Uint8Array(signature));
+  return `${payload}.${encodeBase64Url(new Uint8Array(signature))}`;
 }
 
 async function passwordMatches(candidate: string, secret: string): Promise<boolean> {
-  const candidateSignature = decodeBase64Url(await sessionToken(candidate));
-  if (!candidateSignature) return false;
+  if (candidate.length < MINIMUM_PASSWORD_LENGTH) return false;
+  const candidateSignature = await crypto.subtle.sign(
+    'HMAC',
+    await importHmacKey(candidate),
+    encoder.encode(PASSWORD_CHECK_PURPOSE),
+  );
 
   return crypto.subtle.verify(
     'HMAC',
     await importHmacKey(secret),
     candidateSignature,
-    encoder.encode(SESSION_PURPOSE),
+    encoder.encode(PASSWORD_CHECK_PURPOSE),
   );
 }
 
@@ -108,14 +117,25 @@ async function hasValidSession(request: Request, secret: string): Promise<boolea
   const token = cookieValue(request);
   if (!token) return false;
 
-  const signature = decodeBase64Url(token);
+  const fields =
+    /^v2\.([1-9]\d{0,10})\.([1-9]\d{0,10})\.([A-Za-z0-9_-]{22})\.([A-Za-z0-9_-]{43})$/.exec(token);
+  if (!fields) return false;
+  const issuedAt = Number(fields[1]);
+  const expiresAt = Number(fields[2]);
+  const now = Math.floor(Date.now() / 1_000);
+  if (issuedAt > now || expiresAt <= now || expiresAt - issuedAt !== SESSION_MAX_AGE_SECONDS) {
+    return false;
+  }
+
+  const signature = decodeBase64Url(fields[4]);
   if (!signature) return false;
+  const payload = token.slice(0, token.lastIndexOf('.'));
 
   return crypto.subtle.verify(
     'HMAC',
     await importHmacKey(secret),
     signature,
-    encoder.encode(SESSION_PURPOSE),
+    encoder.encode(`${SESSION_PURPOSE}:${payload}`),
   );
 }
 

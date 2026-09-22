@@ -1,5 +1,4 @@
 import type { NavigationItem, VenueLocation } from '../types/design-system';
-import type { HomePromoContent } from '../types/home';
 import type { VisitInfo } from '../types/visit';
 
 const venueStreetName = 'Nordre Sætrevei';
@@ -29,12 +28,6 @@ export const siteNavigation: NavigationItem[] = [
   { id: 'venue', href: '/#about', label: 'Om puben' },
   { id: 'location', href: '/#location', label: 'Besøk' },
 ];
-
-export const gamesPromo: HomePromoContent = {
-  kicker: 'I lokalet',
-  heading: 'Dart og shuffleboard',
-  text: 'Dart og shuffleboard står klare i lokalet – bare å utfordre noen.',
-};
 
 const directionsQuery = encodeURIComponent(
   `${verifiedSiteLocation.name.replace('’', "'")}, ${venueLocationLabels.inlineAddress}`,

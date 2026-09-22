@@ -41,11 +41,37 @@ The Playwright configuration contains Chromium, Firefox, WebKit, Mobile Chrome a
 The normal configuration exercises the static production output, the custom 404 response and
 intentionally missing routes.
 The separate design-system configuration exercises the isolated WHO-15 component preview in the
-same five profiles. `npm run test:e2e` runs both configurations.
+same five profiles. A third configuration, `playwright.hosting.config.ts`, runs the protected
+production output through the real local Cloudflare Pages runtime in those five profiles.
+`npm run test:e2e` runs all three configurations sequentially.
+
+The hosting tests use HTTPS on `127.0.0.1:8791` with Wrangler's local self-signed certificate, so
+Secure session cookies retain their production flags. Each run generates a temporary test password
+and copies only `dist/`, `functions/` and `wrangler.jsonc` into an isolated temporary directory. It
+does not read the project's `.dev.vars`, use the real preview password or deploy anything. The
+server and temporary directory are cleaned up when Playwright stops. The focused command is
+`npm run test:e2e:hosting`.
+
+This gate covers the Pages redirect from `/program` to `/program/`, query-only category links,
+filtering without document reloads, keyboard focus, history/reload, empty categories, no-JavaScript
+fragment filtering, protected assets, invalid passwords, session-cookie flags, 404 and logout.
+Program filtering must keep the host's current path form in history; both slash and non-slash paths
+also receive regression coverage in the standard production suite.
+
+Native page anchors, including the Program skip link, must preserve the selected category.
+Selecting the current filter URL again must not add another browser-history entry. Delayed map
+loads and timeouts must preserve focus when the visitor moves to another control; keyboard users
+who remain on the loading control must retain a usable focus path into the map or retry action.
+These regressions use local map responses, including a delayed response and simulated timeout,
+so tests do not depend on Google's availability or send visitor data to Google.
 
 When the Codex sidebar already uses the default production port, run
 `PLAYWRIGHT_PORT=4323 npm run test:e2e`. The override affects only the normal Playwright preview and
 keeps the visible development server running.
+
+Both Playwright servers set `ASTRO_PREVIEW_BACKGROUND=1`, the pinned Astro 7.3 preview-worker
+flag. This prevents the CLI's automatic agent detection from detaching the preview process:
+Playwright must own the running process to detect startup failures and stop it after the tests.
 
 The production-isolation assertion rejects a built `/design-system/` route, preview fixture marker or
 preview-only script in `dist/`. The preview has explicit `srcDir`, `outDir` and `cacheDir` values and

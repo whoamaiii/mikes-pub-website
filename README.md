@@ -7,12 +7,13 @@ system for the Mike's Pub website project in Sætre, Norway. Other product route
 
 - Static-first Astro project with strict TypeScript, native components and plain external CSS.
 - WHO-18 provides the first approved responsive product route at `/` with verified concept content.
-- WHO-20 provides an honest Program route at `/program`. Until verified events exist, the route
-  presents clearly labelled, date-neutral concept examples (validated demo-only records) so the
-  directory and filters are demonstrable; verified events replace them without layout changes.
+- WHO-20 provides the Program route at `/program`, showing historical entries from the documented
+  public sources and working category filters. Opening hours and upcoming programming remain
+  deferred until purchase and owner input; the private demo deliberately retains the history.
 - WHO-15 components and tokens are available through an isolated local-only preview build.
-- No server runtime, CMS, database, authentication, analytics, forms, third-party maps or embeds.
-  Home uses a code-native locator diagram paired with an explicit Google Maps directions link.
+- The product pages are static, with no CMS, database, analytics or visitor forms. A Cloudflare
+  Pages Function protects the private preview with a password and time-limited session cookies.
+  Home loads Google Maps only after an explicit click and keeps retry/external-map recovery available.
 - The repository is currently public by Q's explicit decision. Do not add secrets, private sales
   material, client credentials, protected deployment configuration or unapproved assets.
 - Repository visibility must be reviewed before private demo content or protected deployment
@@ -33,25 +34,26 @@ npm ci
 
 ## Commands
 
-| Command                               | Purpose                                                       |
-| ------------------------------------- | ------------------------------------------------------------- |
-| `npm run dev`                         | Start Astro's local development server.                       |
-| `npm run build`                       | Produce the portable static `dist/` output.                   |
-| `npm run build:design-system-preview` | Build the isolated component preview.                         |
-| `npm run preview`                     | Preview an existing production build locally.                 |
-| `npm run preview:design-system`       | Serve the isolated component preview locally.                 |
-| `npm run format`                      | Format supported repository files.                            |
-| `npm run format:check`                | Check formatting without changing files.                      |
-| `npm run lint`                        | Run ESLint and Stylelint.                                     |
-| `npm run check`                       | Run Astro and TypeScript checks.                              |
-| `npm run test:unit`                   | Run infrastructure policy tests.                              |
-| `npm run test:e2e`                    | Run production and component-preview checks in five profiles. |
-| `npm run evidence:design-system`      | Capture ignored WHO-15 visual evidence.                       |
-| `npm run evidence:mobile-navigation`  | Capture ignored WHO-17 navigation evidence.                   |
-| `npm run evidence:home`               | Capture ignored WHO-18 Home evidence.                         |
-| `npm run test:e2e:program`            | Run the targeted WHO-20 Chromium browser checks.              |
-| `npm run evidence:program`            | Capture ignored WHO-20 Program evidence.                      |
-| `npm run verify`                      | Run the local non-browser quality gate.                       |
+| Command                               | Purpose                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`                         | Start Astro's local development server.                                  |
+| `npm run build`                       | Produce the portable static `dist/` output.                              |
+| `npm run build:design-system-preview` | Build the isolated component preview.                                    |
+| `npm run preview`                     | Preview an existing production build locally.                            |
+| `npm run preview:design-system`       | Serve the isolated component preview locally.                            |
+| `npm run format`                      | Format supported repository files.                                       |
+| `npm run format:check`                | Check formatting without changing files.                                 |
+| `npm run lint`                        | Run ESLint and Stylelint.                                                |
+| `npm run check`                       | Run Astro and TypeScript checks.                                         |
+| `npm run test:unit`                   | Run infrastructure policy tests.                                         |
+| `npm run test:e2e`                    | Run production, component and protected-hosting checks in five profiles. |
+| `npm run test:e2e:hosting`            | Test the protected build in the local Cloudflare Pages runtime.          |
+| `npm run evidence:design-system`      | Capture ignored WHO-15 visual evidence.                                  |
+| `npm run evidence:mobile-navigation`  | Capture ignored WHO-17 navigation evidence.                              |
+| `npm run evidence:home`               | Capture ignored WHO-18 Home evidence.                                    |
+| `npm run test:e2e:program`            | Run the targeted WHO-20 Chromium browser checks.                         |
+| `npm run evidence:program`            | Capture ignored WHO-20 Program evidence.                                 |
+| `npm run verify`                      | Run the local non-browser quality gate.                                  |
 
 ## Validation policy
 
@@ -83,8 +85,9 @@ tests/e2e/               Production and isolated-preview browser tests
 ```
 
 The Home build uses Astro's local image pipeline to generate responsive WebP widths from the two
-approved art-directed derivatives. The source crops, alternative text and focal points remain
-unchanged; viewport-matched preload metadata reuses the same generated source sets.
+approved art-directed derivatives. The source crops and alternative text are preserved; mobile uses
+a shorter hero and a separate CSS focal point. Viewport-matched preload metadata reuses the generated
+source sets.
 
 All product routes beyond Home and Program remain deferred to their dedicated Linear issues.
 

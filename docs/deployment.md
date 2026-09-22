@@ -46,4 +46,8 @@ banner, `noindex` metadata or response-level `X-Robots-Tag` for this preview.
 - Rotate: run `npm run cloudflare:set-password`, then verify old and new browser sessions.
 - Local sign-out endpoint: send `POST /__preview/logout`; changing the password invalidates all old
   cookies immediately.
+- Sessions expire on the server seven days after login. Deploying the version 2 token format will
+  require existing viewers to log in again, using the unchanged password.
+- Browser logout does not revoke a copied token on the server. It remains valid until its signed
+  expiry or password rotation; the preview does not have a persistent per-session revocation store.
 - Take down: remove GoDaddy forwarding/CNAME first, then delete the Pages custom domain and project.

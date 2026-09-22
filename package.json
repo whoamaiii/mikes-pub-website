@@ -28,9 +28,10 @@
     "lint:styles": "stylelint \"src/**/*.css\" --allow-empty-input",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run",
-    "test:e2e": "npm run test:e2e:infrastructure && npm run test:e2e:design-system",
+    "test:e2e": "npm run test:e2e:infrastructure && npm run test:e2e:design-system && npm run test:e2e:hosting",
     "test:e2e:infrastructure": "npm run build && playwright test",
     "test:e2e:design-system": "npm run build:design-system-preview && playwright test --config playwright.design-system.config.ts",
+    "test:e2e:hosting": "npm run build && playwright test --config playwright.hosting.config.ts",
     "test:e2e:program": "npm run build && playwright test program.spec.ts infrastructure.spec.ts --project=Chromium && npm run build:design-system-preview && playwright test --config playwright.design-system.config.ts accessibility.spec.ts --project=Chromium --grep \"full-empty and error EventList\" && playwright test --config playwright.design-system.config.ts program-filter.spec.ts --project=Chromium",
     "evidence:design-system": "npm run build:design-system-preview && WHO15_CAPTURE=1 playwright test --config playwright.design-system.config.ts evidence.spec.ts --project=Chromium",
     "evidence:mobile-navigation": "npm run build:design-system-preview && WHO17_CAPTURE=1 playwright test --config playwright.design-system.config.ts mobile-navigation.evidence.spec.ts --project=Chromium",
@@ -44,7 +45,7 @@
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.61.1",
     "@types/node": "24.13.3",
-    "astro": "7.0.7",
+    "astro": "7.3.1",
     "eslint": "10.7.0",
     "eslint-plugin-astro": "3.0.0",
     "prettier": "3.9.5",
@@ -53,14 +54,13 @@
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.2",
     "typescript-eslint": "8.63.0",
-    "vitest": "4.1.10",
-    "wrangler": "4.112.0"
+    "vitest": "4.1.11",
+    "wrangler": "4.136.2"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.2": true,
     "fsevents@2.3.3": true,
-    "sharp@0.34.5": false,
-    "workerd@1.20260714.1": true
+    "workerd@1.20260921.1": true
   }
 }

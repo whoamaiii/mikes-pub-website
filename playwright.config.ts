@@ -23,6 +23,8 @@ export default defineConfig({
   },
   webServer: {
     command: `npm run preview -- --host 127.0.0.1 --port ${port}`,
+    // Prevent Astro 7.3's agent detection from detaching Playwright's server process.
+    env: { ASTRO_PREVIEW_BACKGROUND: '1' },
     port,
     reuseExistingServer: false,
     timeout: 30_000,

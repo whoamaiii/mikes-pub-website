@@ -16,11 +16,10 @@ const { navigation, location, brandDescription, conceptText } = Astro.props;
   <div class="site-footer-inner ds-container">
     <div class="site-footer-brand">
       <BrandLogo context="footer" />
-      <p>{brandDescription ?? `${location.street} · ${location.city}`}</p>
+      <p>{brandDescription ?? `${location.street} · ${location.postalCode} ${location.city}`}</p>
     </div>
 
     <nav aria-label="Bunnmeny">
-      <span class="site-footer-label">Neste steg</span>
       <ul>
         {
           navigation.map((item) => (
@@ -40,13 +39,6 @@ const { navigation, location, brandDescription, conceptText } = Astro.props;
         }
       </ul>
     </nav>
-
-    <address>
-      <span class="site-footer-label">Besøk</span>
-      <span>{location.name}</span>
-      <span>{location.street}</span>
-      <span>{location.postalCode} {location.city}</span>
-    </address>
 
     {conceptText && <p class="site-footer-concept">{conceptText}</p>}
   </div>

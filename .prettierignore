@@ -9,3 +9,11 @@ output/
 package-lock.json
 playwright-report/
 test-results/
+
+# Local agent configuration and personal notes, outside the website delivery.
+.agents/skills/redesign-existing-projects/SKILL.md
+.continue/rules/new-rule.md
+.kilo/kilo.jsonc
+.taste/brand.json
+.taste/page.json
+convonotes/note.md

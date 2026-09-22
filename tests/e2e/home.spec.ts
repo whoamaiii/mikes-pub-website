@@ -4,6 +4,15 @@ import { expect, test } from '@playwright/test';
 const homePath = '/';
 const conceptDisclosure = 'Privat designforslag. Ikke den offisielle nettsiden til Mike’s Pub.';
 
+test.beforeEach(async ({ page }) => {
+  await page.route('https://www.google.com/maps/embed**', (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: '<html lang="nb"><title>Karttest</title><body>Karttest</body></html>',
+    }),
+  );
+});
+
 test('renders the approved semantic Home hierarchy and safe content', async ({ page }) => {
   const googleRequests: string[] = [];
   page.on('request', (request) => {
@@ -28,45 +37,42 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     'Før du drar',
     'Et sted folk møtes',
     'Inne på Mike’s',
-    'Sport på storskjerm',
-    'Dart og shuffleboard',
     'Finn oss i Sætre',
   ]);
-  await expect(page.locator('.home-program .home-section-kicker')).toHaveText(
-    'Scene · skjerm · spill',
-  );
+  await expect(page.locator('.home-program-number')).toHaveCount(0);
   await expect(page.locator('.home-gallery-item')).toHaveCount(3);
   expect(
     await page
       .locator('.home-gallery-link')
       .evaluateAll((links) => links.map((link) => link.getAttribute('data-rights-status'))),
   ).toEqual(['demo-cleared', 'demo-cleared', 'demo-cleared']);
-  expect(
-    await page
-      .locator('.home-gallery-link')
-      .evaluateAll((links) => links.map((link) => link.getAttribute('aria-label'))),
-  ).toEqual([
-    'Se pubquizbildet på Facebook (åpnes i ny fane)',
-    'Se interiørbildet på Facebook (åpnes i ny fane)',
-    'Se stemningsbildet på Facebook (åpnes i ny fane)',
-  ]);
+  for (const [index, caption] of [
+    'Fullt hus på pubquiz',
+    'Inne i puben',
+    'Kveld foran storskjermen',
+  ].entries()) {
+    await expect(page.locator('.home-gallery-link').nth(index)).toHaveAccessibleName(
+      new RegExp(`${caption} Se på Facebook \\(åpnes i ny fane\\)`),
+    );
+  }
   await expect(page.locator('.home-gallery img')).toHaveCount(3);
-  await expect(page.locator('.home-program-item')).toHaveCount(2);
-  await expect(page.locator('.home-program-entry')).toHaveCount(2);
+  await expect(page.locator('.home-program-item')).toHaveCount(3);
+  await expect(page.locator('.home-program-entry')).toHaveCount(3);
   await expect(page.locator('.home-program-entry h3')).toHaveText([
     'Musikk og kultur',
     'Fotball på skjerm',
+    'Dart og shuffleboard',
   ]);
   await expect(page.locator('.home-program-item a')).toHaveCount(0);
-  await expect(page.locator('.home-hero-action a')).toHaveAttribute('href', '#program');
-  await expect(page.locator('.home-hero-action a')).toHaveText('Se hva du finner hos oss');
+  await expect(page.locator('.home-hero-action a')).toHaveAttribute('href', '#about');
+  await expect(page.locator('.home-hero-action a')).toHaveText('Se puben');
   await expect(page.locator('.home-main a[href="/program"]')).toHaveCount(0);
   await expect(
     page.locator('.home-program').getByRole('link', {
       name: 'Se siste nytt fra Mike’s Pub på Facebook',
     }),
   ).toHaveAttribute('href', 'https://www.facebook.com/mikespub.saetre/');
-  await expect(page.getByRole('link', { name: 'Ring Mike’s Pub på 918 55 855' })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: 'Ring puben 918 55 855' })).toHaveAttribute(
     'href',
     'tel:+4791855855',
   );
@@ -95,7 +101,7 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   ]) {
     expect(visibleText).not.toContain(blockedText);
   }
-  expect(visibleText).toContain('Fotball, dart og shuffleboard');
+  expect(visibleText).toContain('Dart og shuffleboard');
   expect(visibleText).not.toContain('omtalt i offentlige kilder');
   expect(visibleText).not.toContain('Ikke bekreftet av eier');
   await expect(page.locator('.home-hero-title-readable')).toHaveText('Mike’s');
@@ -104,12 +110,12 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   );
   const map = page.locator('.google-map-embed');
   await expect(map.locator('iframe')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Vis Google Maps-kart' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Vis kart i Google Maps' })).toBeVisible();
   expect(
     await map.locator('[data-map-gate]').evaluate((gate) => getComputedStyle(gate).backgroundImage),
-  ).not.toBe('none');
+  ).toBe('none');
   expect(googleRequests).toEqual([]);
-  await page.getByRole('button', { name: 'Vis Google Maps-kart' }).click();
+  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
   await expect(map.locator('iframe')).toHaveAttribute(
     'src',
     /^https:\/\/www\.google\.com\/maps\/embed\?pb=/,
@@ -119,7 +125,13 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   await expect(map.locator('iframe')).toHaveCSS('pointer-events', 'auto');
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
-  ).toHaveCount(3);
+  ).toHaveCount(2);
+  await expect(
+    page.getByRole('link', { name: 'Veibeskrivelse Nordre Sætrevei 2' }),
+  ).toHaveAttribute(
+    'href',
+    (await page.locator('.location-panel .action-link').getAttribute('href'))!,
+  );
 });
 
 test('uses the supplied art-directed exterior image without local source masters', async ({
@@ -132,7 +144,7 @@ test('uses the supplied art-directed exterior image without local source masters
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
   expect(fontPreloads).toEqual([
     '/fonts/unifraktur-cook/UnifrakturCook-Bold.woff2',
-    '/fonts/barlow-condensed/BarlowCondensed-Bold.woff2',
+    '/fonts/source-sans-3/SourceSans3-Regular.ttf.woff2',
   ]);
 
   const imagePreloads = page.locator('link[rel="preload"][as="image"]');
@@ -278,39 +290,54 @@ test('keeps Home navigation local, valid and same-origin', async ({ page }) => {
   ).toBe(true);
   expect(requests.length).toBeGreaterThan(0);
   expect(requests.every((url) => new URL(url).origin === new URL(page.url()).origin)).toBe(true);
-  await expect(page.locator('a[href^="http"]')).toHaveCount(9);
+  await expect(page.locator('a[href^="http"]')).toHaveCount(10);
+  const externalLinks = page.locator('a[data-external="true"]');
+  await expect(externalLinks).toHaveCount(10);
   expect(
-    await page
-      .locator('a[data-external="true"]')
-      .evaluateAll((links) => links.map((link) => link.getAttribute('rel'))),
-  ).toEqual([
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-    'noopener noreferrer',
-  ]);
+    await externalLinks.evaluateAll((links) =>
+      links.every((link) => link.getAttribute('rel') === 'noopener noreferrer'),
+    ),
+  ).toBe(true);
 });
 
 test('has no detectable automated accessibility violations', async ({ page }) => {
   await page.goto(homePath);
-  const results = await new AxeBuilder({ page }).analyze();
+  const results = await new AxeBuilder({ page })
+    .options({ rules: { 'label-content-name-mismatch': { enabled: true } } })
+    .analyze();
   expect(results.violations).toEqual([]);
 });
 
-test('keeps the paper-surface manifesto accent above large-text contrast minimums', async ({
+test('keeps the main action on the first screen on short laptops and small phones', async ({
   page,
 }) => {
+  for (const viewport of [
+    { width: 1280, height: 720 },
+    { width: 1024, height: 600 },
+    { width: 390, height: 844 },
+    { width: 320, height: 568 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto(homePath);
+    await page.evaluate(() => document.fonts.ready);
+    const header = await page.locator('.site-header').boundingBox();
+    const action = await page.locator('.home-hero-action a').boundingBox();
+    expect(header!.height).toBeLessThanOrEqual(80);
+    expect(action!.y).toBeGreaterThanOrEqual(0);
+    expect(
+      action!.y + action!.height,
+      `${viewport.width} x ${viewport.height}`,
+    ).toBeLessThanOrEqual(viewport.height);
+  }
+});
+
+test('keeps the gallery captions readable at normal text sizes', async ({ page }) => {
   await page.goto(homePath);
 
-  const manifesto = page.locator('.home-manifesto');
-  const accent = manifesto.locator('em');
+  const gallery = page.locator('.home-gallery');
+  const accent = gallery.locator('figcaption').first();
   await accent.scrollIntoViewIfNeeded();
-  await expect(manifesto).toHaveAttribute('data-reveal-visible', 'true');
+  await expect(gallery).toHaveAttribute('data-reveal-visible', 'true');
   await expect(accent).toBeVisible();
 
   const contrast = await accent.evaluate((element) => {
@@ -331,13 +358,11 @@ test('keeps the paper-surface manifesto accent above large-text contrast minimum
     };
 
     const foreground = luminance(parseRgb(getComputedStyle(element).color));
-    const background = luminance(
-      parseRgb(getComputedStyle(element.closest('.home-manifesto')!).backgroundColor),
-    );
+    const background = luminance(parseRgb(getComputedStyle(document.body).backgroundColor));
     return (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05);
   });
 
-  expect(contrast).toBeGreaterThanOrEqual(3);
+  expect(contrast).toBeGreaterThanOrEqual(4.5);
 });
 
 test('moves keyboard focus from the skip link to the main landmark', async ({
@@ -383,27 +408,102 @@ test('reflows without horizontal overflow from 320px through wide desktop', asyn
   }
 });
 
-test('uses an editorial lower-page flow instead of repeated card panels', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 1000 });
+test('keeps the mobile visit actions near the first screen and activities in one compact section', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(homePath);
+  const visit = await page.locator('.visit-actions').boundingBox();
+  expect(visit!.y).toBeLessThan(750);
+  await expect(page.locator('.home-program-entry h3')).toHaveText([
+    'Musikk og kultur',
+    'Fotball på skjerm',
+    'Dart og shuffleboard',
+  ]);
+  await expect(page.getByRole('heading', { name: 'Dart og shuffleboard' })).toHaveCount(1);
+  await expect(page.locator('.home-promos, .home-manifesto')).toHaveCount(0);
+  await expect(page.locator('#about .home-gallery')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThan(4800);
+});
 
-  const promos = page.locator('.home-promo');
-  await expect(promos).toHaveCount(2);
-  await expect(promos.locator('.home-promo-index')).toHaveText(['01', '02']);
-  await expect(promos.nth(0)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-  await expect(promos.nth(1)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+test('keeps map recovery available after a failed request or load timeout', async ({ page }) => {
+  let attempts = 0;
+  await page.route('https://www.google.com/maps/embed**', (route) => {
+    attempts += 1;
+    return attempts === 1
+      ? route.abort('internetdisconnected')
+      : route.fulfill({
+          contentType: 'text/html',
+          body: '<html lang="nb"><title>Karttest</title><body>Karttest</body></html>',
+        });
+  });
+  await page.goto(homePath);
+  const map = page.locator('.google-map-embed');
+  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
+  const retry = map.getByRole('button', { name: 'Prøv igjen' });
+  await expect(retry).toBeEnabled({ timeout: 22_000 });
+  await expect(retry).toBeVisible();
+  await expect(map.locator('[data-map-status]')).not.toContainText('kartet er lastet');
+  await expect(map.getByRole('link', { name: 'Åpne i Google Maps (ekstern lenke)' })).toBeVisible();
+  await retry.click();
+  await expect.poll(() => attempts).toBe(2);
+  await expect(map).toHaveAttribute('data-map-state', 'displayed');
+  await expect(map.locator('iframe')).toHaveCount(1);
+  await expect(retry).toBeEnabled();
+});
 
-  const sportBox = await promos.nth(0).boundingBox();
-  const gamesBox = await promos.nth(1).boundingBox();
-  expect(sportBox).not.toBeNull();
-  expect(gamesBox).not.toBeNull();
-  expect(gamesBox!.x).toBeGreaterThan(sportBox!.x);
+for (const outcome of ['displayed', 'error'] as const) {
+  test(`does not steal focus when a delayed map ends in ${outcome}`, async ({ page }) => {
+    await page.clock.install();
+    let releaseMap!: () => void;
+    const pendingMap = new Promise<void>((resolve) => {
+      releaseMap = resolve;
+    });
+    await page.route('https://www.google.com/maps/embed**', async (route) => {
+      await pendingMap;
+      await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
+    });
+    await page.goto(homePath);
+    const map = page.locator('.google-map-embed');
+    await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
+    await expect(map).toHaveAttribute('data-map-state', 'loading');
+    const footerLink = page
+      .getByRole('contentinfo')
+      .getByRole('link', { name: 'Program', exact: true });
+    await footerLink.focus();
+    if (outcome === 'displayed') releaseMap();
+    else await page.clock.fastForward(20_001);
+    await expect(map).toHaveAttribute('data-map-state', outcome);
+    await expect(footerLink).toBeFocused();
+    await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeEnabled();
+    releaseMap();
+  });
+}
 
-  const mapBox = await page.locator('.google-map-embed').boundingBox();
-  const locationBox = await page.locator('.home-location .location-panel').boundingBox();
-  expect(mapBox).not.toBeNull();
-  expect(locationBox).not.toBeNull();
-  expect(locationBox!.x).toBeLessThan(mapBox!.x + mapBox!.width);
+test('keeps keyboard control during map loading and ignores repeated activation', async ({
+  page,
+}) => {
+  let releaseMap!: () => void;
+  const pendingMap = new Promise<void>((resolve) => {
+    releaseMap = resolve;
+  });
+  await page.route('https://www.google.com/maps/embed**', async (route) => {
+    await pendingMap;
+    await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
+  });
+  await page.goto(homePath);
+  const map = page.locator('.google-map-embed');
+  const load = page.getByRole('button', { name: 'Vis kart i Google Maps' });
+  await load.focus();
+  await page.keyboard.press('Enter');
+  await expect(map).toHaveAttribute('data-map-state', 'loading');
+  await expect(load).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(map.locator('iframe')).toHaveCount(1);
+  releaseMap();
+  await expect(map).toHaveAttribute('data-map-state', 'displayed');
+  await expect(map.locator('iframe')).toBeFocused();
+  await expect(map).toHaveAttribute('data-map-focus', 'true');
 });
 
 test('gives keyboard focus the same restrained polish as pointer interaction', async ({
@@ -428,14 +528,18 @@ test('gives keyboard focus the same restrained polish as pointer interaction', a
   await page.keyboard.press(forwardTab);
   await page.keyboard.press(reverseTab);
   await expect(galleryLink).toBeFocused();
-  await expect(galleryLink.locator('img')).toHaveCSS('transform', 'matrix(1.02, 0, 0, 1.02, 0, 0)');
+  await expect(galleryLink.locator('figcaption > span').first()).toHaveCSS(
+    'text-decoration-line',
+    'underline',
+  );
+  await expect(galleryLink.locator('img')).toHaveCSS('transform', 'none');
   await expect(galleryLink.locator('figcaption span').last()).toHaveCSS(
     'transform',
     'matrix(1, 0, 0, 1, 3.2, -3.2)',
   );
 
   const map = page.locator('.google-map-embed');
-  await page.getByRole('button', { name: 'Vis Google Maps-kart' }).click();
+  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
   const mapFrame = map.locator('iframe');
   await mapFrame.focus();
   await expect(map).toHaveAttribute('data-map-focus', 'true');
@@ -474,8 +578,8 @@ test('retains structure in forced colors', async ({ page, browserName }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.locator('.home-hero-action .action-link')).toBeVisible();
   const programItems = page.locator('.home-program-item');
-  expect(await programItems.count()).toBe(2);
-  await expect(programItems.nth(0)).toHaveCSS('border-bottom-style', 'solid');
+  expect(await programItems.count()).toBe(3);
+  await expect(programItems.nth(0)).toHaveCSS('border-top-style', 'solid');
 });
 
 test.describe('without JavaScript', () => {
@@ -486,7 +590,7 @@ test.describe('without JavaScript', () => {
     await page.goto(homePath);
 
     const revealSections = page.locator('[data-reveal]');
-    await expect(revealSections).toHaveCount(6);
+    await expect(revealSections).toHaveCount(5);
     for (let index = 0; index < (await revealSections.count()); index += 1) {
       await expect(revealSections.nth(index)).toBeVisible();
       await expect(revealSections.nth(index)).toHaveCSS('opacity', '1');

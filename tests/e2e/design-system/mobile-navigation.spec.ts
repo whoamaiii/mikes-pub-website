@@ -62,7 +62,7 @@ test('opens without pointer input, contains focus, closes with Escape and return
 
   const dialog = page.getByRole('dialog', { name: 'Hovedmeny' });
   const closeButton = dialog.getByRole('button', { name: 'Lukk meny' });
-  const firstLink = dialog.getByRole('link', { name: 'Mike’s Pub - forside' });
+  const firstLink = dialog.getByRole('link', { name: 'Mike’s Pub Sætre - forside' });
   const lastLink = dialog.getByRole('link', { name: 'Finn oss' });
   await expect(closeButton).toBeFocused();
 
@@ -356,9 +356,11 @@ test('has no overflow at supported widths and makes only same-origin requests', 
 
 test('uses a short transform-only entrance when motion is allowed', async ({ page }) => {
   await loadMobilePreview(page);
-  await page.getByRole('button', { name: 'Åpne meny' }).click();
-
   const motion = await page.locator('.mobile-menu-surface').evaluate((element) => {
+    // Read the short animation in the same browser task as activation, before it can finish.
+    const trigger = document.querySelector<HTMLButtonElement>('.mobile-menu-trigger');
+    if (!trigger) throw new Error('Expected the mobile menu trigger.');
+    trigger.click();
     const animation = element.getAnimations()[0];
     const effect = animation?.effect;
     if (!(effect instanceof KeyframeEffect)) return null;

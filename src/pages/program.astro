@@ -76,8 +76,8 @@ const pageDescription = publishedProgramState
             className="program-concept-notice"
             variant="info"
             title="Designforslag"
-            text="Oppføringene under viser hvordan et framtidig program kan se ut – de er ikke ekte arrangementer."
-            action={{ ...venueLinks.facebook, label: 'Se siste nytt' }}
+            text="Oppføringene under viser hvordan et framtidig program kan se ut. De er ikke ekte arrangementer."
+            action={venueLinks.facebook}
             headingLevel={2}
           />
         )
@@ -93,6 +93,7 @@ const pageDescription = publishedProgramState
       <div class="program-location" id="location">
         <LocationPanel
           id="program-location"
+          variant="dark"
           location={verifiedSiteLocation}
           directions={venueLinks.directions}
         />

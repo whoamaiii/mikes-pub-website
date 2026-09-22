@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-import type { IconName, LinkTarget, RightsStatus } from './design-system';
+import type { LinkTarget, RightsStatus } from './design-system';
 
 export type HomeHeroImage = {
   desktop: ImageMetadata;
@@ -17,16 +17,14 @@ export type HomeHeroContent = {
   title: string;
   eyebrow: string;
   intro: string;
-  location: string;
   action: LinkTarget;
   image: HomeHeroImage;
 };
 
 export type HomeProgramItem = {
-  id: 'music' | 'sport' | 'quiz' | 'standup';
+  id: 'music' | 'sport' | 'quiz' | 'standup' | 'games';
   label: string;
   description: string;
-  icon: Extract<IconName, 'music' | 'sport' | 'quiz' | 'standup'>;
 };
 
 export type HomeProgramItems =
@@ -34,21 +32,6 @@ export type HomeProgramItems =
   | readonly [HomeProgramItem, HomeProgramItem]
   | readonly [HomeProgramItem, HomeProgramItem, HomeProgramItem]
   | readonly [HomeProgramItem, HomeProgramItem, HomeProgramItem, HomeProgramItem];
-
-export type HomePromoContent = {
-  kicker: string;
-  heading: string;
-  text: string;
-  action?: LinkTarget;
-};
-
-export type HomeManifestoContent = {
-  kicker: string;
-  statementLead: string;
-  statementAccent: string;
-  statementTail: string;
-  note: string;
-};
 
 export type HomeVenueGalleryItem = {
   id: 'quiz-night' | 'interior' | 'screen-night';
@@ -60,7 +43,7 @@ export type HomeVenueGalleryItem = {
 };
 
 export type HomeVenueGalleryContent = {
-  kicker: string;
   heading: string;
+  intro: string;
   items: readonly [HomeVenueGalleryItem, HomeVenueGalleryItem, HomeVenueGalleryItem];
 };

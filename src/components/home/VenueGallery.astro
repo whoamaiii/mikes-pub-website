@@ -7,13 +7,13 @@ interface Props extends HomeVenueGalleryContent {
   id: string;
 }
 
-const { id, kicker, heading, items } = Astro.props;
+const { id, heading, intro, items } = Astro.props;
 ---
 
 <section class="home-gallery" id={id} aria-labelledby={`${id}-heading`} data-reveal>
   <div class="home-gallery-header home-section-header">
-    <p class="home-section-kicker">{kicker}</p>
     <h2 id={`${id}-heading`}>{heading}</h2>
+    <p>{intro}</p>
   </div>
 
   <div class="home-gallery-grid">
@@ -23,24 +23,32 @@ const { id, kicker, heading, items } = Astro.props;
           <a
             class="home-gallery-link"
             href={item.source.href}
-            aria-label={`${item.source.label} (åpnes i ny fane)`}
             target="_blank"
             rel="noopener noreferrer"
             data-external="true"
             data-rights-status={item.rightsStatus}
           >
-            <Image
-              src={item.image}
-              alt={item.alt}
-              widths={[320, 480, 640, 800, 960, 1152]}
-              sizes="(min-width: 64rem) 40vw, (min-width: 48rem) 50vw, 100vw"
-              format="webp"
-              quality={82}
-              loading="lazy"
-              decoding="async"
-            />
+            <div class="home-gallery-image">
+              <Image
+                src={item.image}
+                alt={item.alt}
+                widths={[320, 480, 640, 800, 960, 1152]}
+                sizes={
+                  item.id === 'quiz-night'
+                    ? '(min-width: 48rem) 56vw, 100vw'
+                    : '(min-width: 48rem) 34vw, 50vw'
+                }
+                format="webp"
+                quality={75}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             <figcaption>
-              <span>{item.caption}</span>
+              <span>
+                {item.caption} <small>Se på Facebook</small>
+                <span class="visually-hidden"> (åpnes i ny fane)</span>
+              </span>
               <span aria-hidden="true">↗</span>
             </figcaption>
           </a>

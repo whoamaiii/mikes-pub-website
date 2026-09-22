@@ -1,4 +1,6 @@
-import { describe, expect, test, vi } from 'vitest';
+import { createHmac } from 'node:crypto';
+
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
 import { onRequest } from '../../functions/_middleware';
 
@@ -18,6 +20,68 @@ function context(
 }
 
 describe('private preview middleware', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  async function loginCookie(): Promise<string> {
+    const login = await onRequest(
+      context('/__preview', { method: 'POST', body: new URLSearchParams({ password }) }),
+    );
+    expect(login.status).toBe(303);
+    return login.headers.get('Set-Cookie')!.split(';')[0];
+  }
+
+  test('expires a replayed session on the server after seven days, including asset requests', async () => {
+    const issuedAt = Date.UTC(2026, 8, 6, 12);
+    const now = vi.spyOn(Date, 'now').mockReturnValue(issuedAt);
+    const cookie = await loginCookie();
+    now.mockReturnValue(issuedAt + 604_800_000 - 1);
+    expect((await onRequest(context('/program', { headers: { Cookie: cookie } }))).status).toBe(
+      200,
+    );
+
+    for (const elapsed of [604_800_000, 365 * 86_400_000]) {
+      now.mockReturnValue(issuedAt + elapsed);
+      for (const path of ['/program', '/_astro/site.css']) {
+        const next = vi.fn(async () => new Response('private'));
+        const response = await onRequest(
+          context(path, { headers: { Cookie: cookie } }, password, next),
+        );
+        expect(response.status).toBe(303);
+        expect(next).not.toHaveBeenCalled();
+      }
+    }
+  });
+
+  test('issues distinct sessions and rejects altered, future, legacy and rotated-password tokens', async () => {
+    const issuedAt = Date.UTC(2026, 8, 6, 12);
+    const now = vi.spyOn(Date, 'now').mockReturnValue(issuedAt);
+    const cookie = await loginCookie();
+    expect(await loginCookie()).not.toBe(cookie);
+    const token = cookie.split('=')[1];
+    const parts = token.split('.');
+    parts[2] = String(Number(parts[2]) + 604_800);
+    const tampered = `${cookie.split('=')[0]}=${parts.join('.')}`;
+    const legacy = createHmac('sha256', password)
+      .update('mikes-pub-private-preview-v1')
+      .digest('base64url');
+    for (const invalid of [tampered, `${cookie.split('=')[0]}=${legacy}`, `${cookie}.extra`]) {
+      expect((await onRequest(context('/program', { headers: { Cookie: invalid } }))).status).toBe(
+        303,
+      );
+    }
+    expect(
+      (
+        await onRequest(
+          context('/program', { headers: { Cookie: cookie } }, 'replacement-local-test-passphrase'),
+        )
+      ).status,
+    ).toBe(303);
+    now.mockReturnValue(issuedAt - 1_000);
+    expect((await onRequest(context('/program', { headers: { Cookie: cookie } }))).status).toBe(
+      303,
+    );
+  });
+
   test('fails closed when the password secret is missing', async () => {
     const next = vi.fn(async () => new Response('must stay private'));
     const response = await onRequest({
@@ -65,6 +129,20 @@ describe('private preview middleware', () => {
     expect(response.headers.get('Set-Cookie')).toBeNull();
     expect(await response.text()).toContain('Passordet var ikke riktig');
   });
+
+  test.each(['', 'short'])(
+    'rejects an empty or short password without a server error (%j)',
+    async (candidate) => {
+      const response = await onRequest(
+        context('/__preview', {
+          method: 'POST',
+          body: new URLSearchParams({ password: candidate }),
+        }),
+      );
+      expect(response.status).toBe(401);
+      expect(response.headers.get('Set-Cookie')).toBeNull();
+    },
+  );
 
   test('sets a hardened cookie and serves assets only after authentication', async () => {
     const body = new URLSearchParams({ password });

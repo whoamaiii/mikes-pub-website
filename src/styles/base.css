@@ -17,30 +17,6 @@ body {
   text-rendering: optimizelegibility;
 }
 
-body::before {
-  position: fixed;
-  z-index: var(--z-grain);
-  inset: 0;
-  content: '';
-  pointer-events: none;
-  background-image:
-    repeating-radial-gradient(
-      circle at 16% 28%,
-      rgb(242 235 220 / 4%) 0 0.6px,
-      transparent 0.8px 3px
-    ),
-    repeating-radial-gradient(
-      circle at 78% 72%,
-      rgb(201 144 69 / 2.5%) 0 0.55px,
-      transparent 0.75px 3.5px
-    );
-  background-size:
-    5px 5px,
-    7px 7px;
-  mix-blend-mode: soft-light;
-  opacity: 0.16;
-}
-
 main {
   display: block;
   min-inline-size: 0;

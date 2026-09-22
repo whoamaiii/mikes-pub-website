@@ -64,51 +64,39 @@ motion reduces non-essential transitions to effectively immediate changes.
   verified street and pairs with the allowlisted Google Maps directions link; its hidden caption
   tells assistive-technology users to use that link for the exact route.
 
-## Midnight Brass visual direction
+## Pub editorial visual direction
 
-The current Home and Program composition follows the selected ImageGen reference as a dark,
-nighttime pub frontage. It keeps only the verified venue name, address, existing routes and
-Q-authorized exterior image from the current direction:
+Q authorized the Home and Program redesign directly during WHO-19 review on 6 September 2026.
+The current direction pairs the real pub frontage with a restrained, consistently dark editorial layout:
 
-- Home uses the exterior photograph as the full first viewport. The title, address and primary
-  action sit directly on the image with controlled dark overlays, never inside a floating card.
-  Mobile and desktop use separate focal positions from the same approved image bytes so the venue
-  sign remains legible without retouching or replacing the photograph.
-- `Mike’s Pub` is the hero headline. The Sætre address remains supporting copy, not part of the
-  brand name.
-- Local `UnifrakturCook` echoes the real pub sign in the compact brand wordmark and the `Pub` accent
-  in the hero. Barlow Condensed carries editorial headings; navigation, controls, filters and body
-  copy use Source Sans 3.
-- Home activities and Program events are open editorial rows with brass rules. The lower Home flow
-  moves from numbered activity rows into an asymmetrical paper feature band and an overlapping map
-  finale instead of repeating equal card grids. Home activity rows are intentionally
-  non-interactive: one explicitly unconfirmed Facebook action points to the public listing, while
-  the primary hero action continues the on-page story instead of promising an empty Program. There
-  are no soft cards, pill stacks, rounded badges or generic decorative panels.
-- The visit actions sit directly after the hero as a compact ledger. They become full-width rows on
-  narrow screens and retain 44px or larger interaction targets.
-- Program preserves the filter and event-list behavior for future verified entries, including the
-  no-JS fragment fallback. With no verified entries it renders a deliberate empty state without
-  fake event rows or inactive filter controls.
-- The concept disclosure is a short, consistent line above the header on every route. It clearly
-  separates the private proposal from an official Mike’s Pub website without dominating the page.
-- Brass is the only decorative accent. Depth comes from photo layering, sparse lines, typographic
-  scale and dark tonal contrast.
-- Persistent labels and supporting copy use a 14px minimum token; the display hierarchy, rather
-  than undersized utility text, supplies visual contrast.
-- The Home hero pairs a highly legible condensed `Mike’s` with a restrained blackletter `Pub`,
-  keeping the venue mood without turning the page into a novelty theme.
-- Motion is limited to a one-time content entrance. There is no continuous image breathing, marquee
-  or ornamental line loop; reduced-motion users receive the same layout without animation.
-- The layout preloads the critical local display and heading faces plus the viewport-matched hero
-  source set documented in `docs/assets/home-assets.md`.
+- Home retains the approved, responsive exterior photograph and its separate mobile and desktop focal
+  positions. One continuous UnifrakturCook wordmark echoes the physical sign. The headline
+  and outlined gallery action sit on a controlled lower-image gradient.
+- Source Sans 3 carries Home and Program headings, navigation, controls, body copy and activities.
+  UnifrakturCook is reserved for the pub wordmark. Existing Barlow fonts remain available for the
+  component preview and other accepted primitives. No font files, libraries or network dependencies
+  were added. Controls and visit details share the existing semibold face, avoiding a separate bold
+  font download on these pages.
+- The 73px header and responsive hero keep the primary action visible on short laptop and small
+  phone viewports. Section introductions stack naturally; the gallery keeps the page background.
+- The gallery uses one lead photograph and two supporting images, with captions below the unmodified
+  images. WebP delivery derivatives use quality 75; source photographs remain unchanged. Its compact mobile composition preserves all three source links and demo-only rights labels.
+- Home activities form three simple, unnumbered rows. Their shared Facebook action remains separate
+  from the non-interactive descriptions. The primary hero action still leads to the gallery.
+- Visit information follows the hero. The location section pairs a readable address with a plain
+  consent panel; it does not simulate a street map. Google Maps loads only after activation, with the
+  existing retry and external-map controls available after loading or failure.
+- Program shares the dark brand palette, with visible categories and a date-first reading order. On
+  desktop, dates and event descriptions occupy separate columns; mobile restores a single column.
+  All existing event states and JavaScript-free category navigation remain intact.
+- The footer contains the brand, one full address and the existing navigation links. Repeated labels,
+  duplicate addresses, the numbered activity ornaments and the full-page grain layer were removed.
+- Motion stays with the existing progressive reveals and small interaction cues, respects reduced
+  motion, and never hides content when JavaScript is unavailable.
 
-The local ImageGen mockups under `output/imagegen/mikes-pub-midnight-brass/` are implementation
-references only. They are not shipped, imported or treated as licensed production assets; verified
-repository content and the currently supplied photography remain authoritative for this proposal.
-
-The local private-demo favicon is a project-authored monogram, not an official logo. Its provenance
-and limits are recorded in `docs/assets/favicon.md`.
+All existing facts, opening-hours deferral and historical Program entries are unchanged. Exterior
+rights remain production-cleared; gallery rights remain demo-cleared. No generated image was used
+as a production asset. The redesign is a local review candidate pending Q's visual acceptance.
 
 ## Local-only preview
 

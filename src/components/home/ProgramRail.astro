@@ -2,18 +2,16 @@
 import type { LinkTarget } from '../../types/design-system';
 import type { HomeProgramItems } from '../../types/home';
 import ActionLink from '../ui/ActionLink.astro';
-import Icon from '../ui/Icon.astro';
 
 interface Props {
   id: string;
-  eyebrow: string;
   heading: string;
   intro: string;
   items: HomeProgramItems;
   action: LinkTarget;
 }
 
-const { id, eyebrow, heading, intro, items, action } = Astro.props;
+const { id, heading, intro, items, action } = Astro.props;
 ---
 
 <section
@@ -23,7 +21,6 @@ const { id, eyebrow, heading, intro, items, action } = Astro.props;
   aria-describedby={`${id}-intro`}
 >
   <header class="home-section-header">
-    <p class="home-section-kicker">{eyebrow}</p>
     <h2 id={`${id}-heading`}>{heading}</h2>
     <p id={`${id}-intro`}>{intro}</p>
     <ActionLink {...action} />
@@ -34,12 +31,6 @@ const { id, eyebrow, heading, intro, items, action } = Astro.props;
       items.map((item) => (
         <li class="home-program-item" data-category={item.id} data-reveal>
           <article class="home-program-entry" aria-labelledby={`${id}-${item.id}-title`}>
-            <span class="home-program-number" aria-hidden="true">
-              {String(items.indexOf(item) + 1).padStart(2, '0')}
-            </span>
-            <span class="home-program-icon" aria-hidden="true">
-              <Icon name={item.icon} size={32} />
-            </span>
             <div class="home-program-copy">
               <h3 id={`${id}-${item.id}-title`} class="home-program-name">
                 {item.label}

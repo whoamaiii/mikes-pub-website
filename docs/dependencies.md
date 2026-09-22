@@ -5,7 +5,7 @@ Exact resolved versions and transitive packages are recorded in `package-lock.js
 
 | Package                     | Version | Licence           | Purpose                                              |
 | --------------------------- | ------: | ----------------- | ---------------------------------------------------- |
-| Astro                       |   7.0.7 | MIT               | Static site framework and build output               |
+| Astro                       |   7.3.1 | MIT               | Static site framework and build output               |
 | TypeScript                  |   6.0.2 | Apache-2.0        | Strict static type checking                          |
 | `@types/node`               | 24.13.3 | MIT               | Node 24 API types                                    |
 | `@astrojs/check`            |   0.9.9 | MIT               | Astro and TypeScript diagnostics                     |
@@ -17,10 +17,10 @@ Exact resolved versions and transitive packages are recorded in `package-lock.js
 | `stylelint-config-standard` |  40.0.0 | MIT               | Standard CSS rules                                   |
 | Prettier                    |   3.9.5 | MIT               | Deterministic formatting                             |
 | `prettier-plugin-astro`     |  0.14.1 | MIT               | Astro formatting support                             |
-| Vitest                      |  4.1.10 | MIT               | Unit and repository-policy tests                     |
+| Vitest                      |  4.1.11 | MIT               | Unit and repository-policy tests                     |
 | Playwright Test             |  1.61.1 | Apache-2.0        | Browser regression infrastructure                    |
 | `@axe-core/playwright`      |  4.12.1 | MPL-2.0           | Automated accessibility checks for later approved UI |
-| Wrangler                    | 4.112.0 | MIT OR Apache-2.0 | Cloudflare Pages local runtime and direct deployment |
+| Wrangler                    | 4.136.2 | MIT OR Apache-2.0 | Cloudflare Pages local runtime and direct deployment |
 
 GitHub Actions use official releases pinned to complete immutable commit SHAs. Checkout, setup-node,
 upload-artifact and dependency-review-action are MIT licensed and affect CI only.
@@ -33,10 +33,23 @@ Playwright and Vite resolve optional MIT-licensed macOS file watchers `fsevents@
 `fsevents@2.3.3`. Their native install scripts are also pinned explicitly so clean Mac installs do
 not broaden script permission to other versions or packages.
 
-Wrangler resolves Apache-2.0 `workerd@1.20260714.1`; its pinned install script selects Cloudflare's
-matching local runtime binary and is explicitly allowed. Miniflare also resolves Apache-2.0
-`sharp@0.34.5`, whose optional native install script is explicitly denied because the protected
-preview does not use image-processing bindings. The existing Astro image pipeline remains separate.
+Wrangler resolves Apache-2.0 `workerd@1.20260921.1`; its pinned install script selects Cloudflare's
+matching local runtime binary and is explicitly allowed. The lockfile resolves Apache-2.0
+`sharp@0.35.4` for both Astro and Miniflare; it has no install script. Unreviewed scripts remain
+blocked by default.
+
+The Q-approved 6 September 2026 security update pins Astro 7.3.1 and Wrangler 4.129.0 and refreshes
+the affected transitive packages, including PostCSS, Nanoid, js-yaml, fast-uri and brace-expansion.
+It introduces no direct dependencies or product features. The framework and deployment-tool
+updates retain the existing static output, Node 24 requirement and documented removal paths.
+
+The Q-approved 22 September 2026 hosting-readiness fixes update Vitest to 4.1.11 and Wrangler to
+4.136.2, with compatible transitive updates including SVGO 4.1.0, devalue 5.9.4 and colord 2.10.0.
+This removes the affected older sharp copy from Miniflare and addresses the known npm advisories
+found during the hosting audit. There are no new direct dependencies or browser runtime libraries.
+The existing test/deployment-tool licences and removal paths remain applicable. Validation results
+are recorded separately for the reviewed working tree; these versions are not a promise against
+future advisories.
 
 No package is admitted to justify a product feature in WHO-14. Remove a tool by deleting its config,
 scripts and direct package entry, then regenerate the lockfile and rerun all remaining gates.

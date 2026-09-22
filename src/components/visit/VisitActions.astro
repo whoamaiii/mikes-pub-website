@@ -31,7 +31,6 @@ const { id, content } = Astro.props;
               <a
                 class="visit-action-link"
                 href={action.href}
-                aria-label={action.accessibleLabel ?? `${action.label}: ${action.detail}`}
                 rel={action.external ? 'noopener noreferrer' : undefined}
                 data-action-kind={action.kind}
                 data-verification-status={action.verificationStatus}

@@ -166,7 +166,7 @@ test.describe('without JavaScript', () => {
 
     const music = page.locator('[data-program-filter-link][data-filter-value="music"]');
     await music.focus();
-    await page.keyboard.press('Enter');
+    await music.press('Enter');
     await expect(page).toHaveURL(/kategori=musikk#filter-musikk$/);
     await expect(page.locator('[data-event-row]:visible')).toHaveCount(2);
     await expect(page.locator('[data-filter-summary-value="music"]')).toBeVisible();
@@ -174,7 +174,8 @@ test.describe('without JavaScript', () => {
     for (const value of ['quiz', 'standup']) {
       const emptyFilter = page.locator(`[data-program-filter-link][data-filter-value="${value}"]`);
       await emptyFilter.focus();
-      await page.keyboard.press('Enter');
+      // Keep focus and activation on the same link across full no-JavaScript navigations.
+      await emptyFilter.press('Enter');
       await expect(page).toHaveURL(new RegExp(`kategori=${value}#filter-${value}$`));
       await expect(page.locator('[data-event-list]')).toBeHidden();
       await expect(page.locator('[data-event-feedback]')).toBeVisible();
