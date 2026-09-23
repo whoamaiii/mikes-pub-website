@@ -8,6 +8,13 @@ const evidenceDirectory = path.resolve('output/playwright/who-18');
 test('captures deterministic WHO-18 Home evidence', async ({ page }) => {
   test.skip(process.env.WHO18_CAPTURE !== '1', 'Evidence capture runs only when requested.');
   await mkdir(evidenceDirectory, { recursive: true });
+  // Keep automated layout evidence deterministic; verify real Google separately in browser.
+  await page.route('https://www.google.com/maps/embed**', (route) =>
+    route.fulfill({
+      contentType: 'text/html',
+      body: '<html lang="nb"><title>Karttest</title><body>Google Maps — lokal testrespons</body></html>',
+    }),
+  );
   await page.emulateMedia({ reducedMotion: 'reduce' });
 
   const viewports = [

@@ -70,7 +70,6 @@ export const venueLinks = {
 
 export const venueVisitInfo: VisitInfo = {
   heading: 'Før du drar',
-  intro: 'Adresse, kontakt og siste nytt samlet på ett sted.',
   hours: {
     label: 'Åpningstider',
     value: 'Publiseres snart',

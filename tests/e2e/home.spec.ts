@@ -39,6 +39,7 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     'Inne på Mike’s',
     'Finn oss i Sætre',
   ]);
+  await expect(page.locator('.visit-actions-intro p, .home-gallery-header p')).toHaveCount(0);
   await expect(page.locator('.home-program-number')).toHaveCount(0);
   await expect(page.locator('.home-gallery-item')).toHaveCount(3);
   expect(
@@ -88,6 +89,10 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
   );
 
   const visibleText = await page.locator('body').innerText();
+  expect(visibleText).not.toContain('Adresse, kontakt og siste nytt samlet på ett sted.');
+  expect(visibleText).not.toContain(
+    'Åpnet desember 2025. Scene, storskjerm og spillbord under samme tak.',
+  );
   for (const blockedText of [
     'Puben midt i Sætre',
     'lokalt møtested',
@@ -109,20 +114,17 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     /Offisielt Google Maps-kart som viser Mike’s Pub i Nordre Sætrevei 2/,
   );
   const map = page.locator('.google-map-embed');
-  await expect(map.locator('iframe')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Vis kart i Google Maps' })).toBeVisible();
-  expect(
-    await map.locator('[data-map-gate]').evaluate((gate) => getComputedStyle(gate).backgroundImage),
-  ).toBe('none');
-  expect(googleRequests).toEqual([]);
-  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
+  await expect(page.locator('.location-panel .google-map-embed')).toHaveCount(1);
+  await expect(map.locator('iframe')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Vis kart i Google Maps' })).toHaveCount(0);
   await expect(map.locator('iframe')).toHaveAttribute(
     'src',
     /^https:\/\/www\.google\.com\/maps\/embed\?pb=/,
   );
-  await expect(map.locator('iframe')).toHaveAttribute('loading', 'lazy');
+  await expect(map.locator('iframe')).toHaveAttribute('loading', 'eager');
   await expect.poll(() => googleRequests.length).toBeGreaterThan(0);
   await expect(map.locator('iframe')).toHaveCSS('pointer-events', 'auto');
+  await expect(map.locator('[data-map-gate], template')).toHaveCount(0);
   await expect(
     page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }),
   ).toHaveCount(2);
@@ -132,6 +134,22 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     'href',
     (await page.locator('.location-panel .action-link').getAttribute('href'))!,
   );
+});
+
+test('shows the direct map beside the address at narrow and wide widths', async ({ page }) => {
+  await page.goto(homePath);
+  const map = page.locator('.google-map-embed');
+  const canvas = map.locator('[data-map-canvas]');
+  await expect(map).toHaveAttribute('data-map-state', 'ready');
+  for (const width of [320, 375, 699, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect((await canvas.boundingBox())?.height).toBeGreaterThan(287);
+    expect((await map.locator('iframe').boundingBox())?.width).toBeGreaterThan(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      width,
+    );
+  }
+  await expect(map.getByRole('link', { name: 'Åpne i Google Maps (ekstern lenke)' })).toBeVisible();
 });
 
 test('uses the supplied art-directed exterior image without local source masters', async ({
@@ -439,7 +457,6 @@ test('keeps map recovery available after a failed request or load timeout', asyn
   });
   await page.goto(homePath);
   const map = page.locator('.google-map-embed');
-  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
   const retry = map.getByRole('button', { name: 'Prøv igjen' });
   await expect(retry).toBeEnabled({ timeout: 22_000 });
   await expect(retry).toBeVisible();
@@ -447,42 +464,13 @@ test('keeps map recovery available after a failed request or load timeout', asyn
   await expect(map.getByRole('link', { name: 'Åpne i Google Maps (ekstern lenke)' })).toBeVisible();
   await retry.click();
   await expect.poll(() => attempts).toBe(2);
-  await expect(map).toHaveAttribute('data-map-state', 'displayed');
+  await expect(map).toHaveAttribute('data-map-state', 'ready');
   await expect(map.locator('iframe')).toHaveCount(1);
   await expect(retry).toBeEnabled();
 });
 
-for (const outcome of ['displayed', 'error'] as const) {
-  test(`does not steal focus when a delayed map ends in ${outcome}`, async ({ page }) => {
-    await page.clock.install();
-    let releaseMap!: () => void;
-    const pendingMap = new Promise<void>((resolve) => {
-      releaseMap = resolve;
-    });
-    await page.route('https://www.google.com/maps/embed**', async (route) => {
-      await pendingMap;
-      await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
-    });
-    await page.goto(homePath);
-    const map = page.locator('.google-map-embed');
-    await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
-    await expect(map).toHaveAttribute('data-map-state', 'loading');
-    const footerLink = page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: 'Program', exact: true });
-    await footerLink.focus();
-    if (outcome === 'displayed') releaseMap();
-    else await page.clock.fastForward(20_001);
-    await expect(map).toHaveAttribute('data-map-state', outcome);
-    await expect(footerLink).toBeFocused();
-    await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeEnabled();
-    releaseMap();
-  });
-}
-
-test('keeps keyboard control during map loading and ignores repeated activation', async ({
-  page,
-}) => {
+test('keeps a slow initial map visible without moving keyboard focus', async ({ page }) => {
+  await page.clock.install();
   let releaseMap!: () => void;
   const pendingMap = new Promise<void>((resolve) => {
     releaseMap = resolve;
@@ -491,9 +479,71 @@ test('keeps keyboard control during map loading and ignores repeated activation'
     await pendingMap;
     await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
   });
+  await page.goto(homePath, { waitUntil: 'domcontentloaded' });
+  const map = page.locator('.google-map-embed');
+  const footerLink = page
+    .getByRole('contentinfo')
+    .getByRole('link', { name: 'Program', exact: true });
+  await footerLink.focus();
+  await page.clock.fastForward(20_001);
+  await expect(map.locator('iframe')).toBeVisible();
+  await expect(map).toHaveAttribute('data-map-state', 'ready');
+  await expect(footerLink).toBeFocused();
+  releaseMap();
+  await expect(page.frameLocator('.google-map-embed iframe').locator('body')).toHaveText(
+    'Local map test',
+  );
+  await expect(footerLink).toBeFocused();
+});
+
+for (const outcome of ['ready', 'error'] as const) {
+  test(`does not steal focus when a delayed map retry ends in ${outcome}`, async ({ page }) => {
+    await page.clock.install();
+    let releaseMap!: () => void;
+    const pendingMap = new Promise<void>((resolve) => {
+      releaseMap = resolve;
+    });
+    let requests = 0;
+    await page.route('https://www.google.com/maps/embed**', async (route) => {
+      if (++requests > 1) await pendingMap;
+      await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
+    });
+    await page.goto(homePath);
+    const map = page.locator('.google-map-embed');
+    await map.getByRole('button', { name: 'Prøv igjen' }).click();
+    await expect(map).toHaveAttribute('data-map-state', 'loading');
+    const footerLink = page
+      .getByRole('contentinfo')
+      .getByRole('link', { name: 'Program', exact: true });
+    await footerLink.focus();
+    if (outcome === 'ready') releaseMap();
+    else await page.clock.fastForward(20_001);
+    await expect(map).toHaveAttribute('data-map-state', outcome);
+    await expect(footerLink).toBeFocused();
+    await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeEnabled();
+    if (outcome === 'error') {
+      await expect(map.locator('iframe')).toBeVisible();
+      await expect(map.locator('[data-map-status]')).toContainText('Kartet svarte ikke');
+    }
+    releaseMap();
+  });
+}
+
+test('keeps keyboard control during map retry and ignores repeated activation', async ({
+  page,
+}) => {
+  let releaseMap!: () => void;
+  const pendingMap = new Promise<void>((resolve) => {
+    releaseMap = resolve;
+  });
+  let requests = 0;
+  await page.route('https://www.google.com/maps/embed**', async (route) => {
+    if (++requests > 1) await pendingMap;
+    await route.fulfill({ contentType: 'text/html', body: '<p>Local map test</p>' });
+  });
   await page.goto(homePath);
   const map = page.locator('.google-map-embed');
-  const load = page.getByRole('button', { name: 'Vis kart i Google Maps' });
+  const load = map.getByRole('button', { name: 'Prøv igjen' });
   await load.focus();
   await page.keyboard.press('Enter');
   await expect(map).toHaveAttribute('data-map-state', 'loading');
@@ -501,9 +551,9 @@ test('keeps keyboard control during map loading and ignores repeated activation'
   await page.keyboard.press('Enter');
   await expect(map.locator('iframe')).toHaveCount(1);
   releaseMap();
-  await expect(map).toHaveAttribute('data-map-state', 'displayed');
-  await expect(map.locator('iframe')).toBeFocused();
-  await expect(map).toHaveAttribute('data-map-focus', 'true');
+  await expect(map).toHaveAttribute('data-map-state', 'ready');
+  await expect(load).toBeFocused();
+  expect(requests).toBe(2);
 });
 
 test('gives keyboard focus the same restrained polish as pointer interaction', async ({
@@ -539,12 +589,13 @@ test('gives keyboard focus the same restrained polish as pointer interaction', a
   );
 
   const map = page.locator('.google-map-embed');
-  await page.getByRole('button', { name: 'Vis kart i Google Maps' }).click();
   const mapFrame = map.locator('iframe');
   await mapFrame.focus();
-  await expect(map).toHaveAttribute('data-map-focus', 'true');
+  await expect(mapFrame).toBeFocused();
   await expect(map).toHaveCSS('outline-style', 'solid');
   await expect(map).not.toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)');
+  await page.getByRole('contentinfo').getByRole('link', { name: 'Program', exact: true }).focus();
+  await expect(map).toHaveCSS('outline-color', 'rgba(0, 0, 0, 0)');
 });
 
 test('preserves reflow at the 200 percent layout equivalent', async ({ page }) => {
@@ -597,6 +648,14 @@ test.describe('without JavaScript', () => {
     }
 
     await expect(page.locator('html')).not.toHaveAttribute('data-reveal-enhanced', 'true');
+    const map = page.locator('.location-panel .google-map-embed');
+    await expect(map.locator('iframe')).toBeVisible();
+    await expect(map.locator('iframe')).toHaveAttribute(
+      'src',
+      /^https:\/\/www\.google\.com\/maps\/embed/,
+    );
+    await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeHidden();
+    expect((await map.locator('[data-map-canvas]').boundingBox())?.height).toBeGreaterThan(287);
     await expect(
       page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }).last(),
     ).toBeVisible();

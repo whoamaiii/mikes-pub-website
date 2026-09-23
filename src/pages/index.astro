@@ -120,17 +120,18 @@ const heroImagePresentation = {
         />
 
         <div class="home-location" id="location" data-reveal>
-          <GoogleMapsEmbed
-            id="home-location-map"
-            location={verifiedSiteLocation}
-            directions={venueLinks.directions}
-          />
           <LocationPanel
             id="home-location"
             location={verifiedSiteLocation}
             directions={venueLinks.directions}
             variant="dark"
-          />
+          >
+            <GoogleMapsEmbed
+              id="home-location-map"
+              location={verifiedSiteLocation}
+              directions={venueLinks.directions}
+            />
+          </LocationPanel>
         </div>
       </div>
     </main>

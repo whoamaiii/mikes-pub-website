@@ -44,6 +44,5 @@ export type HomeVenueGalleryItem = {
 
 export type HomeVenueGalleryContent = {
   heading: string;
-  intro: string;
   items: readonly [HomeVenueGalleryItem, HomeVenueGalleryItem, HomeVenueGalleryItem];
 };

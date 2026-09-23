@@ -16,36 +16,21 @@ const embedSrc =
   class="venue-map google-map-embed"
   aria-labelledby={`${id}-caption`}
   data-map-source="official-google-maps-embed"
-  data-map-state="idle"
+  data-map-state="ready"
 >
   <div class="google-map-canvas" data-map-canvas>
-    <div class="google-map-gate" data-map-gate>
-      <div class="google-map-gate-copy">
-        <strong data-map-gate-heading>Interaktivt kart</strong>
-        <span data-map-gate-detail>Google Maps lastes først når du velger det.</span>
-        <button
-          class="button"
-          type="button"
-          aria-label="Vis kart i Google Maps"
-          data-map-load
-          hidden>Vis kart</button
-        >
-      </div>
-    </div>
-    <template data-map-template>
-      <iframe
-        src={embedSrc}
-        title={`Google Maps-kart som viser ${location.name} i ${location.street}`}
-        width="600"
-        height="450"
-        loading="lazy"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen></iframe>
-    </template>
+    <iframe
+      src={embedSrc}
+      title={`Google Maps-kart som viser ${location.name} i ${location.street}`}
+      width="600"
+      height="450"
+      loading="eager"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
   </div>
-  <div class="google-map-controls" data-map-controls hidden>
+  <div class="google-map-controls" data-map-controls>
     <p>Vises ikke kartet?</p>
-    <button class="button" type="button" data-map-retry>Prøv igjen</button>
+    <button class="button" type="button" data-map-retry hidden>Prøv igjen</button>
     <a
       href={directions.href}
       rel="noopener noreferrer"
@@ -54,10 +39,10 @@ const embedSrc =
     >
   </div>
   <figcaption id={`${id}-caption`} class="visually-hidden">
-    Offisielt Google Maps-kart som viser {location.name} i {location.street}. Kartdata lastes først
-    når du velger Vis kart. Google-logo, kartdata, vilkår og kreditering vises i selve kartet.
+    Offisielt Google Maps-kart som viser {location.name} i {location.street}. Google-logo, kartdata,
+    vilkår og kreditering vises i selve kartet.
   </figcaption>
-  <p class="visually-hidden" aria-live="polite" data-map-status></p>
+  <p class="google-map-status" aria-live="polite" data-map-status></p>
 </figure>
 
 <script>

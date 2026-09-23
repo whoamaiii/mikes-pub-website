@@ -13,7 +13,7 @@ system for the Mike's Pub website project in Sætre, Norway. Other product route
 - WHO-15 components and tokens are available through an isolated local-only preview build.
 - The product pages are static, with no CMS, database, analytics or visitor forms. A Cloudflare
   Pages Function protects the private preview with a password and time-limited session cookies.
-  Home loads Google Maps only after an explicit click and keeps retry/external-map recovery available.
+  Home displays Google Maps automatically, including without JavaScript, and keeps retry/external-map recovery available.
 - The repository is currently public by Q's explicit decision. Do not add secrets, private sales
   material, client credentials, protected deployment configuration or unapproved assets.
 - Repository visibility must be reviewed before private demo content or protected deployment

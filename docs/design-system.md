@@ -83,9 +83,11 @@ The current direction pairs the real pub frontage with a restrained, consistentl
   images. WebP delivery derivatives use quality 75; source photographs remain unchanged. Its compact mobile composition preserves all three source links and demo-only rights labels.
 - Home activities form three simple, unnumbered rows. Their shared Facebook action remains separate
   from the non-interactive descriptions. The primary hero action still leads to the gallery.
-- Visit information follows the hero. The location section pairs a readable address with a plain
-  consent panel; it does not simulate a street map. Google Maps loads only after activation, with the
-  existing retry and external-map controls available after loading or failure.
+- Visit information follows the hero. The location section pairs a readable address with the official
+  Google Maps iframe. Following Q’s correction, it loads automatically from the initial HTML, also
+  without JavaScript. The external-map link is always available; JavaScript adds a retry control
+  that preserves keyboard focus and never hides a slow map. Google receives the embed request
+  on page load; there is no click-to-load gate.
 - Program shares the dark brand palette, with visible categories and a date-first reading order. On
   desktop, dates and event descriptions occupy separate columns; mobile restores a single column.
   All existing event states and JavaScript-free category navigation remain intact.

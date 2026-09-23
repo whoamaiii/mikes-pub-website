@@ -43,7 +43,6 @@ export const homeProgramItems = [
 
 export const homeVenueGallery: HomeVenueGalleryContent = {
   heading: 'Et sted folk møtes',
-  intro: 'Åpnet desember 2025. Scene, storskjerm og spillbord under samme tak.',
   items: [
     {
       id: 'quiz-night',

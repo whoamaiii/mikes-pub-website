@@ -10,7 +10,6 @@ export type VisitAction = LinkTarget & {
 
 export type VisitInfo = {
   heading: string;
-  intro: string;
   hours: {
     label: string;
     value: string;

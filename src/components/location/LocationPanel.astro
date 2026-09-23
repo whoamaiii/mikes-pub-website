@@ -31,4 +31,5 @@ const coordinateLabel = `${location.name} / ${location.postalCode} ${location.ci
   </div>
   <span class="location-panel-coordinate" aria-hidden="true">{coordinateLabel}</span>
   {directions && <ActionLink {...directions} />}
+  <slot />
 </section>
