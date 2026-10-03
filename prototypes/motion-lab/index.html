@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Motion Lab</title>
+    <style>
+      @font-face {
+        font-family: UnifrakturCook;
+        font-weight: 700;
+        font-display: swap;
+        src: url('../../public/fonts/unifraktur-cook/UnifrakturCook-Bold.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Source Sans 3';
+        font-weight: 400;
+        font-display: swap;
+        src: url('../../public/fonts/source-sans-3/SourceSans3-Regular.ttf.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Source Sans 3';
+        font-weight: 600;
+        font-display: swap;
+        src: url('../../public/fonts/source-sans-3/SourceSans3-Semibold.ttf.woff2') format('woff2');
+      }
+
+      :root {
+        --ink: #0a0c0b;
+        --soot: #111311;
+        --charcoal: #171916;
+        --brass: #c99045;
+        --brass-bright: #dda95e;
+        --bone: #f2ebdc;
+        --muted: #ada69a;
+        --faint: rgb(242 235 220 / 10%);
+        --line: rgb(173 166 154 / 26%);
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease: cubic-bezier(0.2, 0, 0, 1);
+        --gutter: clamp(1rem, 4.3vw, 4.75rem);
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ink);
+        color: var(--bone);
+        font:
+          400 1rem/1.55 'Source Sans 3',
+          system-ui,
+          sans-serif;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--bone);
+        outline-offset: 3px;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        position: relative;
+        min-height: min(100dvh, 56rem);
+        height: 88dvh;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .hero img,
+      .hero canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .hero img {
+        object-fit: cover;
+        object-position: 50% 40%;
+        z-index: -3;
+      }
+      .hero canvas {
+        z-index: -2;
+        opacity: 0;
+        transition: opacity 600ms var(--ease);
+      }
+      .hero canvas.is-live {
+        opacity: 1;
+      }
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, rgb(10 12 11 / 72%) 0%, rgb(10 12 11 / 35%) 42%, transparent 70%),
+          linear-gradient(0deg, rgb(10 12 11 / 70%) 0%, transparent 45%);
+      }
+      .hero-copy {
+        position: absolute;
+        left: var(--gutter);
+        bottom: clamp(2rem, 8vh, 5rem);
+        max-width: 40rem;
+      }
+      .hero-copy p {
+        margin: 0;
+      }
+      .eyebrow {
+        font-weight: 600;
+        font-size: 0.9375rem;
+      }
+      .wordmark {
+        font:
+          700 clamp(3.5rem, 9vw, 8rem)/1 UnifrakturCook,
+          serif;
+        margin: 0.25rem 0 0.5rem;
+      }
+      .sub {
+        font-size: 1.375rem;
+        margin-bottom: 1.5rem !important;
+      }
+
+      /* ---------- Lab panel ---------- */
+      .lab {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 5;
+        width: 17rem;
+        padding: 0.875rem 1rem 1rem;
+        background: rgb(10 12 11 / 86%);
+        border: 1px solid var(--line);
+        font-size: 0.875rem;
+      }
+      .lab h2 {
+        font-size: 0.875rem;
+        margin: 0 0 0.5rem;
+        color: var(--brass-bright);
+      }
+      .lab label {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.2rem 0;
+        cursor: pointer;
+      }
+      .lab input {
+        accent-color: var(--brass);
+        inline-size: 1rem;
+        block-size: 1rem;
+      }
+      .lab .replay {
+        margin: 0.35rem 0 0.15rem 1.5rem;
+        padding: 0.3rem 0.6rem;
+        background: none;
+        border: 1px solid var(--brass);
+        color: var(--brass-bright);
+        font:
+          600 0.8125rem 'Source Sans 3',
+          sans-serif;
+        cursor: pointer;
+      }
+      .lab .replay:hover {
+        background: var(--brass);
+        color: var(--ink);
+      }
+      .lab hr {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 0.5rem 0;
+      }
+      .lab .meta {
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .lab small {
+        display: block;
+        color: var(--muted);
+        margin-left: 1.5rem;
+        margin-top: -0.15rem;
+        line-height: 1.3;
+      }
+      @media (width < 48rem) {
+        .lab {
+          position: static;
+          width: auto;
+          margin: 0;
+          border-inline: 0;
+        }
+        .hero-wrap {
+          display: flex;
+          flex-direction: column-reverse;
+        }
+      }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        --arrow: 0;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.875rem;
+        min-height: 3.25rem;
+        padding: 0 1.25rem;
+        font:
+          600 1rem 'Source Sans 3',
+          sans-serif;
+        text-decoration: none;
+        border: 1px solid var(--brass);
+        cursor: pointer;
+        overflow: hidden;
+        isolation: isolate;
+        white-space: nowrap;
+        transition:
+          color 320ms var(--ease-out),
+          transform 160ms var(--ease),
+          background-color 320ms var(--ease-out);
+      }
+      .btn svg {
+        width: 1.125rem;
+        height: 1.125rem;
+        transform: translateX(calc(var(--arrow) * 0.3rem));
+        transition: transform 320ms var(--ease-out);
+      }
+      .btn:is(:hover, :focus-visible) {
+        --arrow: 1;
+      }
+      .btn:active {
+        transform: translateY(1px) scale(0.98);
+      }
+      .btn-primary {
+        background: var(--brass);
+        color: var(--ink);
+      }
+      .btn-primary:is(:hover, :focus-visible) {
+        background: var(--brass-bright);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--brass-bright);
+      }
+      .btn-ghost::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: var(--brass);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 420ms var(--ease-out);
+      }
+      .btn-ghost:is(:hover, :focus-visible) {
+        color: var(--ink);
+      }
+      .btn-ghost:is(:hover, :focus-visible)::before {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      /* ---------- Samples ---------- */
+      main {
+        padding: 5rem var(--gutter) 6rem;
+        max-width: 92rem;
+        margin: 0 auto;
+      }
+      h2.section {
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        line-height: 0.98;
+        margin: 0 0 0.75rem;
+        letter-spacing: -0.01em;
+      }
+      .lede {
+        color: var(--muted);
+        max-width: 60ch;
+        margin: 0 0 3rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 3rem 2rem;
+      }
+      .sample {
+        grid-column: span 12;
+      }
+      .why {
+        color: var(--muted);
+        font-size: 0.875rem;
+        margin: 0.75rem 0 0;
+        max-width: 46ch;
+      }
+      .why b {
+        color: var(--bone);
+        font-weight: 600;
+      }
+      @media (width >= 64rem) {
+        .s-gallery {
+          grid-column: 1 / span 7;
+          grid-row: span 2;
+        }
+        .s-buttons,
+        .s-visit {
+          grid-column: 8 / span 5;
+        }
+        .s-program {
+          grid-column: 1 / span 7;
+        }
+        .s-filter {
+          grid-column: 8 / span 5;
+          align-self: start;
+        }
+      }
+
+      /* Gallery card: lights come up */
+      .card {
+        display: block;
+        text-decoration: none;
+      }
+      .card-frame {
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        background: var(--charcoal);
+      }
+      .card-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: brightness(0.82) saturate(0.9);
+        transform: scale(1.001);
+        transition:
+          transform 900ms var(--ease-out),
+          filter 900ms var(--ease-out);
+      }
+      .card:is(:hover, :focus-visible) .card-frame img {
+        transform: scale(1.045);
+        filter: brightness(1) saturate(1.05);
+      }
+      .card figcaption {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 0.75rem;
+        font-weight: 600;
+      }
+      .card figcaption svg {
+        width: 1rem;
+        transition: transform 320ms var(--ease-out);
+      }
+      .card:is(:hover, :focus-visible) figcaption svg {
+        transform: translate(0.2rem, -0.2rem);
+      }
+      .card figure {
+        margin: 0;
+      }
+
+      /* Visit cells */
+      .visit {
+        display: grid;
+        border-top: 1px solid var(--line);
+      }
+      .visit a {
+        --arrow: 0;
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 0.15rem 1rem;
+        padding: 1.1rem 1rem;
+        text-decoration: none;
+        border-bottom: 1px solid var(--line);
+        transition: background-color 320ms var(--ease-out);
+      }
+      .visit a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--brass);
+        transform: scaleY(0);
+        transform-origin: bottom;
+        transition: transform 420ms var(--ease-out);
+      }
+      .visit a:is(:hover, :focus-visible) {
+        background: rgb(242 235 220 / 4%);
+        --arrow: 1;
+      }
+      .visit a:is(:hover, :focus-visible)::before {
+        transform: scaleY(1);
+      }
+      .visit .label {
+        color: var(--muted);
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      .visit .value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        grid-column: 1;
+      }
+      .visit svg {
+        grid-row: 1 / span 2;
+        grid-column: 2;
+        width: 1.25rem;
+        color: var(--brass-bright);
+        transform: translateX(calc(var(--arrow) * 0.35rem));
+        transition: transform 320ms var(--ease-out);
+      }
+
+      /* Program rows with date block */
+      .rows {
+        border-top: 1px solid rgb(201 144 69 / 44%);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 5rem 1fr auto;
+        gap: 1.5rem;
+        align-items: center;
+        padding: 1.25rem 0.5rem;
+        border-bottom: 1px solid var(--faint);
+        text-decoration: none;
+        transition: background-color 320ms var(--ease-out);
+      }
+      .date {
+        text-align: center;
+        line-height: 1;
+      }
+      .date .d {
+        display: block;
+        font-size: 2.5rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        transition: color 320ms var(--ease-out);
+      }
+      .date .m {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-top: 0.3rem;
+      }
+      .row h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 1.1;
+        transition: transform 420ms var(--ease-out);
+      }
+      .row p {
+        margin: 0.3rem 0 0;
+        color: var(--muted);
+        font-size: 0.9375rem;
+        transition: transform 420ms var(--ease-out) 30ms;
+      }
+      .row .cat {
+        color: var(--brass-bright);
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      .row:is(:hover, :focus-visible) {
+        background: rgb(242 235 220 / 3.5%);
+      }
+      .row:is(:hover, :focus-visible) .d {
+        color: var(--brass-bright);
+      }
+      .row:is(:hover, :focus-visible) :is(h3, p) {
+        transform: translateX(0.35rem);
+      }
+      @media (width < 48rem) {
+        .row {
+          grid-template-columns: 4rem 1fr;
+        }
+        .row .cat {
+          grid-column: 2;
+        }
+      }
+
+      /* Filter with sliding indicator */
+      .filter {
+        position: relative;
+        display: flex;
+        border-bottom: 1px solid var(--line);
+        overflow-x: auto;
+      }
+      .filter button {
+        position: relative;
+        z-index: 1;
+        flex: 1 0 auto;
+        min-height: 2.75rem;
+        padding: 0 1rem;
+        background: none;
+        border: 0;
+        color: var(--muted);
+        font:
+          600 0.9375rem 'Source Sans 3',
+          sans-serif;
+        cursor: pointer;
+        transition: color 320ms var(--ease-out);
+      }
+      .filter button[aria-pressed='true'] {
+        color: var(--ink);
+      }
+      .filter button:not([aria-pressed='true']):hover {
+        color: var(--bone);
+      }
+      .filter .ind {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        background: var(--brass);
+        width: var(--w, 0);
+        transform: translateX(var(--x, 0));
+        transition:
+          transform 420ms var(--ease-out),
+          width 420ms var(--ease-out);
+      }
+      .filter-out {
+        margin-top: 1rem;
+        min-height: 3rem;
+        color: var(--muted);
+      }
+      .filter-out span {
+        display: inline-block;
+        animation: swap 360ms var(--ease-out);
+      }
+      @keyframes swap {
+        from {
+          opacity: 0;
+          transform: translateY(0.4rem);
+        }
+      }
+
+      .note {
+        margin-top: 4rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.875rem;
+        max-width: 70ch;
+      }
+
+      /* Reduced motion: real preference or simulated toggle */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+      html.rm *,
+      html.rm *::before,
+      html.rm *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero-wrap">
+      <section class="hero" id="hero" aria-label="Hero med shader-prototype">
+        <img
+          id="heroImg"
+          src="../../src/assets/images/mikes-pub-exterior-desktop.webp"
+          alt="Mike’s Pub i Nordre Sætrevei 2 om kvelden, med lyse vinduer og lanterner."
+          width="1920"
+          height="1080"
+        />
+        <canvas id="gl" aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <p class="eyebrow">Nordre Sætrevei 2, Sætre</p>
+          <p class="wordmark">Mike’s Pub</p>
+          <p class="sub">Musikk og kultur i Sætre.</p>
+          <a class="btn btn-primary" href="#samples"
+            >Se programmet
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path d="M4 12h15m-6-6 6 6-6 6" /></svg
+          ></a>
+        </div>
+      </section>
+
+      <aside class="lab" aria-label="Shader-kontroller">
+        <h2>Shader lab (prototype)</h2>
+        <label><input type="checkbox" data-fx="flicker" checked /> Lantern flicker</label>
+        <small>Plays for 5 s after load and with each glint, then rests (WCAG 2.2.2)</small>
+        <label><input type="checkbox" data-fx="glow" checked /> Warm glow</label>
+        <small>Soft bloom around lit windows and lamps</small>
+        <label><input type="checkbox" data-fx="glint" checked /> Sign glint</label>
+        <small
+          >On load, on scroll back to top, on return to the tab, and when the pointer or a tap hits
+          the sign</small
+        >
+        <button type="button" class="replay" id="replay">Replay glint</button>
+        <label><input type="checkbox" data-fx="lantern" /> Cursor lantern</label>
+        <small>Hover: a warm light follows the pointer</small>
+        <label><input type="checkbox" data-fx="parallax" checked /> Pointer parallax</label>
+        <small>Hover: tiny depth shift</small>
+        <hr />
+        <label><input type="checkbox" id="rm" /> Simulate reduced motion</label>
+        <label><input type="checkbox" id="off" /> Shader off (plain photo)</label>
+        <hr />
+        <div class="meta" id="stats">Starting…</div>
+      </aside>
+    </div>
+
+    <main id="samples">
+      <h2 class="section">Hover and micro-interactions</h2>
+      <p class="lede">
+        CSS only, no libraries. Each one is tied to a component that already exists on the site.
+        Hover, tab through with the keyboard, or press.
+      </p>
+
+      <div class="grid">
+        <div class="sample s-gallery">
+          <a class="card" href="#samples">
+            <figure>
+              <div class="card-frame">
+                <img
+                  src="../../src/assets/images/mikes-pub-facebook-quiz-night.webp"
+                  alt="Fullt hus på pubquiz."
+                  loading="lazy"
+                />
+              </div>
+              <figcaption>
+                <span>Pubquiz</span
+                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path d="M7 17 17 7M9 7h8v8" />
+                </svg>
+              </figcaption>
+            </figure>
+          </a>
+          <p class="why">
+            <b>Gallery: lights come up.</b> The photo brightens and pushes in slowly, like the room
+            lights warming. It tells you the card is clickable without adding a badge.
+          </p>
+        </div>
+
+        <div class="sample s-buttons">
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap">
+            <a class="btn btn-primary" href="#samples"
+              >Se programmet
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 12h15m-6-6 6 6-6 6" /></svg
+            ></a>
+            <a class="btn btn-ghost" href="#samples"
+              >Veibeskrivelse
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 12h15m-6-6 6 6-6 6" /></svg
+            ></a>
+          </div>
+          <p class="why">
+            <b>Buttons.</b> The primary button is filled from the start and its arrow nudges on
+            hover. The secondary fills with brass from the left. Both press down slightly on click.
+          </p>
+        </div>
+
+        <div class="sample s-visit">
+          <nav class="visit" aria-label="Eksempel">
+            <a href="#samples"
+              ><span class="label">Ring puben</span><span class="value">918 55 855</span
+              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 12h15m-6-6 6 6-6 6" /></svg
+            ></a>
+            <a href="#samples"
+              ><span class="label">Veibeskrivelse</span><span class="value">Nordre Sætrevei 2</span
+              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 12h15m-6-6 6 6-6 6" /></svg
+            ></a>
+          </nav>
+          <p class="why">
+            <b>Visit actions.</b> A brass rule grows in from the edge and the arrow slides. You can
+            tell which row you're about to tap.
+          </p>
+        </div>
+
+        <div class="sample s-program">
+          <div class="rows">
+            <a class="row" href="#samples"
+              ><span class="date"><span class="d">19</span><span class="m">jul</span></span
+              ><span
+                ><h3>VM-finale: Spania-Argentina</h3>
+                <p>Kampvisning på storskjerm. Gratis inngang.</p></span
+              ><span class="cat">Sport</span></a
+            >
+            <a class="row" href="#samples"
+              ><span class="date"><span class="d">18</span><span class="m">jul</span></span
+              ><span
+                ><h3>VM-bronsefinale: Frankrike-England</h3>
+                <p>Kampvisning på storskjerm.</p></span
+              ><span class="cat">Sport</span></a
+            >
+            <a class="row" href="#samples"
+              ><span class="date"><span class="d">05</span><span class="m">feb</span></span
+              ><span
+                ><h3>Pubquiz</h3>
+                <p>Månedlig torsdagsquiz med varierte temaer.</p></span
+              ><span class="cat">Quiz</span></a
+            >
+          </div>
+          <p class="why">
+            <b>Program rows with a date block.</b> On hover the date turns brass and the text shifts
+            slightly right. This also fixes the dates wrapping onto three lines. Ordered newest
+            first.
+          </p>
+        </div>
+
+        <div class="sample s-filter">
+          <div class="filter" role="group" aria-label="Filtrer program" id="filter">
+            <span class="ind" aria-hidden="true"></span>
+            <button type="button" aria-pressed="true">Alle</button>
+            <button type="button" aria-pressed="false">Sport</button>
+            <button type="button" aria-pressed="false">Quiz</button>
+          </div>
+          <div class="filter-out" aria-live="polite">
+            <span id="filterOut">Viser 4 arrangementer.</span>
+          </div>
+          <p class="why">
+            <b>Filter: a state change you can see.</b> The brass highlight slides to the chosen
+            category instead of jumping there. That's the one place where motion shows what changed.
+          </p>
+        </div>
+      </div>
+
+      <p class="note">
+        Throwaway design prototype, not production code. The site never imports it, and it adds no
+        dependency. The shader is plain WebGL1, about 4 KB of script gzipped, with no libraries. It
+        pauses when the hero leaves the screen or the tab is hidden, and the loop stops completely
+        between motion windows. With reduced motion (real or simulated) it draws one still frame.
+        Without WebGL you see the normal photo.
+      </p>
+    </main>
+
+    <script>
+      (() => {
+        const hero = document.getElementById('hero');
+        const img = document.getElementById('heroImg');
+        const canvas = document.getElementById('gl');
+        const stats = document.getElementById('stats');
+        const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+        const fineHover = matchMedia('(hover: hover) and (pointer: fine)');
+        const fx = { flicker: 1, glow: 1, glint: 1, lantern: 0, parallax: 1 };
+        const fxShown = { ...fx };
+        let simulatedReduce = false,
+          shaderOff = false;
+
+        document.querySelectorAll('[data-fx]').forEach((el) =>
+          el.addEventListener('change', () => {
+            fx[el.dataset.fx] = el.checked ? 1 : 0;
+            if (el.dataset.fx === 'glint' && el.checked) glint(0, true);
+            kick();
+          }),
+        );
+        document.getElementById('rm').addEventListener('change', (e) => {
+          simulatedReduce = e.target.checked;
+          document.documentElement.classList.toggle('rm', simulatedReduce);
+          kick();
+        });
+        document.getElementById('off').addEventListener('change', (e) => {
+          shaderOff = e.target.checked;
+          canvas.classList.toggle('is-live', !shaderOff && ready);
+          kick();
+        });
+
+        const gl = canvas.getContext('webgl', {
+          antialias: false,
+          alpha: false,
+          premultipliedAlpha: false,
+          powerPreference: 'low-power',
+        });
+        if (!gl) {
+          stats.textContent = 'WebGL unavailable. Showing the static photo.';
+          return;
+        }
+
+        const vs = `attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }`;
+        const fs = `
+  precision mediump float;
+  varying vec2 v;
+  uniform sampler2D u_img;
+  uniform vec2 u_res, u_imgSize, u_focal, u_par, u_ptr;
+  uniform float u_t, u_ptrOn, u_glint;
+  uniform vec4 u_fx; // flicker, glow, glint, lantern
+
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.-2.*f);
+    return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
+  float lum(vec3 c){ return dot(c, vec3(.299, .587, .114)); }
+  float warm(vec3 c){ return smoothstep(.42, .86, lum(c)) * smoothstep(.03, .2, c.r - c.b); }
+
+  vec2 cover(vec2 uv){
+    float ca = u_res.x/u_res.y, ia = u_imgSize.x/u_imgSize.y;
+    vec2 s = ca > ia ? vec2(1., ia/ca) : vec2(ca/ia, 1.);
+    s /= 1.035;                                  // headroom for parallax
+    return (1. - s) * u_focal + uv * s + u_par * (1. - s) * .5;
+  }
+  float flick(vec2 tuv){
+    float slow = noise(tuv * vec2(13., 8.) + vec2(u_t * 1.1, u_t * .6));
+    float fast = noise(tuv * 40. + u_t * 7.);
+    return 1. + u_fx.x * (.24 * (slow - .5) + .07 * (fast - .5));
+  }
+
+  void main(){
+    vec2 tuv = cover(v);
+    vec3 c = texture2D(u_img, tuv).rgb;
+    float m = warm(c);
+    float f = flick(tuv);
+    vec3 col = c * mix(1., f, m);
+
+    if (u_fx.y > 0.) {                             // warm bloom, 16-tap golden spiral
+      vec3 g = vec3(0.); float r = .028;
+      for (int i = 0; i < 16; i++) {
+        float fi = float(i);
+        float a = fi * 2.39996; float d = sqrt((fi + .5) / 16.) * r;
+        vec2 o = vec2(cos(a), sin(a) * u_imgSize.x / u_imgSize.y) * d;
+        vec3 s = texture2D(u_img, tuv + o).rgb;
+        g += s * warm(s);
+      }
+      g /= 16.;
+      col += g * vec3(1., .66, .34) * .95 * u_fx.y * f;
+    }
+
+    if (u_fx.z > 0. && u_glint > -1.5) {          // glint across the gold sign, driven by events
+      vec2 lo = vec2(.556, .168), hi = vec2(.748, .325);
+      float box = smoothstep(lo.x, lo.x + .01, tuv.x) * smoothstep(hi.x, hi.x - .01, tuv.x)
+                * smoothstep(lo.y, lo.y + .01, tuv.y) * smoothstep(hi.y, hi.y - .01, tuv.y);
+      float gold = smoothstep(.28, .55, lum(c)) * smoothstep(.08, .28, c.r - c.b);
+      float d = (tuv.x - lo.x) / (hi.x - lo.x) + (tuv.y - lo.y) / (hi.y - lo.y) * .55;
+      float p = u_glint;
+      float band = exp(-pow((d - p) * 5.5, 2.));
+      col += vec3(1., .86, .58) * band * gold * box * .85 * u_fx.z;
+    }
+
+    if (u_fx.w * u_ptrOn > 0.001) {                // cursor lantern
+      vec2 px = v * u_res; vec2 pp = u_ptr * u_res;
+      float rad = min(u_res.x, u_res.y) * .32;
+      float l = exp(-dot(px - pp, px - pp) / (rad * rad));
+      float k = u_fx.w * u_ptrOn;
+      col *= mix(1., .78, k);                      // dim the scene slightly
+      col += col * l * vec3(1.05, .78, .48) * 1.25 * k;
+    }
+
+    gl_FragColor = vec4(col, 1.);
+  }`;
+
+        const sh = (type, src) => {
+          const s = gl.createShader(type);
+          gl.shaderSource(s, src);
+          gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+          return s;
+        };
+        const prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
+        gl.linkProgram(prog);
+        gl.useProgram(prog);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const U = {};
+        [
+          'u_img',
+          'u_res',
+          'u_imgSize',
+          'u_focal',
+          'u_par',
+          'u_ptr',
+          'u_t',
+          'u_ptrOn',
+          'u_fx',
+          'u_glint',
+        ].forEach((n) => (U[n] = gl.getUniformLocation(prog, n)));
+
+        let ready = false;
+
+        // Sign glint: event-driven, not on a timer
+        const GLINT_MS = 1100,
+          GLINT_COOLDOWN_MS = 3000;
+        const SIGN = { x0: 0.545, y0: 0.155, x1: 0.76, y1: 0.34 }; // texture space, with a little padding
+        let glintStart = -1,
+          lastGlint = -Infinity;
+        // Flicker runs in 5 s windows (load, and alongside each glint), then settles to a still frame
+        const FLICKER_MS = 5000,
+          FLICKER_IN_MS = 400,
+          FLICKER_OUT_MS = 1200;
+        let flickerStart = -1,
+          flickerUntil = 0;
+        function wakeFlicker(at) {
+          if (reduced()) return;
+          if (at >= flickerUntil) flickerStart = at; // start a new window, otherwise extend the current one
+          flickerUntil = at + FLICKER_MS;
+          kick();
+        }
+        function flickerEnv(now) {
+          if (now < flickerStart || now >= flickerUntil) return 0;
+          return (
+            Math.min(1, (now - flickerStart) / FLICKER_IN_MS) *
+            Math.min(1, (flickerUntil - now) / FLICKER_OUT_MS)
+          );
+        }
+        function glint(delay = 0, force = false) {
+          if (!fx.glint || shaderOff || reduced()) return;
+          const at = performance.now() + delay;
+          if (!force && at - lastGlint < GLINT_COOLDOWN_MS) return;
+          lastGlint = at;
+          glintStart = at;
+          wakeFlicker(at);
+          kick();
+        }
+        function glintPos(now) {
+          if (glintStart < 0 || now < glintStart) return -2;
+          const k = (now - glintStart) / GLINT_MS;
+          if (k >= 1) {
+            glintStart = -1;
+            return -2;
+          }
+          const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; // ease in-out
+          return -0.5 + e * 2.5;
+        }
+        function onSign(clientX, clientY) {
+          const r = hero.getBoundingClientRect();
+          const x = (clientX - r.left) / r.width,
+            y = (clientY - r.top) / r.height;
+          const ca = r.width / r.height,
+            ia = img.naturalWidth / img.naturalHeight;
+          let sx = 1,
+            sy = 1;
+          if (ca > ia) sy = ia / ca;
+          else sx = ca / ia;
+          sx /= 1.035;
+          sy /= 1.035;
+          const u = (1 - sx) * 0.5 + x * sx,
+            v = (1 - sy) * 0.4 + y * sy;
+          return u > SIGN.x0 && u < SIGN.x1 && v > SIGN.y0 && v < SIGN.y1;
+        }
+
+        const tex = gl.createTexture();
+        const upload = () => {
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+          gl.uniform1i(U.u_img, 0);
+          gl.uniform2f(U.u_imgSize, img.naturalWidth, img.naturalHeight);
+          gl.uniform2f(U.u_focal, 0.5, 0.4);
+          ready = true;
+          resize();
+          kick();
+          wakeFlicker(performance.now());
+          glint(900); // first look: right after the canvas fades in
+        };
+        img.decode
+          ? img.decode().then(upload, upload)
+          : img.complete
+            ? upload()
+            : img.addEventListener('load', upload);
+
+        const resize = () => {
+          const dpr = Math.min(devicePixelRatio || 1, 1.5);
+          const w = Math.round(hero.clientWidth * dpr),
+            h = Math.round(hero.clientHeight * dpr);
+          if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+            gl.viewport(0, 0, w, h);
+          }
+          gl.uniform2f(U.u_res, w, h);
+        };
+        new ResizeObserver(() => {
+          if (ready) {
+            resize();
+            kick();
+          }
+        }).observe(hero);
+
+        // Pointer state (fine pointers only), eased in the loop
+        const ptr = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, on: 0, ton: 0 };
+        hero.addEventListener('pointermove', (e) => {
+          if (!fineHover.matches) return;
+          const r = hero.getBoundingClientRect();
+          ptr.tx = (e.clientX - r.left) / r.width;
+          ptr.ty = (e.clientY - r.top) / r.height;
+          ptr.ton = 1;
+          kick();
+        });
+        let pointerOnSign = false;
+        hero.addEventListener('pointermove', (e) => {
+          if (e.pointerType !== 'mouse') return;
+          const now = onSign(e.clientX, e.clientY);
+          if (now && !pointerOnSign) glint();
+          pointerOnSign = now;
+        });
+        hero.addEventListener('pointerdown', (e) => {
+          if (onSign(e.clientX, e.clientY)) glint();
+        });
+        hero.addEventListener('pointerleave', () => {
+          ptr.ton = 0;
+          ptr.tx = 0.5;
+          ptr.ty = 0.5;
+          kick();
+        });
+
+        let visible = true;
+        let heroAway = false;
+        new IntersectionObserver(
+          ([e]) => {
+            visible = e.isIntersecting;
+            if (e.intersectionRatio < 0.35) heroAway = true;
+            else if (e.intersectionRatio >= 0.6 && heroAway) {
+              heroAway = false;
+              glint(150);
+            } // scrolled back to the top
+            kick();
+          },
+          { threshold: [0, 0.35, 0.6] },
+        ).observe(hero);
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) glint(300);
+          kick();
+        });
+        document.getElementById('replay').addEventListener('click', () => glint(0, true));
+        mqReduce.addEventListener?.('change', kick);
+
+        let raf = 0,
+          t0 = performance.now(),
+          last = t0,
+          frames = [],
+          tFrozen = 0;
+        const reduced = () => simulatedReduce || mqReduce.matches;
+
+        function draw(now) {
+          const dt = Math.min(now - last, 100);
+          last = now;
+          const k = 1 - Math.pow(0.001, (dt / 1000) * 1.8); // frame-rate independent easing
+          ptr.x += (ptr.tx - ptr.x) * k;
+          ptr.y += (ptr.ty - ptr.y) * k;
+          ptr.on += (ptr.ton - ptr.on) * k;
+          for (const key in fx) fxShown[key] += (fx[key] - fxShown[key]) * k;
+          const t = reduced() ? tFrozen : (now - t0) / 1000;
+          const par = fxShown.parallax * (reduced() ? 0 : 1);
+          gl.uniform1f(U.u_t, t);
+          gl.uniform1f(U.u_glint, glintPos(now));
+          gl.uniform2f(U.u_par, (ptr.x - 0.5) * 2 * par, (ptr.y - 0.5) * 2 * par);
+          gl.uniform2f(U.u_ptr, ptr.x, ptr.y);
+          gl.uniform1f(U.u_ptrOn, ptr.on);
+          gl.uniform4f(
+            U.u_fx,
+            reduced() ? 0 : fxShown.flicker * flickerEnv(now),
+            fxShown.glow,
+            reduced() ? 0 : fxShown.glint,
+            fxShown.lantern,
+          );
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+          if (!canvas.classList.contains('is-live') && !shaderOff) canvas.classList.add('is-live');
+          frames.push(dt);
+          if (frames.length > 60) frames.shift();
+        }
+
+        function loop(now) {
+          raf = 0;
+          if (!ready || shaderOff || !visible || document.hidden) {
+            report('paused');
+            return;
+          }
+          draw(now);
+          const settling =
+            Math.abs(ptr.on - ptr.ton) > 0.002 ||
+            Object.keys(fx).some((key) => Math.abs(fx[key] - fxShown[key]) > 0.002) ||
+            Math.abs(ptr.x - ptr.tx) > 0.0005 ||
+            Math.abs(ptr.y - ptr.ty) > 0.0005;
+          if (reduced() && !settling) {
+            report('still frame (reduced motion)');
+            return;
+          }
+          const now2 = performance.now();
+          if (!settling && flickerEnv(now2) === 0 && now2 >= flickerUntil && glintStart < 0) {
+            report('resting (still frame, loop stopped)');
+            return;
+          }
+          report('running');
+          raf = requestAnimationFrame(loop);
+        }
+        function kick() {
+          if (!raf) raf = requestAnimationFrame(loop);
+        }
+
+        let lastReport = 0;
+        function report(state) {
+          const now = performance.now();
+          if (now - lastReport < 400 && state === 'running') return;
+          lastReport = now;
+          const avg = frames.length ? frames.reduce((a, b) => a + b, 0) / frames.length : 0;
+          stats.textContent =
+            `${state}. ${canvas.width}×${canvas.height}px` +
+            (state === 'running' && avg ? `, ~${Math.round(1000 / avg)} fps` : '');
+        }
+      })();
+
+      // Filter indicator
+      (() => {
+        const group = document.getElementById('filter');
+        const ind = group.querySelector('.ind');
+        const out = document.getElementById('filterOut');
+        const counts = { Alle: 4, Sport: 3, Quiz: 1 };
+        const place = (btn) => {
+          ind.style.setProperty('--x', btn.offsetLeft + 'px');
+          ind.style.setProperty('--w', btn.offsetWidth + 'px');
+        };
+        const btns = [...group.querySelectorAll('button')];
+        btns.forEach((b) =>
+          b.addEventListener('click', () => {
+            btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+            place(b);
+            const n = counts[b.textContent];
+            out.textContent = `Viser ${n} ${n === 1 ? 'arrangement' : 'arrangementer'}.`;
+            out.style.animation = 'none';
+            out.offsetWidth;
+            out.style.animation = '';
+          }),
+        );
+        const init = () => place(btns.find((b) => b.getAttribute('aria-pressed') === 'true'));
+        document.fonts?.ready.then(init);
+        init();
+        addEventListener('resize', init);
+      })();
+    </script>
+  </body>
+</html>
