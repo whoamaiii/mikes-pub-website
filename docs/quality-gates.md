@@ -59,9 +59,13 @@ Program filtering must keep the host's current path form in history; both slash 
 also receive regression coverage in the standard production suite.
 
 Native page anchors, including the Program skip link, must preserve the selected category.
-Selecting the current filter URL again must not add another browser-history entry. The initial Google Maps iframe must display automatically, including without JavaScript. Delayed
-map retries and timeouts must preserve focus when the visitor moves to another control; keyboard
-users who remain on the retry control must retain focus there. A timeout must not remove the map.
+Selecting the current filter URL again must not add another browser-history entry. The initial
+Google Maps iframe must display automatically, including without JavaScript, and use the
+`no-referrer` policy. The data-sharing notice and external-map link remain visible. Delayed retries
+and timeouts must preserve focus when the visitor stays on the retry control or moves elsewhere.
+Repeated activation during a retry must not create another frame or request. A timeout must not
+remove the map. This direct-map behavior contacts Google on page load; it does not satisfy a
+no-third-party-contact-before-activation requirement.
 These regressions use local map responses, including a delayed response and simulated timeout,
 so tests do not depend on Google's availability or send visitor data to Google.
 

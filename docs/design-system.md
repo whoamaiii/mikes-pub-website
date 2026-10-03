@@ -84,10 +84,13 @@ The current direction pairs the real pub frontage with a restrained, consistentl
 - Home activities form three simple, unnumbered rows. Their shared Facebook action remains separate
   from the non-interactive descriptions. The primary hero action still leads to the gallery.
 - Visit information follows the hero. The location section pairs a readable address with the official
-  Google Maps iframe. Following Q’s correction, it loads automatically from the initial HTML, also
-  without JavaScript. The external-map link is always available; JavaScript adds a retry control
-  that preserves keyboard focus and never hides a slow map. Google receives the embed request
-  on page load; there is no click-to-load gate.
+  Google Maps iframe. On 3 October 2026, Q first approved a click-to-load privacy change and then
+  requested that the map itself be visible again. That latest correction restores the native iframe
+  in the initial HTML, including without JavaScript. Google receives the embed request automatically;
+  the visible notice explains the IP-address and browser-information sharing. The iframe suppresses
+  the referrer, which does not prevent that initial contact. The external-map link is always
+  available; JavaScript adds a retry control that preserves keyboard focus and never hides a slow
+  map. Google's own branding and attribution remain inside the unmodified interactive map.
 - Program shares the dark brand palette, with visible categories and a date-first reading order. On
   desktop, dates and event descriptions occupy separate columns; mobile restores a single column.
   All existing event states and JavaScript-free category navigation remain intact.

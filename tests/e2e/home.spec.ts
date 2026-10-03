@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('https://www.google.com/maps/embed**', (route) =>
     route.fulfill({
       contentType: 'text/html',
-      body: '<html lang="nb"><title>Karttest</title><body>Karttest</body></html>',
+      body: '<html lang="nb"><title>Karttest</title><body><main aria-label="Karttest"><h1>Karttest</h1></main></body></html>',
     }),
   );
 });
@@ -122,6 +122,10 @@ test('renders the approved semantic Home hierarchy and safe content', async ({ p
     /^https:\/\/www\.google\.com\/maps\/embed\?pb=/,
   );
   await expect(map.locator('iframe')).toHaveAttribute('loading', 'eager');
+  await expect(map.locator('iframe')).toHaveAttribute('referrerpolicy', 'no-referrer');
+  await expect(
+    map.getByText('Google mottar IP-adressen din og nettleserinformasjon når kartet lastes.'),
+  ).toBeVisible();
   await expect.poll(() => googleRequests.length).toBeGreaterThan(0);
   await expect(map.locator('iframe')).toHaveCSS('pointer-events', 'auto');
   await expect(map.locator('[data-map-gate], template')).toHaveCount(0);
@@ -452,7 +456,7 @@ test('keeps map recovery available after a failed request or load timeout', asyn
       ? route.abort('internetdisconnected')
       : route.fulfill({
           contentType: 'text/html',
-          body: '<html lang="nb"><title>Karttest</title><body>Karttest</body></html>',
+          body: '<html lang="nb"><title>Karttest</title><body><main><h1>Karttest</h1></main></body></html>',
         });
   });
   await page.goto(homePath);
@@ -655,6 +659,10 @@ test.describe('without JavaScript', () => {
       /^https:\/\/www\.google\.com\/maps\/embed/,
     );
     await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeHidden();
+    await expect(map.locator('iframe')).toHaveAttribute('referrerpolicy', 'no-referrer');
+    await expect(
+      map.getByRole('link', { name: 'Åpne i Google Maps (ekstern lenke)' }),
+    ).toBeVisible();
     expect((await map.locator('[data-map-canvas]').boundingBox())?.height).toBeGreaterThan(287);
     await expect(
       page.getByRole('link', { name: 'Åpne veibeskrivelse til Mike’s Pub i Google Maps' }).last(),

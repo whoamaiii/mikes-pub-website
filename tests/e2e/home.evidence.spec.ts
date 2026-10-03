@@ -11,7 +11,7 @@ test('captures deterministic WHO-18 Home evidence', async ({ page }) => {
   // Keep automated layout evidence deterministic; verify real Google separately in browser.
   await page.route('https://www.google.com/maps/embed**', (route) =>
     route.fulfill({
-      contentType: 'text/html',
+      contentType: 'text/html; charset=utf-8',
       body: '<html lang="nb"><title>Karttest</title><body>Google Maps — lokal testrespons</body></html>',
     }),
   );
@@ -46,6 +46,20 @@ test('captures deterministic WHO-18 Home evidence', async ({ page }) => {
     await page.screenshot({
       path: path.join(evidenceDirectory, `who-18-${viewport.name}.png`),
       fullPage: true,
+    });
+  }
+
+  for (const viewport of viewports.filter(({ width }) => width === 375 || width === 1440)) {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto('/');
+    const map = page.locator('.google-map-embed');
+    await expect(map.locator('iframe')).toHaveCount(1);
+    await expect(map).toHaveAttribute('data-map-state', 'ready');
+    await expect(map.locator('iframe')).toBeVisible();
+    await map.getByRole('button', { name: 'Prøv igjen' }).focus();
+    await expect(map.getByRole('button', { name: 'Prøv igjen' })).toBeFocused();
+    await map.screenshot({
+      path: path.join(evidenceDirectory, `who-19-direct-map-${viewport.name}.png`),
     });
   }
 
