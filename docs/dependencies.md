@@ -5,7 +5,7 @@ Exact resolved versions and transitive packages are recorded in `package-lock.js
 
 | Package                     | Version | Licence           | Purpose                                              |
 | --------------------------- | ------: | ----------------- | ---------------------------------------------------- |
-| Astro                       |   7.3.1 | MIT               | Static site framework and build output               |
+| Astro                       |   7.3.3 | MIT               | Static site framework and build output               |
 | TypeScript                  |   6.0.2 | Apache-2.0        | Strict static type checking                          |
 | `@types/node`               | 24.13.3 | MIT               | Node 24 API types                                    |
 | `@astrojs/check`            |   0.9.9 | MIT               | Astro and TypeScript diagnostics                     |
@@ -17,15 +17,15 @@ Exact resolved versions and transitive packages are recorded in `package-lock.js
 | `stylelint-config-standard` |  40.0.0 | MIT               | Standard CSS rules                                   |
 | Prettier                    |   3.9.5 | MIT               | Deterministic formatting                             |
 | `prettier-plugin-astro`     |  0.14.1 | MIT               | Astro formatting support                             |
-| Vitest                      |  4.1.11 | MIT               | Unit and repository-policy tests                     |
+| Vitest                      |  4.1.12 | MIT               | Unit and repository-policy tests                     |
 | Playwright Test             |  1.61.1 | Apache-2.0        | Browser regression infrastructure                    |
 | `@axe-core/playwright`      |  4.12.1 | MPL-2.0           | Automated accessibility checks for later approved UI |
-| Wrangler                    | 4.136.2 | MIT OR Apache-2.0 | Cloudflare Pages local runtime and direct deployment |
+| Wrangler                    | 4.152.0 | MIT OR Apache-2.0 | Cloudflare Pages local runtime and direct deployment |
 
 GitHub Actions use official releases pinned to complete immutable commit SHAs. Checkout, setup-node,
 upload-artifact and dependency-review-action are MIT licensed and affect CI only.
 
-Astro resolves MIT-licensed `esbuild@0.28.1` transitively. Its required platform-binary install
+The build/deployment tools resolve MIT-licensed `esbuild@0.28.2` transitively. Its required platform-binary install
 script is explicitly pinned in npm's `allowScripts` policy; all other unreviewed dependency scripts
 remain blocked.
 
@@ -33,9 +33,9 @@ Playwright and Vite resolve optional MIT-licensed macOS file watchers `fsevents@
 `fsevents@2.3.3`. Their native install scripts are also pinned explicitly so clean Mac installs do
 not broaden script permission to other versions or packages.
 
-Wrangler resolves Apache-2.0 `workerd@1.20260921.1`; its pinned install script selects Cloudflare's
+Wrangler resolves Apache-2.0 `workerd@1.20261019.1`; its pinned install script selects Cloudflare's
 matching local runtime binary and is explicitly allowed. The lockfile resolves Apache-2.0
-`sharp@0.35.4` for both Astro and Miniflare; it has no install script. Unreviewed scripts remain
+`sharp@0.35.5`; it has no install script. Unreviewed scripts remain
 blocked by default.
 
 The Q-approved 6 September 2026 security update pins Astro 7.3.1 and Wrangler 4.129.0 and refreshes
@@ -50,6 +50,20 @@ found during the hosting audit. There are no new direct dependencies or browser 
 The existing test/deployment-tool licences and removal paths remain applicable. Validation results
 are recorded separately for the reviewed working tree; these versions are not a promise against
 future advisories.
+
+The Q-approved 23 October 2026 security refresh pins Astro 7.3.3, Vitest 4.1.12 and Wrangler
+4.152.0, and updates vulnerable transitive packages within their declared compatible ranges.
+It adds no direct dependencies, browser libraries, product content or UI. The existing licences
+and removal paths remain applicable. Only the exact esbuild and workerd install-script versions
+listed above are newly allowed; broad script permission remains disabled.
+
+The refresh leaves one unresolved upstream advisory, [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm),
+against `braces@3.0.3`. It reaches this project through Stylelint's development-only dependency
+chain and produces seven high-severity npm audit entries, including its dependants. As checked on
+23 October 2026, the registry has no patched braces release and the current stable Stylelint
+release still depends on it. See the [upstream Stylelint discussion](https://github.com/stylelint/stylelint/issues/9559).
+The full audit gate remains blocking. This refresh does not suppress the advisory, downgrade the
+CSS linter, substitute an unofficial package or treat a clean production-only audit as a full pass.
 
 No package is admitted to justify a product feature in WHO-14. Remove a tool by deleting its config,
 scripts and direct package entry, then regenerate the lockfile and rerun all remaining gates.
